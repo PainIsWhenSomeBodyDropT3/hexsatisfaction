@@ -10,5 +10,5 @@ type UserService interface {
 	Create(req model.RegisterUserRequest) error
 	FindByLogin(login string) (*pgModel.User, error)
 	FindByCredentials(req model.LoginUserRequest) (*pgModel.User, error)
-	IsExist(user pgModel.User) (bool, error)
+	IsExist(login string) (bool, error)
 }

@@ -31,6 +31,6 @@ func (u User) FindByCredentials(req model.LoginUserRequest) (*pgModel.User, erro
 }
 
 // IsExist check is  user exist.
-func (u User) IsExist(user pgModel.User) (bool, error) {
+func (u User) IsExist(login string) (bool, error) {
 	return false, nil
 }
