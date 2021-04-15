@@ -14,6 +14,7 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/handler"
 	_ "github.com/lib/pq"
 )
+
 // Where to place it?
 
 const DIALECT = "postgres"
