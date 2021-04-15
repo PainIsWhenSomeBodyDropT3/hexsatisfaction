@@ -7,5 +7,5 @@ type UserDB interface {
 	Create(user model.User) error
 	FindByLogin(login string) (*model.User, error)
 	FindByCredentials(user model.User) (*model.User, error)
-	IsExist(user model.User) bool
+	IsExist(user model.User) (bool, error)
 }
