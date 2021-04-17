@@ -54,7 +54,7 @@ func (u User) IsExist(login string) (bool, error) {
 	existingUser, err := u.FindByLogin(login)
 	if err != nil && !strings.Contains(err.Error(), "sql: Rows are closed") {
 		return false, err
-	} else if existingUser != nil {
+	} else if existingUser.ID != 0 {
 		return true, nil
 	}
 
