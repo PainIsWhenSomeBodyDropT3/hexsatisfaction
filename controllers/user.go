@@ -3,15 +3,16 @@ package controllers
 import (
 	pgModel "github.com/JesusG2000/hexsatisfaction-model/model"
 	"github.com/JesusG2000/hexsatisfaction/model"
+	"github.com/JesusG2000/hexsatisfaction/repository"
 )
 
-// User is a user service.
+// User is c user service.
 type User struct {
-	UserDB UserDB
+	UserDB repository.UserDB
 }
 
-// NewUser is a User service constructor.
-func NewUser(userDB UserDB) *User {
+// NewUser is c User service constructor.
+func NewUser(userDB repository.UserDB) *User {
 	return &User{userDB}
 }
 

@@ -1,6 +1,6 @@
-package controllers
+package repository
 
-import "github.com/JesusG2000/hexsatisfaction-model/model"
+import "github.com/JesusG2000/hexsatisfaction/model"
 
 // UserDB is an interface for UserRepo methods.
 type UserDB interface {
