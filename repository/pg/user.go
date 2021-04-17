@@ -8,7 +8,7 @@ import (
 
 // Create saves user.
 func (u User) Create(user model.User) error {
-	_, err := u.db.Exec("INSERT INTO dbuser (login , password) VALUES ($1,$2)", user.Login, user.Password)
+	_, err := u.db.Exec("INSERT INTO users (login , password) VALUES ($1,$2)", user.Login, user.Password)
 
 	return err
 }
@@ -16,7 +16,7 @@ func (u User) Create(user model.User) error {
 // FindByLogin find User by login.
 func (u User) FindByLogin(login string) (*model.User, error) {
 	var user model.User
-	rows, err := u.db.Query("SELECT * FROM dbuser WHERE login = $1", login)
+	rows, err := u.db.Query("SELECT * FROM users WHERE login = $1", login)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (u User) FindByLogin(login string) (*model.User, error) {
 // FindByCredentials find User by credentials.
 func (u User) FindByCredentials(user model.User) (*model.User, error) {
 	var newUser model.User
-	rows, err := u.db.Query("SELECT * FROM dbuser WHERE login = $1 AND password = $2", user.Login, user.Password)
+	rows, err := u.db.Query("SELECT * FROM users WHERE login = $1 AND password = $2", user.Login, user.Password)
 	if err != nil {
 		return nil, err
 	}
