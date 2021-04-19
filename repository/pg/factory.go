@@ -58,7 +58,7 @@ func (u *util) setup() {
 
 	password, ok := os.LookupEnv("PASSWORD")
 	if !ok {
-		password = "postgres"
+		password = "18051965q"
 	}
 
 	dbPort, ok := os.LookupEnv("DB_PORT")
