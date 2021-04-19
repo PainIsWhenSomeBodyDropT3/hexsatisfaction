@@ -13,7 +13,7 @@ func (u User) Create(user model.User) error {
 	return err
 }
 
-// FindByLogin find User by login.
+// FindByLogin finds the User by login.
 func (u User) FindByLogin(login string) (*model.User, error) {
 	var user model.User
 	rows, err := u.db.Query("SELECT * FROM users WHERE login = $1", login)
@@ -31,7 +31,7 @@ func (u User) FindByLogin(login string) (*model.User, error) {
 	return &user, rows.Err()
 }
 
-// FindByCredentials find User by credentials.
+// FindByCredentials finds the User by credentials.
 func (u User) FindByCredentials(user model.User) (*model.User, error) {
 	var newUser model.User
 	rows, err := u.db.Query("SELECT * FROM users WHERE login = $1 AND password = $2", user.Login, user.Password)
@@ -49,7 +49,7 @@ func (u User) FindByCredentials(user model.User) (*model.User, error) {
 	return &newUser, rows.Err()
 }
 
-// IsExist checks is User exist.
+// IsExist checks if User exist.
 func (u User) IsExist(login string) (bool, error) {
 	existingUser, err := u.FindByLogin(login)
 	if err != nil && !strings.Contains(err.Error(), "sql: Rows are closed") {

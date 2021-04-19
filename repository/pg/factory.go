@@ -18,14 +18,14 @@ type util struct {
 	dbPort   string
 }
 
-// Factory represents the pg factory .
+// Factory represents the pg factory.
 type Factory struct {
 	util
 	*sql.DB
 	User
 }
 
-// User represents the User table.
+// User represents the users table.
 type User struct {
 	db *sql.DB
 }
@@ -75,7 +75,7 @@ func (u *util) setup() {
 
 }
 
-// NewFactory creates new pg factory
+// NewFactory creates new pg factory.
 func NewFactory() (*Factory, error) {
 	var f Factory
 	f.setup()
@@ -86,6 +86,12 @@ func NewFactory() (*Factory, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
 	f.DB = db
 	return &f, nil
 }

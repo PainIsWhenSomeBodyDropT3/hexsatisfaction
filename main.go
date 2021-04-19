@@ -8,7 +8,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/JesusG2000/hexsatisfaction/controllers"
+	"github.com/JesusG2000/hexsatisfaction/controller"
 	"github.com/JesusG2000/hexsatisfaction/handler"
 	"github.com/JesusG2000/hexsatisfaction/repository/pg"
 	_ "github.com/lib/pq"
@@ -30,7 +30,7 @@ func main() {
 	userDb := factory.NewUserRepository()
 
 	// Services
-	userService := controllers.NewUser(userDb)
+	userService := controller.NewUser(userDb)
 
 	router := handler.NewRouter(userService)
 

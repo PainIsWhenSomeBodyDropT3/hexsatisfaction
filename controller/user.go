@@ -1,17 +1,16 @@
-package controllers
+package controller
 
 import (
 	"github.com/JesusG2000/hexsatisfaction/model"
-	"github.com/JesusG2000/hexsatisfaction/repository"
 )
 
-// User is c user service.
+// User is a user service.
 type User struct {
-	UserDB repository.UserDB
+	UserDB UserDB
 }
 
-// NewUser is c User service constructor.
-func NewUser(userDB repository.UserDB) *User {
+// NewUser is a User service constructor.
+func NewUser(userDB UserDB) *User {
 	return &User{userDB}
 }
 
