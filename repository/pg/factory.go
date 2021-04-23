@@ -6,14 +6,15 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 )
 
 type util struct {
 	dialect  string
 	host     string
 	user     string
-	name     string
+	dbname   string
 	password string
 	dbPort   string
 }
@@ -32,44 +33,17 @@ type User struct {
 
 func (u *util) setup() {
 
-	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found\n")
-	}
-
-	dialect, ok := os.LookupEnv("DIALECT")
-	if !ok {
-		dialect = "postgres"
-	}
-
-	host, ok := os.LookupEnv("HOST")
-	if !ok {
-		host = "localhost"
-	}
-
-	user, ok := os.LookupEnv("DB_USER")
-	if !ok {
-		user = "postgres"
-	}
-
-	name, ok := os.LookupEnv("NAME")
-	if !ok {
-		name = "postgres"
-	}
-
-	password, ok := os.LookupEnv("PASSWORD")
-	if !ok {
-		password = "18051965q"
-	}
-
-	dbPort, ok := os.LookupEnv("DB_PORT")
-	if !ok {
-		dbPort = "5432"
-	}
+	dialect := viper.GetString("db.dialect")
+	host := viper.GetString("db.host")
+	user := viper.GetString("db.username")
+	dbname := viper.GetString("db.dbname")
+	dbPort := viper.GetString("db.port")
+	password := os.Getenv("DB_PASSWORD")
 
 	u.dialect = dialect
 	u.host = host
 	u.user = user
-	u.name = name
+	u.dbname = dbname
 	u.password = password
 	u.dbPort = dbPort
 
@@ -79,7 +53,7 @@ func (u *util) setup() {
 func NewFactory() (*Factory, error) {
 	var f Factory
 	f.setup()
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", f.host, f.user, f.name, f.password, f.dbPort)
+	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", f.host, f.user, f.dbname, f.password, f.dbPort)
 	log.Println(dbURI)
 
 	db, err := sql.Open(f.dialect, dbURI)
@@ -92,8 +66,32 @@ func NewFactory() (*Factory, error) {
 		return nil, err
 	}
 
+	err = initTables(db)
+	if err != nil {
+		return nil, err
+	}
+
 	f.DB = db
 	return &f, nil
+}
+
+func initTables(db *sql.DB) error {
+	_, err := db.Exec(`select * from  users`)
+	if err == nil {
+		_, err := db.Exec(`DROP table  users`)
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err = db.Exec("CREATE TABLE users (" +
+		"id integer NOT NULL GENERATED ALWAYS AS IDENTITY (INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 )," +
+		"login text NOT NULL ," +
+		"password text NOT NULL )")
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // NewUserRepository creates new User repository.

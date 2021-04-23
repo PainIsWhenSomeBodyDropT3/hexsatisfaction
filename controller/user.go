@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/JesusG2000/hexsatisfaction/model"
+	"github.com/pkg/errors"
 )
 
 // User is a user service.
@@ -22,7 +23,7 @@ func (u User) Create(req model.RegisterUserRequest) error {
 	}
 	err := u.UserDB.Create(user)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "couldn't create user")
 	}
 
 	return nil

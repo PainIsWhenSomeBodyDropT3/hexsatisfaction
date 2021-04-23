@@ -11,7 +11,8 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/controller"
 	"github.com/JesusG2000/hexsatisfaction/handler"
 	"github.com/JesusG2000/hexsatisfaction/repository/pg"
-	_ "github.com/lib/pq"
+	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
 )
 
 func main() {
@@ -20,10 +21,14 @@ func main() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
 
-	serverPort, ok := os.LookupEnv("SERVER_PORT")
-	if !ok {
-		serverPort = "8000"
+	if err := initConfig(); err != nil {
+		log.Fatalf("error initializing configs: %s", err.Error())
 	}
+
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	// Database
 	factory := getFactory()
 
@@ -35,7 +40,7 @@ func main() {
 	router := handler.NewRouter(userService)
 
 	coreService := &http.Server{
-		Addr:    fmt.Sprintf(":%s", serverPort),
+		Addr:    fmt.Sprintf(":%s", viper.GetString("port")),
 		Handler: router,
 	}
 
@@ -57,4 +62,10 @@ func startService(ctx context.Context, coreService *http.Server) {
 	if err := coreService.ListenAndServe(); err != nil {
 		log.Fatal(ctx, "service shutdown", err.Error())
 	}
+}
+
+func initConfig() error {
+	viper.AddConfigPath(".")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
 }
