@@ -39,8 +39,10 @@ type loginRequest struct {
 	model.LoginUserRequest
 }
 
+// Build builds request for user login.
 func (req *loginRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.LoginUserRequest)
+	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
@@ -48,14 +50,23 @@ func (req *loginRequest) Build(r *http.Request) error {
 	return nil
 }
 
+// Validate validates request for user login.
 func (req *loginRequest) Validate() error {
-	if req.Login == "" {
-		return fmt.Errorf("login is required")
+	switch {
+	case req.Login == "":
+		{
+			return fmt.Errorf("login is required")
+		}
+
+	case req.Password == "":
+		{
+			return fmt.Errorf("password is required")
+		}
+	default:
+		{
+			return nil
+		}
 	}
-	if req.Password == "" {
-		return fmt.Errorf("password is required")
-	}
-	return nil
 }
 
 func (u *userRouter) loginUser(w http.ResponseWriter, r *http.Request) {
@@ -85,8 +96,10 @@ type registerRequest struct {
 	model.RegisterUserRequest
 }
 
+// Build builds request for user registration.
 func (req *registerRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.RegisterUserRequest)
+	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
@@ -94,14 +107,23 @@ func (req *registerRequest) Build(r *http.Request) error {
 	return nil
 }
 
+// Validate validates request for user registration.
 func (req *registerRequest) Validate() error {
-	if req.Login == "" {
-		return fmt.Errorf("login is required")
+	switch {
+	case req.Login == "":
+		{
+			return fmt.Errorf("login is required")
+		}
+
+	case req.Password == "":
+		{
+			return fmt.Errorf("password is required")
+		}
+	default:
+		{
+			return nil
+		}
 	}
-	if req.Password == "" {
-		return fmt.Errorf("password is required")
-	}
-	return nil
 }
 
 func (u *userRouter) registerUser(w http.ResponseWriter, r *http.Request) {

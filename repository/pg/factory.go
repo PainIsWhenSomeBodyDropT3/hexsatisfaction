@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type util struct {
+type dbParam struct {
 	dialect  string
 	host     string
 	user     string
@@ -24,7 +24,7 @@ type util struct {
 
 // Factory represents the pg factory.
 type Factory struct {
-	util
+	dbParam
 	*sql.DB
 	User
 }
@@ -72,7 +72,7 @@ func NewFactory() (*Factory, error) {
 	return &f, nil
 }
 
-func (u *util) setup() {
+func (u *dbParam) setup() {
 
 	dialect := viper.GetString("db.dialect")
 	host := viper.GetString("db.host")
