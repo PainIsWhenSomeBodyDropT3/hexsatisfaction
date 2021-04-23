@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose"
 	"github.com/spf13/viper"
@@ -32,6 +34,44 @@ type User struct {
 	db *sql.DB
 }
 
+// NewUserRepository creates new User repository.
+func (f *Factory) NewUserRepository() *User {
+	return &User{f.DB}
+}
+
+// NewFactory creates new pg factory.
+func NewFactory() (*Factory, error) {
+	var f Factory
+	migrations := "migrations"
+	path, err := initConfig()
+	if err != nil {
+		log.Fatalf("errors initializing configs: %s", err.Error())
+	}
+
+	f.setup()
+
+	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", f.host, f.user, f.dbname, f.password, f.dbPort)
+	log.Println(dbURI)
+
+	db, err := sql.Open(f.dialect, dbURI)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	err = goose.Up(db, path+"/"+migrations)
+	if err != nil {
+		return nil, err
+	}
+
+	f.DB = db
+	return &f, nil
+}
+
 func (u *util) setup() {
 
 	dialect := viper.GetString("db.dialect")
@@ -50,33 +90,21 @@ func (u *util) setup() {
 
 }
 
-// NewFactory creates new pg factory.
-func NewFactory() (*Factory, error) {
-	var f Factory
-	f.setup()
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", f.host, f.user, f.dbname, f.password, f.dbPort)
-	log.Println(dbURI)
+func initConfig() (string, error) {
 
-	db, err := sql.Open(f.dialect, dbURI)
+	env := ".env"
+	path, err := os.Getwd()
 	if err != nil {
-		return nil, err
+		return path, err
+	}
+	path = strings.SplitAfter(path, "hexsatisfaction")[0]
+	fmt.Println(path)
+	if err := godotenv.Load(path + "/" + env); err != nil {
+		log.Fatal("Error loading .env file")
 	}
 
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
+	viper.AddConfigPath(path)
+	viper.SetConfigName("config")
 
-	err = goose.Up(db, "./migrations")
-	if err != nil {
-		return nil, err
-	}
-
-	f.DB = db
-	return &f, nil
-}
-
-// NewUserRepository creates new User repository.
-func (f *Factory) NewUserRepository() *User {
-	return &User{f.DB}
+	return path, viper.ReadInConfig()
 }

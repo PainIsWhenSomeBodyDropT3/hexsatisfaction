@@ -10,6 +10,7 @@ import (
 )
 
 func connect2UserTestRepository() (*sql.DB, *User, error) {
+
 	f, err := NewFactory()
 	if err != nil {
 		return nil, nil, err
@@ -27,7 +28,7 @@ func TestUser_FindByCredentials(t *testing.T) {
 		expUser *model.User
 	}{
 		{
-			name: "user not found error",
+			name: "user not found errors",
 			user: model.User{
 				Login:    "not correct",
 				Password: "not correct",
@@ -82,7 +83,7 @@ func TestUser_IsExist(t *testing.T) {
 		expRes bool
 	}{
 		{
-			name:  "user not found error",
+			name:  "user not found errors",
 			login: "not correct",
 		},
 		{
@@ -121,7 +122,7 @@ func TestUser_FindByLogin(t *testing.T) {
 		user  *model.User
 	}{
 		{
-			name:  "user not found error",
+			name:  "user not found errors",
 			login: "not correct",
 			user:  &model.User{},
 		},

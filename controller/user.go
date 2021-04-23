@@ -1,8 +1,8 @@
 package controller
 
 import (
+	e "github.com/JesusG2000/hexsatisfaction/errors"
 	"github.com/JesusG2000/hexsatisfaction/model"
-	"github.com/pkg/errors"
 )
 
 // User is a user service.
@@ -23,7 +23,7 @@ func (u User) Create(req model.RegisterUserRequest) error {
 	}
 	err := u.UserDB.Create(user)
 	if err != nil {
-		return errors.Wrap(err, "couldn't create user")
+		return e.DatabaseError("couldn't create a user.", err)
 	}
 
 	return nil
@@ -33,7 +33,7 @@ func (u User) Create(req model.RegisterUserRequest) error {
 func (u User) FindByLogin(login string) (*model.User, error) {
 	user, err := u.UserDB.FindByLogin(login)
 	if err != nil {
-		return nil, err
+		return nil, e.DatabaseError("couldn't find a user by login.", err)
 	}
 
 	return user, nil
@@ -47,7 +47,7 @@ func (u User) FindByCredentials(req model.LoginUserRequest) (*model.User, error)
 	}
 	newUser, err := u.UserDB.FindByCredentials(user)
 	if err != nil {
-		return nil, err
+		return nil, e.DatabaseError("couldn't find a user by credentials.", err)
 	}
 
 	return newUser, nil
@@ -57,7 +57,7 @@ func (u User) FindByCredentials(req model.LoginUserRequest) (*model.User, error)
 func (u User) IsExist(login string) (bool, error) {
 	exist, err := u.UserDB.IsExist(login)
 	if err != nil {
-		return false, err
+		return false, e.DatabaseError("user not exist errors.", err)
 	}
 
 	return exist, nil

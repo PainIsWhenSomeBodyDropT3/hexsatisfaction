@@ -11,7 +11,6 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/controller"
 	"github.com/JesusG2000/hexsatisfaction/handler"
 	"github.com/JesusG2000/hexsatisfaction/repository/pg"
-	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -20,14 +19,6 @@ func main() {
 	ctx := context.Background()
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
-
-	if err := initConfig(); err != nil {
-		log.Fatalf("error initializing configs: %s", err.Error())
-	}
-
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	// Database
 	factory := getFactory()
@@ -62,10 +53,4 @@ func startService(ctx context.Context, coreService *http.Server) {
 	if err := coreService.ListenAndServe(); err != nil {
 		log.Fatal(ctx, "service shutdown", err.Error())
 	}
-}
-
-func initConfig() error {
-	viper.AddConfigPath(".")
-	viper.SetConfigName("config")
-	return viper.ReadInConfig()
 }
