@@ -7,6 +7,7 @@ import (
 	"os"
 
 	_ "github.com/lib/pq"
+	"github.com/pressly/goose"
 	"github.com/spf13/viper"
 )
 
@@ -66,32 +67,13 @@ func NewFactory() (*Factory, error) {
 		return nil, err
 	}
 
-	err = initTables(db)
+	err = goose.Up(db, "./migrations")
 	if err != nil {
 		return nil, err
 	}
 
 	f.DB = db
 	return &f, nil
-}
-
-func initTables(db *sql.DB) error {
-	_, err := db.Exec(`select * from  users`)
-	if err == nil {
-		_, err := db.Exec(`DROP table  users`)
-		if err != nil {
-			return err
-		}
-	}
-
-	_, err = db.Exec("CREATE TABLE users (" +
-		"id integer NOT NULL GENERATED ALWAYS AS IDENTITY (INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 )," +
-		"login text NOT NULL ," +
-		"password text NOT NULL )")
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // NewUserRepository creates new User repository.

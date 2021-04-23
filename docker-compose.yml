@@ -16,7 +16,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=18051965q
     ports:
-      - 5436:5432
+      - 5432:5432
 
 
 
