@@ -11,7 +11,7 @@ import (
 
 func connect2UserTestRepository() (*sql.DB, *User, error) {
 
-	f, err := NewFactory()
+	f, err := NewPgRepository()
 	if err != nil {
 		return nil, nil, err
 	}

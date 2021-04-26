@@ -6,7 +6,6 @@ import (
 	"net/http"
 )
 
-// May be better to create another repo for this module?
 type request interface {
 	Build(*http.Request) error
 	Validate() error

@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	m "github.com/JesusG2000/hexsatisfaction/controller/mock"
-	e "github.com/JesusG2000/hexsatisfaction/errors"
 	"github.com/JesusG2000/hexsatisfaction/go-test-util/format"
 	"github.com/JesusG2000/hexsatisfaction/model"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +28,7 @@ func TestUser_FindByLogin(t *testing.T) {
 				userDB.On("FindByLogin", login).
 					Return(nil, format.ErrMock)
 			},
-			expErr: e.DatabaseError("couldn't find a user by login.", format.ErrMock),
+			expErr: errors.Wrap(format.ErrMock, "couldn't find a user by login."),
 		},
 		{
 			name:  "All ok",
@@ -56,7 +56,11 @@ func TestUser_FindByLogin(t *testing.T) {
 				tc.fn(userDB)
 			}
 			user, err := service.FindByLogin(tc.login)
-			require.Equal(t, tc.expErr, err)
+			if err != nil {
+				require.EqualError(t, tc.expErr, err.Error())
+			} else {
+				require.Nil(t, err)
+			}
 			require.Equal(t, tc.expRes, user)
 		})
 	}
@@ -77,7 +81,7 @@ func TestUser_FindByCredentials(t *testing.T) {
 				userDB.On("FindByCredentials", mock.Anything).
 					Return(nil, format.ErrMock)
 			},
-			expErr: e.DatabaseError("couldn't find a user by credentials.", format.ErrMock),
+			expErr: errors.Wrap(format.ErrMock, "couldn't find a user by credentials."),
 		},
 		{
 			name: "All ok",
@@ -111,7 +115,11 @@ func TestUser_FindByCredentials(t *testing.T) {
 				tc.fn(userDB)
 			}
 			user, err := service.FindByCredentials(tc.user)
-			require.Equal(t, tc.expErr, err)
+			if err != nil {
+				require.EqualError(t, tc.expErr, err.Error())
+			} else {
+				require.Nil(t, err)
+			}
 			require.Equal(t, tc.expRes, user)
 		})
 	}
@@ -134,7 +142,7 @@ func TestUser_IsExist(t *testing.T) {
 				userDB.On("IsExist", login).
 					Return(false, format.ErrMock)
 			},
-			expErr: e.DatabaseError("user not exist errors.", format.ErrMock),
+			expErr: errors.Wrap(format.ErrMock, "user not exist errors."),
 		},
 		{
 			name:  "All ok",
@@ -154,7 +162,11 @@ func TestUser_IsExist(t *testing.T) {
 				tc.fn(userDB)
 			}
 			user, err := service.IsExist(tc.login)
-			require.Equal(t, tc.expErr, err)
+			if err != nil {
+				require.EqualError(t, tc.expErr, err.Error())
+			} else {
+				require.Nil(t, err)
+			}
 			require.Equal(t, tc.expRes, user)
 		})
 	}
@@ -173,7 +185,7 @@ func TestUser_Create(t *testing.T) {
 				userDB.On("Create", mock.Anything).
 					Return(format.ErrMock)
 			},
-			expErr: e.DatabaseError("couldn't create a user.", format.ErrMock),
+			expErr: errors.Wrap(format.ErrMock, "couldn't create a user."),
 		},
 		{
 			name: "All ok",
@@ -198,7 +210,11 @@ func TestUser_Create(t *testing.T) {
 				tc.fn(userDB)
 			}
 			err := service.Create(tc.req)
-			require.Equal(t, tc.expErr, err)
+			if err != nil {
+				require.EqualError(t, tc.expErr, err.Error())
+			} else {
+				require.Nil(t, err)
+			}
 		})
 	}
 }

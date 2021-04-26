@@ -54,18 +54,11 @@ func (req *loginRequest) Build(r *http.Request) error {
 func (req *loginRequest) Validate() error {
 	switch {
 	case req.Login == "":
-		{
-			return fmt.Errorf("login is required")
-		}
-
+		return fmt.Errorf("login is required")
 	case req.Password == "":
-		{
-			return fmt.Errorf("password is required")
-		}
+		return fmt.Errorf("password is required")
 	default:
-		{
-			return nil
-		}
+		return nil
 	}
 }
 
@@ -111,18 +104,11 @@ func (req *registerRequest) Build(r *http.Request) error {
 func (req *registerRequest) Validate() error {
 	switch {
 	case req.Login == "":
-		{
-			return fmt.Errorf("login is required")
-		}
-
+		return fmt.Errorf("login is required")
 	case req.Password == "":
-		{
-			return fmt.Errorf("password is required")
-		}
+		return fmt.Errorf("password is required")
 	default:
-		{
-			return nil
-		}
+		return nil
 	}
 }
 

@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose"
@@ -17,13 +19,13 @@ type dbParam struct {
 	dialect  string
 	host     string
 	user     string
-	dbname   string
+	name     string
 	password string
-	dbPort   string
+	port     string
 }
 
-// Factory represents the pg factory.
-type Factory struct {
+// Repository represents the pg repository.
+type Repository struct {
 	dbParam
 	*sql.DB
 	User
@@ -35,13 +37,13 @@ type User struct {
 }
 
 // NewUserRepository creates new User repository.
-func (f *Factory) NewUserRepository() *User {
+func (f *Repository) NewUserRepository() *User {
 	return &User{f.DB}
 }
 
-// NewFactory creates new pg factory.
-func NewFactory() (*Factory, error) {
-	var f Factory
+// NewPgRepository creates new pg repository.
+func NewPgRepository() (*Repository, error) {
+	var f Repository
 	migrations := "migrations"
 	path, err := initConfig()
 	if err != nil {
@@ -50,7 +52,7 @@ func NewFactory() (*Factory, error) {
 
 	f.setup()
 
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", f.host, f.user, f.dbname, f.password, f.dbPort)
+	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", f.host, f.user, f.name, f.password, f.port)
 	log.Println(dbURI)
 
 	db, err := sql.Open(f.dialect, dbURI)
@@ -77,16 +79,16 @@ func (u *dbParam) setup() {
 	dialect := viper.GetString("db.dialect")
 	host := viper.GetString("db.host")
 	user := viper.GetString("db.username")
-	dbname := viper.GetString("db.dbname")
-	dbPort := viper.GetString("db.port")
+	name := viper.GetString("db.name")
+	port := viper.GetString("db.port")
 	password := os.Getenv("DB_PASSWORD")
 
 	u.dialect = dialect
 	u.host = host
 	u.user = user
-	u.dbname = dbname
+	u.name = name
 	u.password = password
-	u.dbPort = dbPort
+	u.port = port
 
 }
 
@@ -98,7 +100,6 @@ func initConfig() (string, error) {
 		return path, err
 	}
 	path = strings.SplitAfter(path, "hexsatisfaction")[0]
-	fmt.Println(path)
 	if err := godotenv.Load(path + "/" + env); err != nil {
 		log.Fatal("Error loading .env file")
 	}

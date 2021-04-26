@@ -6,7 +6,7 @@ import (
 
 const userPath = "/user"
 
-// API represents structure with APIs.
+// API represents a structure with APIs.
 type API struct {
 	*mux.Router
 }
