@@ -23,7 +23,7 @@ func (u User) Create(req model.RegisterUserRequest) error {
 	}
 	err := u.UserDB.Create(user)
 	if err != nil {
-		return errors.Wrap(err, "couldn't create a user.")
+		return errors.Wrap(err, "couldn't create a user")
 	}
 
 	return nil
@@ -33,7 +33,7 @@ func (u User) Create(req model.RegisterUserRequest) error {
 func (u User) FindByLogin(login string) (*model.User, error) {
 	user, err := u.UserDB.FindByLogin(login)
 	if err != nil {
-		return nil, errors.Wrap(err, "couldn't find a user by login.")
+		return nil, errors.Wrap(err, "couldn't find a user by login")
 	}
 
 	return user, nil
@@ -47,7 +47,7 @@ func (u User) FindByCredentials(req model.LoginUserRequest) (*model.User, error)
 	}
 	newUser, err := u.UserDB.FindByCredentials(user)
 	if err != nil {
-		return nil, errors.Wrap(err, "couldn't find a user by credentials.")
+		return nil, errors.Wrap(err, "couldn't find a user by credentials")
 	}
 
 	return newUser, nil
@@ -57,7 +57,7 @@ func (u User) FindByCredentials(req model.LoginUserRequest) (*model.User, error)
 func (u User) IsExist(login string) (bool, error) {
 	exist, err := u.UserDB.IsExist(login)
 	if err != nil {
-		return false, errors.Wrap(err, "user not exist errors.")
+		return false, errors.Wrap(err, "user not exist errors")
 	}
 
 	return exist, nil

@@ -28,7 +28,7 @@ func TestUser_FindByLogin(t *testing.T) {
 				userDB.On("FindByLogin", login).
 					Return(nil, format.ErrMock)
 			},
-			expErr: errors.Wrap(format.ErrMock, "couldn't find a user by login."),
+			expErr: errors.Wrap(format.ErrMock, "couldn't find a user by login"),
 		},
 		{
 			name:  "All ok",
@@ -81,7 +81,7 @@ func TestUser_FindByCredentials(t *testing.T) {
 				userDB.On("FindByCredentials", mock.Anything).
 					Return(nil, format.ErrMock)
 			},
-			expErr: errors.Wrap(format.ErrMock, "couldn't find a user by credentials."),
+			expErr: errors.Wrap(format.ErrMock, "couldn't find a user by credentials"),
 		},
 		{
 			name: "All ok",
@@ -142,7 +142,7 @@ func TestUser_IsExist(t *testing.T) {
 				userDB.On("IsExist", login).
 					Return(false, format.ErrMock)
 			},
-			expErr: errors.Wrap(format.ErrMock, "user not exist errors."),
+			expErr: errors.Wrap(format.ErrMock, "user not exist errors"),
 		},
 		{
 			name:  "All ok",
@@ -185,7 +185,7 @@ func TestUser_Create(t *testing.T) {
 				userDB.On("Create", mock.Anything).
 					Return(format.ErrMock)
 			},
-			expErr: errors.Wrap(format.ErrMock, "couldn't create a user."),
+			expErr: errors.Wrap(format.ErrMock, "couldn't create a user"),
 		},
 		{
 			name: "All ok",
