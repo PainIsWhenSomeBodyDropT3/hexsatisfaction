@@ -9,7 +9,6 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"github.com/pressly/goose"
 	"github.com/spf13/viper"
 )
 
@@ -42,8 +41,8 @@ func (f *Repository) NewUserRepository() *User {
 // NewPgRepository creates new pg repository.
 func NewPgRepository() (*Repository, error) {
 	var f Repository
-	migrations := "migrations"
-	path, err := initConfig()
+	//migrations := "migrations"
+	_, err := initConfig()
 	if err != nil {
 		log.Fatalf("errors initializing configs: %s", err.Error())
 	}
@@ -63,10 +62,10 @@ func NewPgRepository() (*Repository, error) {
 		return nil, err
 	}
 
-	err = goose.Up(db, path+"/"+migrations)
+	/*err = goose.Up(db, path+"/"+migrations)
 	if err != nil {
 		return nil, err
-	}
+	}*/
 
 	f.DB = db
 	return &f, nil

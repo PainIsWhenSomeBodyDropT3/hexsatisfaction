@@ -21,9 +21,9 @@ func main() {
 	signal.Notify(stop, os.Interrupt)
 
 	// Database
-	factory := getPgRepository()
+	pgRepository := PgRepository()
 
-	userDb := factory.NewUserRepository()
+	userDb := pgRepository.NewUserRepository()
 
 	// Services
 	userService := controller.NewUser(userDb)
@@ -41,7 +41,7 @@ func main() {
 	log.Printf("shutting down server...")
 }
 
-func getPgRepository() *pg.Repository {
+func PgRepository() *pg.Repository {
 	f, err := pg.NewPgRepository()
 	if err != nil {
 		log.Fatal(err)

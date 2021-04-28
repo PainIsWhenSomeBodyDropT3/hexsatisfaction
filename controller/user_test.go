@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	m "github.com/JesusG2000/hexsatisfaction/controller/mock"
-	"github.com/JesusG2000/hexsatisfaction/go-test-util/format"
 	"github.com/JesusG2000/hexsatisfaction/model"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/mock"
@@ -26,9 +25,9 @@ func TestUser_FindByLogin(t *testing.T) {
 			login: login,
 			fn: func(userDB *m.UserDB) {
 				userDB.On("FindByLogin", login).
-					Return(nil, format.ErrMock)
+					Return(nil, errors.New(""))
 			},
-			expErr: errors.Wrap(format.ErrMock, "couldn't find a user by login"),
+			expErr: errors.Wrap(errors.New(""), "couldn't find a user by login"),
 		},
 		{
 			name:  "All ok",
@@ -79,9 +78,9 @@ func TestUser_FindByCredentials(t *testing.T) {
 			name: "FindByCredentials errors",
 			fn: func(userDB *m.UserDB) {
 				userDB.On("FindByCredentials", mock.Anything).
-					Return(nil, format.ErrMock)
+					Return(nil, errors.New(""))
 			},
-			expErr: errors.Wrap(format.ErrMock, "couldn't find a user by credentials"),
+			expErr: errors.Wrap(errors.New(""), "couldn't find a user by credentials"),
 		},
 		{
 			name: "All ok",
@@ -140,9 +139,9 @@ func TestUser_IsExist(t *testing.T) {
 			login: login,
 			fn: func(userDB *m.UserDB) {
 				userDB.On("IsExist", login).
-					Return(false, format.ErrMock)
+					Return(false, errors.New(""))
 			},
-			expErr: errors.Wrap(format.ErrMock, "user not exist errors"),
+			expErr: errors.Wrap(errors.New(""), "couldn't check user existence"),
 		},
 		{
 			name:  "All ok",
@@ -183,9 +182,9 @@ func TestUser_Create(t *testing.T) {
 			name: "Create errors",
 			fn: func(userDB *m.UserDB) {
 				userDB.On("Create", mock.Anything).
-					Return(format.ErrMock)
+					Return(errors.New(""))
 			},
-			expErr: errors.Wrap(format.ErrMock, "couldn't create a user"),
+			expErr: errors.Wrap(errors.New(""), "couldn't create a user"),
 		},
 		{
 			name: "All ok",

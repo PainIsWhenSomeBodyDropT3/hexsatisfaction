@@ -7,7 +7,7 @@ import (
 
 // User is a user service.
 type User struct {
-	UserDB UserDB
+	UserDB
 }
 
 // NewUser is a User service constructor.
@@ -57,7 +57,7 @@ func (u User) FindByCredentials(req model.LoginUserRequest) (*model.User, error)
 func (u User) IsExist(login string) (bool, error) {
 	exist, err := u.UserDB.IsExist(login)
 	if err != nil {
-		return false, errors.Wrap(err, "user not exist errors")
+		return false, errors.Wrap(err, "couldn't check user existence")
 	}
 
 	return exist, nil
