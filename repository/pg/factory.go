@@ -41,8 +41,7 @@ func (f *Repository) NewUserRepository() *User {
 // NewPgRepository creates new pg repository.
 func NewPgRepository() (*Repository, error) {
 	var f Repository
-	//migrations := "migrations"
-	_, err := initConfig()
+	err := initConfig()
 	if err != nil {
 		log.Fatalf("errors initializing configs: %s", err.Error())
 	}
@@ -61,11 +60,6 @@ func NewPgRepository() (*Repository, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	/*err = goose.Up(db, path+"/"+migrations)
-	if err != nil {
-		return nil, err
-	}*/
 
 	f.DB = db
 	return &f, nil
@@ -89,12 +83,12 @@ func (u *dbParam) setup() {
 
 }
 
-func initConfig() (string, error) {
+func initConfig() error {
 
 	env := ".env"
 	path, err := os.Getwd()
 	if err != nil {
-		return path, err
+		return err
 	}
 	path = strings.SplitAfter(path, "hexsatisfaction")[0]
 	if err := godotenv.Load(path + "/" + env); err != nil {
@@ -104,5 +98,5 @@ func initConfig() (string, error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigName("config")
 
-	return path, viper.ReadInConfig()
+	return viper.ReadInConfig()
 }
