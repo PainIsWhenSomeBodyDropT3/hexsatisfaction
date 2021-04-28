@@ -2,17 +2,18 @@ package controller
 
 import (
 	"github.com/JesusG2000/hexsatisfaction/model"
+	"github.com/JesusG2000/hexsatisfaction/repository"
 	"github.com/pkg/errors"
 )
 
 // User is a user service.
 type User struct {
-	UserDB
+	repository.UserRepo
 }
 
 // NewUser is a User service constructor.
-func NewUser(userDB UserDB) *User {
-	return &User{userDB}
+func NewUser(userRepo repository.UserRepo) *User {
+	return &User{userRepo}
 }
 
 // Create creates new user.
@@ -21,7 +22,7 @@ func (u User) Create(req model.RegisterUserRequest) error {
 		Login:    req.Login,
 		Password: req.Password,
 	}
-	err := u.UserDB.Create(user)
+	err := u.UserRepo.Create(user)
 	if err != nil {
 		return errors.Wrap(err, "couldn't create a user")
 	}
@@ -31,7 +32,7 @@ func (u User) Create(req model.RegisterUserRequest) error {
 
 // FindByLogin finds the user by login.
 func (u User) FindByLogin(login string) (*model.User, error) {
-	user, err := u.UserDB.FindByLogin(login)
+	user, err := u.UserRepo.FindByLogin(login)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find a user by login")
 	}
@@ -45,7 +46,7 @@ func (u User) FindByCredentials(req model.LoginUserRequest) (*model.User, error)
 		Login:    req.Login,
 		Password: req.Password,
 	}
-	newUser, err := u.UserDB.FindByCredentials(user)
+	newUser, err := u.UserRepo.FindByCredentials(user)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find a user by credentials")
 	}
@@ -55,7 +56,7 @@ func (u User) FindByCredentials(req model.LoginUserRequest) (*model.User, error)
 
 // IsExist checks if the user exists.
 func (u User) IsExist(login string) (bool, error) {
-	exist, err := u.UserDB.IsExist(login)
+	exist, err := u.UserRepo.IsExist(login)
 	if err != nil {
 		return false, errors.Wrap(err, "couldn't check user existence")
 	}
