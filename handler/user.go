@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/JesusG2000/hexsatisfaction/jwt"
 	"github.com/JesusG2000/hexsatisfaction/middleware"
 	"github.com/JesusG2000/hexsatisfaction/model"
 	"github.com/gorilla/mux"
@@ -12,15 +13,17 @@ import (
 
 type userRouter struct {
 	*mux.Router
-	service UserService
+	service      UserService
+	tokenManager jwt.TokenManager
 }
 
-func newUser(userService UserService) userRouter {
+func newUser(userService UserService, tokenManager *jwt.Manager) userRouter {
 	router := mux.NewRouter().PathPrefix(userPath).Subrouter()
 
 	handler := userRouter{
 		router,
 		userService,
+		tokenManager,
 	}
 
 	router.Path("/login").
@@ -69,19 +72,18 @@ func (u *userRouter) loginUser(w http.ResponseWriter, r *http.Request) {
 		middleware.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
-
-	user, err := u.service.FindByCredentials(req.LoginUserRequest)
+	token, err := u.service.FindByCredentials(req.LoginUserRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	if user.ID == 0 {
+	if len(token) == 0 {
 		middleware.Empty(w, http.StatusNotFound)
 		return
 	}
 
-	middleware.JSONReturn(w, http.StatusOK, user)
+	middleware.JSONReturn(w, http.StatusOK, token)
 
 }
 

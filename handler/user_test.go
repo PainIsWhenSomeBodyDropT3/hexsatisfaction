@@ -9,7 +9,7 @@ import (
 
 	m "github.com/JesusG2000/hexsatisfaction/handler/mock"
 	"github.com/JesusG2000/hexsatisfaction/model"
-	"github.com/JesusG2000/hexsatisfaction/model/dto"
+	test "github.com/JesusG2000/hexsatisfaction/test_util"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -17,7 +17,10 @@ import (
 const slash = "/"
 
 func TestUser_Login(t *testing.T) {
-	id := 23
+	api, err := test.InitTest4Mock()
+	require.NoError(t, err)
+	id := 15
+	token, err := api.Manager.NewJWT(string(rune(id)))
 	tt := []struct {
 		name     string
 		path     string
@@ -26,7 +29,7 @@ func TestUser_Login(t *testing.T) {
 		isOkRes  bool
 		fn       func(userService *m.UserService)
 		expCode  int
-		expBody  model.User
+		expBody  string
 	}{
 		{
 			name:    "bad body",
@@ -41,7 +44,7 @@ func TestUser_Login(t *testing.T) {
 			isOkBody: true,
 			fn: func(userService *m.UserService) {
 				userService.On("FindByCredentials", mock.Anything).
-					Return(&model.User{}, nil)
+					Return("", nil)
 			},
 			expCode: http.StatusNotFound,
 		},
@@ -53,28 +56,18 @@ func TestUser_Login(t *testing.T) {
 			isOkRes:  true,
 			fn: func(userService *m.UserService) {
 				userService.On("FindByCredentials", mock.Anything).
-					Return(&model.User{
-						ID:       id,
-						Login:    "test",
-						Password: "test",
-						RoleID:   dto.USER,
-					}, nil)
+					Return(token, nil)
 			},
 			expCode: http.StatusOK,
-			expBody: model.User{
-				ID:       id,
-				Login:    "test",
-				Password: "test",
-				RoleID:   dto.USER,
-			},
+			expBody: token,
 		},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			var user model.User
+			var token string
 			var userLogin model.LoginUserRequest
 			userService := new(m.UserService)
-			service := newUser(userService)
+			service := newUser(userService, api.Manager)
 			if tc.fn != nil {
 				tc.fn(userService)
 			}
@@ -96,15 +89,17 @@ func TestUser_Login(t *testing.T) {
 			require.Equal(t, tc.expCode, res.Code)
 
 			if tc.isOkBody && tc.isOkRes {
-				err := json.NewDecoder(res.Body).Decode(&user)
+				err := json.NewDecoder(res.Body).Decode(&token)
 				require.NoError(t, err)
 			}
-			require.Equal(t, tc.expBody, user)
+			require.Equal(t, tc.expBody, token)
 		})
 	}
 }
 
 func TestUser_Registration(t *testing.T) {
+	api, err := test.InitTest4Mock()
+	require.NoError(t, err)
 	tt := []struct {
 		name     string
 		path     string
@@ -156,7 +151,7 @@ func TestUser_Registration(t *testing.T) {
 			var userRes string
 			var userLogin model.RegisterUserRequest
 			userService := new(m.UserService)
-			service := newUser(userService)
+			service := newUser(userService, api.Manager)
 			if tc.fn != nil {
 				tc.fn(userService)
 			}

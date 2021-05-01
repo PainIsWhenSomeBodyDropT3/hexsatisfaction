@@ -6,12 +6,15 @@ import (
 	m "github.com/JesusG2000/hexsatisfaction/controller/mock"
 	"github.com/JesusG2000/hexsatisfaction/model"
 	"github.com/JesusG2000/hexsatisfaction/model/dto"
+	test "github.com/JesusG2000/hexsatisfaction/test_util"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
 func TestUser_FindByLogin(t *testing.T) {
+	api, err := test.InitTest4Mock()
+	require.NoError(t, err)
 	id := 15
 	login := "test"
 	tt := []struct {
@@ -53,7 +56,7 @@ func TestUser_FindByLogin(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			userDB := new(m.UserDB)
-			service := NewUser(userDB)
+			service := NewUser(userDB, api.Manager)
 			if tc.fn != nil {
 				tc.fn(userDB)
 			}
@@ -69,19 +72,23 @@ func TestUser_FindByLogin(t *testing.T) {
 }
 
 func TestUser_FindByCredentials(t *testing.T) {
+	api, err := test.InitTest4Mock()
+	require.NoError(t, err)
 	id := 15
+	token, err := api.Manager.NewJWT(string(rune(id)))
+	require.NoError(t, err)
 	tt := []struct {
 		name   string
 		user   model.LoginUserRequest
 		fn     func(userDB *m.UserDB)
-		expRes *model.User
+		expRes string
 		expErr error
 	}{
 		{
 			name: "FindByCredentials errors",
 			fn: func(userDB *m.UserDB) {
 				userDB.On("FindByCredentials", mock.Anything).
-					Return(nil, errors.New(""))
+					Return(&model.User{}, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find a user by credentials"),
 		},
@@ -102,19 +109,15 @@ func TestUser_FindByCredentials(t *testing.T) {
 						Password: "test",
 						RoleID:   dto.USER,
 					}, nil)
+
 			},
-			expRes: &model.User{
-				ID:       id,
-				Login:    "test",
-				Password: "test",
-				RoleID:   dto.USER,
-			},
+			expRes: token,
 		},
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			userDB := new(m.UserDB)
-			service := NewUser(userDB)
+			service := NewUser(userDB, api.Manager)
 			if tc.fn != nil {
 				tc.fn(userDB)
 			}
@@ -130,6 +133,8 @@ func TestUser_FindByCredentials(t *testing.T) {
 }
 
 func TestUser_IsExist(t *testing.T) {
+	api, err := test.InitTest4Mock()
+	require.NoError(t, err)
 	login := "test"
 	tt := []struct {
 		name   string
@@ -161,7 +166,7 @@ func TestUser_IsExist(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			userDB := new(m.UserDB)
-			service := NewUser(userDB)
+			service := NewUser(userDB, api.Manager)
 			if tc.fn != nil {
 				tc.fn(userDB)
 			}
@@ -177,6 +182,8 @@ func TestUser_IsExist(t *testing.T) {
 }
 
 func TestUser_Create(t *testing.T) {
+	api, err := test.InitTest4Mock()
+	require.NoError(t, err)
 	tt := []struct {
 		name   string
 		req    model.RegisterUserRequest
@@ -209,7 +216,7 @@ func TestUser_Create(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			userDB := new(m.UserDB)
-			service := NewUser(userDB)
+			service := NewUser(userDB, api.Manager)
 			if tc.fn != nil {
 				tc.fn(userDB)
 			}

@@ -10,6 +10,7 @@ import (
 
 	"github.com/JesusG2000/hexsatisfaction/controller"
 	"github.com/JesusG2000/hexsatisfaction/handler"
+	"github.com/JesusG2000/hexsatisfaction/jwt"
 	"github.com/JesusG2000/hexsatisfaction/repository/pg"
 	"github.com/spf13/viper"
 )
@@ -23,12 +24,15 @@ func main() {
 	// Database
 	pgRepository := PgRepository()
 
+	//JWT
+	tokenManager := JWTManager()
+
 	userDb := pgRepository.NewUserRepository()
 
 	// Services
-	userService := controller.NewUser(userDb)
+	userService := controller.NewUser(userDb, tokenManager)
 
-	router := handler.NewRouter(userService)
+	router := handler.NewRouter(userService, tokenManager)
 
 	coreService := &http.Server{
 		Addr:    fmt.Sprintf(":%s", viper.GetString("port")),
@@ -47,6 +51,15 @@ func PgRepository() *pg.Repository {
 		log.Fatal(err)
 	}
 	return f
+}
+
+func JWTManager() *jwt.Manager {
+	secret := viper.GetString("auth.secret")
+	m, err := jwt.NewManager(secret)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return m
 }
 
 func startService(ctx context.Context, coreService *http.Server) {

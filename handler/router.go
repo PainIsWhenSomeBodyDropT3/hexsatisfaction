@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/JesusG2000/hexsatisfaction/jwt"
 	"github.com/gorilla/mux"
 )
 
@@ -12,11 +13,11 @@ type API struct {
 }
 
 // NewRouter creates and serves endpoints of API.
-func NewRouter(userService UserService) *API {
+func NewRouter(userService UserService, tokenManager *jwt.Manager) *API {
 	api := API{
 		mux.NewRouter(),
 	}
-	api.PathPrefix(userPath).Handler(newUser(userService))
+	api.PathPrefix(userPath).Handler(newUser(userService, tokenManager))
 
 	return &api
 }
