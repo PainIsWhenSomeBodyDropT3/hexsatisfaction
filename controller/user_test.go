@@ -5,6 +5,7 @@ import (
 
 	m "github.com/JesusG2000/hexsatisfaction/controller/mock"
 	"github.com/JesusG2000/hexsatisfaction/model"
+	"github.com/JesusG2000/hexsatisfaction/model/dto"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -38,12 +39,14 @@ func TestUser_FindByLogin(t *testing.T) {
 						ID:       id,
 						Login:    login,
 						Password: login,
+						RoleID:   dto.USER,
 					}, nil)
 			},
 			expRes: &model.User{
 				ID:       id,
 				Login:    login,
 				Password: login,
+				RoleID:   dto.USER,
 			},
 		},
 	}
@@ -97,12 +100,14 @@ func TestUser_FindByCredentials(t *testing.T) {
 						ID:       id,
 						Login:    "test",
 						Password: "test",
+						RoleID:   dto.USER,
 					}, nil)
 			},
 			expRes: &model.User{
 				ID:       id,
 				Login:    "test",
 				Password: "test",
+				RoleID:   dto.USER,
 			},
 		},
 	}

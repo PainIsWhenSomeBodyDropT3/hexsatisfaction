@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/JesusG2000/hexsatisfaction/model"
+	"github.com/JesusG2000/hexsatisfaction/model/dto"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/require"
 )
@@ -45,6 +46,7 @@ func TestUser_FindByCredentials(t *testing.T) {
 			expUser: &model.User{
 				Login:    "test",
 				Password: "test",
+				RoleID:   dto.USER,
 			},
 		},
 	}
@@ -133,6 +135,7 @@ func TestUser_FindByLogin(t *testing.T) {
 			user: &model.User{
 				Login:    "test",
 				Password: "test",
+				RoleID:   dto.USER,
 			},
 		},
 	}

@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS users
     roleID   integer NOT NULL REFERENCES user_role (id)
 );
 
+INSERT INTO users (login,password,roleID) values ('ADMIN','ADMIN',1);
+
 CREATE TABLE IF NOT EXISTS purchase
 (
     id       integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),

@@ -4,11 +4,12 @@ import (
 	"strings"
 
 	"github.com/JesusG2000/hexsatisfaction/model"
+	"github.com/JesusG2000/hexsatisfaction/model/dto"
 )
 
 // Create saves user.
 func (u User) Create(user model.User) error {
-	_, err := u.db.Exec("INSERT INTO users (login , password) VALUES ($1,$2)", user.Login, user.Password)
+	_, err := u.db.Exec("INSERT INTO users (login , password,roleID) VALUES ($1,$2,$3)", user.Login, user.Password, dto.USER)
 
 	return err
 }
@@ -22,7 +23,7 @@ func (u User) FindByLogin(login string) (*model.User, error) {
 	}
 
 	if rows.Next() {
-		err = rows.Scan(&user.ID, &user.Login, &user.Password)
+		err = rows.Scan(&user.ID, &user.Login, &user.Password, &user.RoleID)
 		if err != nil {
 			return nil, err
 		}
@@ -40,7 +41,7 @@ func (u User) FindByCredentials(user model.User) (*model.User, error) {
 	}
 
 	if rows.Next() {
-		err = rows.Scan(&newUser.ID, &newUser.Login, &newUser.Password)
+		err = rows.Scan(&newUser.ID, &newUser.Login, &newUser.Password, &newUser.RoleID)
 		if err != nil {
 			return nil, err
 		}

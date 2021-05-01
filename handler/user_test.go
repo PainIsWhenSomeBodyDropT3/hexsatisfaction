@@ -9,6 +9,7 @@ import (
 
 	m "github.com/JesusG2000/hexsatisfaction/handler/mock"
 	"github.com/JesusG2000/hexsatisfaction/model"
+	"github.com/JesusG2000/hexsatisfaction/model/dto"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -56,6 +57,7 @@ func TestUser_Login(t *testing.T) {
 						ID:       id,
 						Login:    "test",
 						Password: "test",
+						RoleID:   dto.USER,
 					}, nil)
 			},
 			expCode: http.StatusOK,
@@ -63,6 +65,7 @@ func TestUser_Login(t *testing.T) {
 				ID:       id,
 				Login:    "test",
 				Password: "test",
+				RoleID:   dto.USER,
 			},
 		},
 	}
