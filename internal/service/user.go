@@ -43,7 +43,7 @@ func (u UserService) FindByLogin(login string) (*model.User, error) {
 	return user, nil
 }
 
-// FindByCredentials finds the user by credentials and return's jwt-token.
+// FindByCredentials finds the user by credentials and returns jwt-token.
 func (u UserService) FindByCredentials(req model.LoginUserRequest) (string, error) {
 	user := model.User{
 		Login:    req.Login,
