@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	"github.com/JesusG2000/hexsatisfaction/internal/repository"
+	"github.com/pkg/errors"
 )
 
 // UserRoleService is a user role service.
@@ -19,7 +20,7 @@ func NewUserRoleService(userRoleRepo repository.UserRole) *UserRoleService {
 func (u UserRoleService) FindAllUser() ([]model.User, error) {
 	users, err := u.UserRole.FindAllUser()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "couldn't find users")
 	}
 	return users, nil
 }

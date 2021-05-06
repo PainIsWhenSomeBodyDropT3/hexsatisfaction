@@ -1,33 +1,15 @@
 package repository
 
 import (
-	"database/sql"
-	"log"
 	"testing"
 
-	"github.com/JesusG2000/hexsatisfaction/internal/config"
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	"github.com/JesusG2000/hexsatisfaction/internal/model/dto"
-	"github.com/JesusG2000/hexsatisfaction/pkg/database/pg"
 	"github.com/stretchr/testify/require"
 )
 
-func connect2UserRoleTestRepository() (*sql.DB, *Repositories, error) {
-	const configPath = "config/main"
-	cfg, err := config.Init(configPath)
-	if err != nil {
-		log.Fatal("Init config error", err)
-	}
-	db, err := pg.NewPg(cfg.Pg)
-	if err != nil {
-		return nil, nil, err
-	}
-	repos := NewRepositories(db)
-	return db, repos, nil
-}
-
 func TestUserRole_FindAllUser(t *testing.T) {
-	db, repos, err := connect2UserRoleTestRepository()
+	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
 		name     string
