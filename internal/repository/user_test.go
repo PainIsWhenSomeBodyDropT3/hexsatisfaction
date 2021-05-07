@@ -155,28 +155,17 @@ func TestUser_FindByLogin(t *testing.T) {
 func TestUserRepo_Create(t *testing.T) {
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
-	id := 23
 	tt := []struct {
-		name  string
-		isOk  bool
-		user  model.User
-		expId int
+		name string
+		isOk bool
+		user model.User
 	}{
 		{
-			name: "create error",
-			user: model.User{
-				Login:    "test",
-				Password: "test",
-			},
-		},
-		{
 			name: "all ok",
-			isOk: true,
 			user: model.User{
 				Login:    "test",
 				Password: "test",
 			},
-			expId: id,
 		},
 	}
 
@@ -184,16 +173,11 @@ func TestUserRepo_Create(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM users")
 			require.NoError(t, err)
-
 			id, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
-			tc.expId = id
-
-			require.Equal(t, tc.expId, id)
-			if tc.isOk {
-				_, err := db.Exec("DELETE FROM users")
-				require.NoError(t, err)
-			}
+			require.NotZero(t, id)
+			_, err = db.Exec("DELETE FROM users")
+			require.NoError(t, err)
 		})
 	}
 }

@@ -14,15 +14,27 @@ func TestUserRole_FindAllUser(t *testing.T) {
 	tt := []struct {
 		name     string
 		isOk     bool
+		users    []model.User
 		expUsers []model.User
 	}{
 		{
-			name:     "user not found errors",
-			expUsers: nil,
+			name: "user not found errors",
 		},
 		{
 			name: "all ok",
 			isOk: true,
+			users: []model.User{
+				{
+					Login:    "test",
+					Password: "test",
+					RoleID:   dto.USER,
+				},
+				{
+					Login:    "test1",
+					Password: "test1",
+					RoleID:   dto.USER,
+				},
+			},
 			expUsers: []model.User{
 				{
 					Login:    "test",
@@ -43,20 +55,11 @@ func TestUserRole_FindAllUser(t *testing.T) {
 			_, err := db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 			if tc.isOk {
-				id1, err := repos.User.Create(model.User{
-					Login:    "test",
-					Password: "test",
-				})
-				require.NoError(t, err)
-				id2, err := repos.User.Create(model.User{
-					Login:    "test1",
-					Password: "test1",
-				})
-				require.NoError(t, err)
-
-				tc.expUsers[0].ID = id1
-				tc.expUsers[1].ID = id2
-
+				for i := range tc.users {
+					id, err := repos.User.Create(tc.users[i])
+					require.NoError(t, err)
+					tc.expUsers[i].ID = id
+				}
 			}
 			users, err := repos.UserRole.FindAllUser()
 			require.NoError(t, err)
