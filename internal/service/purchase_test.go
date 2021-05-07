@@ -115,7 +115,7 @@ func TestPurchaseService_FindById(t *testing.T) {
 	id := 23
 	tt := []struct {
 		name        string
-		req         model.FindByIdPurchaseRequest
+		req         model.IdPurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase *model.Purchase
 		expErr      error
@@ -130,7 +130,7 @@ func TestPurchaseService_FindById(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindByIdPurchaseRequest{
+			req: model.IdPurchaseRequest{
 				Id: id,
 			},
 			fn: func(purchase *m.Purchase) {
@@ -172,7 +172,7 @@ func TestPurchaseService_FindLastByUserId(t *testing.T) {
 	id := 23
 	tt := []struct {
 		name        string
-		req         model.FindLastByUserIdPurchaseRequest
+		req         model.UserIdPurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase *model.Purchase
 		expErr      error
@@ -187,7 +187,7 @@ func TestPurchaseService_FindLastByUserId(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindLastByUserIdPurchaseRequest{
+			req: model.UserIdPurchaseRequest{
 				Id: id,
 			},
 			fn: func(purchase *m.Purchase) {
@@ -229,7 +229,7 @@ func TestPurchaseService_FindAllByUserId(t *testing.T) {
 	id := 23
 	tt := []struct {
 		name        string
-		req         model.FindAllByUserIdPurchaseRequest
+		req         model.UserIdPurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase []model.Purchase
 		expErr      error
@@ -244,7 +244,7 @@ func TestPurchaseService_FindAllByUserId(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindAllByUserIdPurchaseRequest{
+			req: model.UserIdPurchaseRequest{
 				Id: id,
 			},
 			fn: func(purchase *m.Purchase) {
@@ -304,7 +304,7 @@ func TestPurchaseService_FindByUserIdAndPeriod(t *testing.T) {
 	end := time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local)
 	tt := []struct {
 		name        string
-		req         model.FindByUserIdAndPeriodPurchaseRequest
+		req         model.UserIdPeriodPurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase []model.Purchase
 		expErr      error
@@ -319,7 +319,7 @@ func TestPurchaseService_FindByUserIdAndPeriod(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindByUserIdAndPeriodPurchaseRequest{
+			req: model.UserIdPeriodPurchaseRequest{
 				Id:    id,
 				Start: start,
 				End:   end,
@@ -380,7 +380,7 @@ func TestPurchaseService_FindByUserIdAfterDate(t *testing.T) {
 	start := time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local)
 	tt := []struct {
 		name        string
-		req         model.FindByUserIdAfterDatePurchaseRequest
+		req         model.UserIdAfterDatePurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase []model.Purchase
 		expErr      error
@@ -395,7 +395,7 @@ func TestPurchaseService_FindByUserIdAfterDate(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindByUserIdAfterDatePurchaseRequest{
+			req: model.UserIdAfterDatePurchaseRequest{
 				Id:    id,
 				Start: start,
 			},
@@ -455,7 +455,7 @@ func TestPurchaseService_FindByUserIdBeforeDate(t *testing.T) {
 	end := time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local)
 	tt := []struct {
 		name        string
-		req         model.FindByUserIdBeforeDatePurchaseRequest
+		req         model.UserIdBeforeDatePurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase []model.Purchase
 		expErr      error
@@ -470,7 +470,7 @@ func TestPurchaseService_FindByUserIdBeforeDate(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindByUserIdBeforeDatePurchaseRequest{
+			req: model.UserIdBeforeDatePurchaseRequest{
 				Id:  id,
 				End: end,
 			},
@@ -530,7 +530,7 @@ func TestPurchaseService_FindByUserIdAndFileName(t *testing.T) {
 	name := "some name"
 	tt := []struct {
 		name        string
-		req         model.FindByUserIdAndFileNamePurchaseRequest
+		req         model.UserIdFileNamePurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase []model.Purchase
 		expErr      error
@@ -545,7 +545,7 @@ func TestPurchaseService_FindByUserIdAndFileName(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindByUserIdAndFileNamePurchaseRequest{
+			req: model.UserIdFileNamePurchaseRequest{
 				Id:       id,
 				FileName: name,
 			},
@@ -728,7 +728,7 @@ func TestPurchaseService_FindByPeriod(t *testing.T) {
 	end := time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local)
 	tt := []struct {
 		name        string
-		req         model.FindByPeriodPurchaseRequest
+		req         model.PeriodPurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase []model.Purchase
 		expErr      error
@@ -743,7 +743,7 @@ func TestPurchaseService_FindByPeriod(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindByPeriodPurchaseRequest{
+			req: model.PeriodPurchaseRequest{
 				Start: start,
 				End:   end,
 			},
@@ -803,7 +803,7 @@ func TestPurchaseService_FindAfterDate(t *testing.T) {
 	start := time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local)
 	tt := []struct {
 		name        string
-		req         model.FindAfterDatePurchaseRequest
+		req         model.AfterDatePurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase []model.Purchase
 		expErr      error
@@ -818,7 +818,7 @@ func TestPurchaseService_FindAfterDate(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindAfterDatePurchaseRequest{
+			req: model.AfterDatePurchaseRequest{
 				Start: start,
 			},
 			fn: func(purchase *m.Purchase) {
@@ -877,7 +877,7 @@ func TestPurchaseService_FindBeforeDate(t *testing.T) {
 	end := time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local)
 	tt := []struct {
 		name        string
-		req         model.FindBeforeDatePurchaseRequest
+		req         model.BeforeDatePurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase []model.Purchase
 		expErr      error
@@ -892,7 +892,7 @@ func TestPurchaseService_FindBeforeDate(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindBeforeDatePurchaseRequest{
+			req: model.BeforeDatePurchaseRequest{
 				End: end,
 			},
 			fn: func(purchase *m.Purchase) {
@@ -951,7 +951,7 @@ func TestPurchaseService_FindByFileName(t *testing.T) {
 	name := "some name"
 	tt := []struct {
 		name        string
-		req         model.FindByFileNamePurchaseRequest
+		req         model.FileNamePurchaseRequest
 		fn          func(purchase *m.Purchase)
 		expPurchase []model.Purchase
 		expErr      error
@@ -966,7 +966,7 @@ func TestPurchaseService_FindByFileName(t *testing.T) {
 		},
 		{
 			name: "All ok",
-			req: model.FindByFileNamePurchaseRequest{
+			req: model.FileNamePurchaseRequest{
 				FileName: name,
 			},
 			fn: func(purchase *m.Purchase) {

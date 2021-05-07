@@ -7,6 +7,7 @@ import (
 )
 
 const userPath = "/user"
+const purchasePath = "/purchase"
 
 // API represents a structure with APIs.
 type API struct {
@@ -19,6 +20,7 @@ func NewHandler(services *service.Services, tokenManager auth.TokenManager) *API
 		mux.NewRouter(),
 	}
 	api.PathPrefix(userPath).Handler(newUser(services, tokenManager))
+	api.PathPrefix(purchasePath).Handler(newPurchase(services, tokenManager))
 
 	return &api
 }

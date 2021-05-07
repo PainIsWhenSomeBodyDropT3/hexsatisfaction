@@ -26,69 +26,64 @@ type (
 		FileName string
 	}
 
+	// IdPurchaseRequest represents a request to find the purchase by id.
+	IdPurchaseRequest struct {
+		Id int
+	}
+
 	// DeletePurchaseRequest represents a request to delete purchase.
-	DeletePurchaseRequest struct {
+	DeletePurchaseRequest = struct {
 		Id int
 	}
 
-	// FindByIdPurchaseRequest represents a request to find the purchase by id.
-	FindByIdPurchaseRequest struct {
+	// UserIdPurchaseRequest represents a request to find last added purchase by user id.
+	UserIdPurchaseRequest = struct {
 		Id int
 	}
 
-	// FindLastByUserIdPurchaseRequest represents a request to find last added purchase by user id.
-	FindLastByUserIdPurchaseRequest struct {
-		Id int
-	}
-
-	// FindAllByUserIdPurchaseRequest represents a request to find all purchases by user id.
-	FindAllByUserIdPurchaseRequest struct {
-		Id int
-	}
-
-	// FindByUserIdAndPeriodPurchaseRequest represents a request to find all purchases by user id and date period.
-	FindByUserIdAndPeriodPurchaseRequest struct {
+	// UserIdPeriodPurchaseRequest represents a request to find all purchases by user id and date period.
+	UserIdPeriodPurchaseRequest struct {
 		Id    int
 		Start time.Time
 		End   time.Time
 	}
 
-	// FindByUserIdAfterDatePurchaseRequest represents a request to find all purchases by user id after date.
-	FindByUserIdAfterDatePurchaseRequest struct {
+	// UserIdAfterDatePurchaseRequest represents a request to find all purchases by user id after date.
+	UserIdAfterDatePurchaseRequest struct {
 		Id    int
 		Start time.Time
 	}
 
-	// FindByUserIdBeforeDatePurchaseRequest represents a request to find all purchases by user id before date.
-	FindByUserIdBeforeDatePurchaseRequest struct {
+	// UserIdBeforeDatePurchaseRequest represents a request to find all purchases by user id before date.
+	UserIdBeforeDatePurchaseRequest struct {
 		Id  int
 		End time.Time
 	}
 
-	// FindByUserIdAndFileNamePurchaseRequest represents a request to find all purchases by user id and file name.
-	FindByUserIdAndFileNamePurchaseRequest struct {
+	// UserIdFileNamePurchaseRequest represents a request to find all purchases by user id and file name.
+	UserIdFileNamePurchaseRequest struct {
 		Id       int
 		FileName string
 	}
 
-	// FindByPeriodPurchaseRequest represents a request to find all purchases by date period.
-	FindByPeriodPurchaseRequest struct {
+	// PeriodPurchaseRequest represents a request to find all purchases by date period.
+	PeriodPurchaseRequest struct {
 		Start time.Time
 		End   time.Time
 	}
 
-	// FindAfterDatePurchaseRequest represents a request to find all purchases after date.
-	FindAfterDatePurchaseRequest struct {
+	// AfterDatePurchaseRequest represents a request to find all purchases after date.
+	AfterDatePurchaseRequest struct {
 		Start time.Time
 	}
 
-	// FindBeforeDatePurchaseRequest represents a request to find all purchases before date.
-	FindBeforeDatePurchaseRequest struct {
+	// BeforeDatePurchaseRequest represents a request to find all purchases before date.
+	BeforeDatePurchaseRequest struct {
 		End time.Time
 	}
 
-	// FindByFileNamePurchaseRequest represents a request to find all purchases by file name.
-	FindByFileNamePurchaseRequest struct {
+	// FileNamePurchaseRequest represents a request to find all purchases by file name.
+	FileNamePurchaseRequest struct {
 		FileName string
 	}
 )

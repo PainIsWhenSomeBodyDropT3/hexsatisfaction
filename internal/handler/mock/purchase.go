@@ -55,11 +55,11 @@ func (_m *Purchase) Delete(request model.DeletePurchaseRequest) (int, error) {
 }
 
 // FindAfterDate provides a mock function with given fields: request
-func (_m *Purchase) FindAfterDate(request model.FindAfterDatePurchaseRequest) ([]model.Purchase, error) {
+func (_m *Purchase) FindAfterDate(request model.AfterDatePurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindAfterDatePurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.AfterDatePurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -68,7 +68,7 @@ func (_m *Purchase) FindAfterDate(request model.FindAfterDatePurchaseRequest) ([
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindAfterDatePurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.AfterDatePurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -101,11 +101,11 @@ func (_m *Purchase) FindAll() ([]model.Purchase, error) {
 }
 
 // FindAllByUserId provides a mock function with given fields: request
-func (_m *Purchase) FindAllByUserId(request model.FindAllByUserIdPurchaseRequest) ([]model.Purchase, error) {
+func (_m *Purchase) FindAllByUserId(request model.UserIdPurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindAllByUserIdPurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.UserIdPurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -114,7 +114,7 @@ func (_m *Purchase) FindAllByUserId(request model.FindAllByUserIdPurchaseRequest
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindAllByUserIdPurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.UserIdPurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -124,11 +124,11 @@ func (_m *Purchase) FindAllByUserId(request model.FindAllByUserIdPurchaseRequest
 }
 
 // FindBeforeDate provides a mock function with given fields: request
-func (_m *Purchase) FindBeforeDate(request model.FindBeforeDatePurchaseRequest) ([]model.Purchase, error) {
+func (_m *Purchase) FindBeforeDate(request model.BeforeDatePurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindBeforeDatePurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.BeforeDatePurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -137,7 +137,7 @@ func (_m *Purchase) FindBeforeDate(request model.FindBeforeDatePurchaseRequest) 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindBeforeDatePurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.BeforeDatePurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -147,11 +147,11 @@ func (_m *Purchase) FindBeforeDate(request model.FindBeforeDatePurchaseRequest) 
 }
 
 // FindByFileName provides a mock function with given fields: request
-func (_m *Purchase) FindByFileName(request model.FindByFileNamePurchaseRequest) ([]model.Purchase, error) {
+func (_m *Purchase) FindByFileName(request model.FileNamePurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindByFileNamePurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.FileNamePurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -160,7 +160,7 @@ func (_m *Purchase) FindByFileName(request model.FindByFileNamePurchaseRequest) 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindByFileNamePurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.FileNamePurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -170,11 +170,11 @@ func (_m *Purchase) FindByFileName(request model.FindByFileNamePurchaseRequest) 
 }
 
 // FindById provides a mock function with given fields: request
-func (_m *Purchase) FindById(request model.FindByIdPurchaseRequest) (*model.Purchase, error) {
+func (_m *Purchase) FindById(request model.IdPurchaseRequest) (*model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 *model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindByIdPurchaseRequest) *model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.IdPurchaseRequest) *model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -183,7 +183,7 @@ func (_m *Purchase) FindById(request model.FindByIdPurchaseRequest) (*model.Purc
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindByIdPurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.IdPurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -193,11 +193,11 @@ func (_m *Purchase) FindById(request model.FindByIdPurchaseRequest) (*model.Purc
 }
 
 // FindByPeriod provides a mock function with given fields: request
-func (_m *Purchase) FindByPeriod(request model.FindByPeriodPurchaseRequest) ([]model.Purchase, error) {
+func (_m *Purchase) FindByPeriod(request model.PeriodPurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindByPeriodPurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.PeriodPurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -206,7 +206,7 @@ func (_m *Purchase) FindByPeriod(request model.FindByPeriodPurchaseRequest) ([]m
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindByPeriodPurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.PeriodPurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -216,11 +216,11 @@ func (_m *Purchase) FindByPeriod(request model.FindByPeriodPurchaseRequest) ([]m
 }
 
 // FindByUserIdAfterDate provides a mock function with given fields: request
-func (_m *Purchase) FindByUserIdAfterDate(request model.FindByUserIdAfterDatePurchaseRequest) ([]model.Purchase, error) {
+func (_m *Purchase) FindByUserIdAfterDate(request model.UserIdAfterDatePurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindByUserIdAfterDatePurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.UserIdAfterDatePurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -229,7 +229,7 @@ func (_m *Purchase) FindByUserIdAfterDate(request model.FindByUserIdAfterDatePur
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindByUserIdAfterDatePurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.UserIdAfterDatePurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -239,11 +239,11 @@ func (_m *Purchase) FindByUserIdAfterDate(request model.FindByUserIdAfterDatePur
 }
 
 // FindByUserIdAndFileName provides a mock function with given fields: request
-func (_m *Purchase) FindByUserIdAndFileName(request model.FindByUserIdAndFileNamePurchaseRequest) ([]model.Purchase, error) {
+func (_m *Purchase) FindByUserIdAndFileName(request model.UserIdFileNamePurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindByUserIdAndFileNamePurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.UserIdFileNamePurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -252,7 +252,7 @@ func (_m *Purchase) FindByUserIdAndFileName(request model.FindByUserIdAndFileNam
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindByUserIdAndFileNamePurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.UserIdFileNamePurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -262,11 +262,11 @@ func (_m *Purchase) FindByUserIdAndFileName(request model.FindByUserIdAndFileNam
 }
 
 // FindByUserIdAndPeriod provides a mock function with given fields: request
-func (_m *Purchase) FindByUserIdAndPeriod(request model.FindByUserIdAndPeriodPurchaseRequest) ([]model.Purchase, error) {
+func (_m *Purchase) FindByUserIdAndPeriod(request model.UserIdPeriodPurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindByUserIdAndPeriodPurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.UserIdPeriodPurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -275,7 +275,7 @@ func (_m *Purchase) FindByUserIdAndPeriod(request model.FindByUserIdAndPeriodPur
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindByUserIdAndPeriodPurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.UserIdPeriodPurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -285,11 +285,11 @@ func (_m *Purchase) FindByUserIdAndPeriod(request model.FindByUserIdAndPeriodPur
 }
 
 // FindByUserIdBeforeDate provides a mock function with given fields: request
-func (_m *Purchase) FindByUserIdBeforeDate(request model.FindByUserIdBeforeDatePurchaseRequest) ([]model.Purchase, error) {
+func (_m *Purchase) FindByUserIdBeforeDate(request model.UserIdBeforeDatePurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindByUserIdBeforeDatePurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.UserIdBeforeDatePurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -298,7 +298,7 @@ func (_m *Purchase) FindByUserIdBeforeDate(request model.FindByUserIdBeforeDateP
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindByUserIdBeforeDatePurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.UserIdBeforeDatePurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -331,11 +331,11 @@ func (_m *Purchase) FindLast() (*model.Purchase, error) {
 }
 
 // FindLastByUserId provides a mock function with given fields: request
-func (_m *Purchase) FindLastByUserId(request model.FindLastByUserIdPurchaseRequest) (*model.Purchase, error) {
+func (_m *Purchase) FindLastByUserId(request model.UserIdPurchaseRequest) (*model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 *model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FindLastByUserIdPurchaseRequest) *model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.UserIdPurchaseRequest) *model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -344,7 +344,7 @@ func (_m *Purchase) FindLastByUserId(request model.FindLastByUserIdPurchaseReque
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FindLastByUserIdPurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.UserIdPurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
