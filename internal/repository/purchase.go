@@ -24,6 +24,7 @@ func (p PurchaseRepo) Create(purchase model.Purchase) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+
 	if rows.Next() {
 		err = rows.Scan(&creatId)
 		if err != nil {
