@@ -113,7 +113,7 @@ func (req *createPurchaseRequest) Validate() error {
 	switch {
 	case req.UserId < 1:
 		return fmt.Errorf("not correct user id")
-	case req.Date.String() == "":
+	case req.Date == time.Time{}:
 		return fmt.Errorf("date is required")
 	case req.FileName == "":
 		return fmt.Errorf("file name is required")
