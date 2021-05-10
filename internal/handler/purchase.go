@@ -770,7 +770,7 @@ func (p *purchaseRouter) findBeforeDatePurchase(w http.ResponseWriter, r *http.R
 	}
 
 	if len(purchases) == 0 {
-		middleware.Empty(w, http.StatusIMUsed)
+		middleware.Empty(w, http.StatusNotFound)
 		return
 	}
 
