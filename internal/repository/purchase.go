@@ -110,7 +110,7 @@ func (p PurchaseRepo) FindAllByUserId(id int) ([]model.Purchase, error) {
 }
 
 // FindByUserIdAndPeriod finds all Purchase by userId and date period.
-func (p PurchaseRepo) FindByUserIdAndPeriod(id int, start time.Time, end time.Time) ([]model.Purchase, error) {
+func (p PurchaseRepo) FindByUserIdAndPeriod(id int, start, end time.Time) ([]model.Purchase, error) {
 	var purchases []model.Purchase
 	var purchase model.Purchase
 	rows, err := p.db.Query("SELECT * FROM purchase WHERE userID=$1 AND date BETWEEN $2 AND $3", id, start, end)
@@ -232,7 +232,7 @@ func (p PurchaseRepo) FindAll() ([]model.Purchase, error) {
 }
 
 // FindByPeriod finds all Purchase by date period.
-func (p PurchaseRepo) FindByPeriod(start time.Time, end time.Time) ([]model.Purchase, error) {
+func (p PurchaseRepo) FindByPeriod(start, end time.Time) ([]model.Purchase, error) {
 	var purchases []model.Purchase
 	var purchase model.Purchase
 	rows, err := p.db.Query("SELECT * FROM purchase WHERE date BETWEEN $1 AND $2", start, end)

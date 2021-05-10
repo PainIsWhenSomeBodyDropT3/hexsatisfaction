@@ -100,10 +100,11 @@ type createPurchaseRequest struct {
 // Build builds request for create purchase.
 func (req *createPurchaseRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.CreatePurchaseRequest)
-	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
+
+	defer r.Body.Close()
 
 	return nil
 }
@@ -358,10 +359,11 @@ type userIdPeriodPurchaseRequest struct {
 // Build builds request to find all purchases by user id and date period.
 func (req *userIdPeriodPurchaseRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.UserIdPeriodPurchaseRequest)
-	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
+
+	defer r.Body.Close()
 
 	vId, ok := mux.Vars(r)["id"]
 	if !ok {
@@ -421,10 +423,11 @@ type userIdAfterDatePurchaseRequest struct {
 // Build builds request to find all purchases by user id after date.
 func (req *userIdAfterDatePurchaseRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.UserIdAfterDatePurchaseRequest)
-	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
+
+	defer r.Body.Close()
 
 	vId, ok := mux.Vars(r)["id"]
 	if !ok {
@@ -482,10 +485,11 @@ type userIdBeforeDatePurchaseRequest struct {
 // Build builds request to find all purchases by user id before date.
 func (req *userIdBeforeDatePurchaseRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.UserIdBeforeDatePurchaseRequest)
-	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
+
+	defer r.Body.Close()
 
 	vId, ok := mux.Vars(r)["id"]
 	if !ok {
@@ -634,10 +638,11 @@ type periodPurchaseRequest struct {
 // Build builds request to find all purchases by date period.
 func (req *periodPurchaseRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.PeriodPurchaseRequest)
-	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
+
+	defer r.Body.Close()
 
 	return nil
 }
@@ -683,10 +688,11 @@ type afterDatePurchaseRequest struct {
 // Build builds request to find all purchases after date.
 func (req *afterDatePurchaseRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.AfterDatePurchaseRequest)
-	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
+
+	defer r.Body.Close()
 
 	return nil
 }
@@ -730,10 +736,11 @@ type beforeDatePurchaseRequest struct {
 // Build builds request to find all purchases before date.
 func (req *beforeDatePurchaseRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.BeforeDatePurchaseRequest)
-	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
+
+	defer r.Body.Close()
 
 	return nil
 }

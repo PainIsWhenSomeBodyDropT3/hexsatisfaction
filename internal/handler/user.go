@@ -53,10 +53,11 @@ type loginRequest struct {
 // Build builds request for user login.
 func (req *loginRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.LoginUserRequest)
-	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
+
+	defer r.Body.Close()
 
 	return nil
 }
@@ -103,10 +104,11 @@ type registerRequest struct {
 // Build builds request for user registration.
 func (req *registerRequest) Build(r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&req.RegisterUserRequest)
-	defer r.Body.Close()
 	if err != nil {
 		return err
 	}
+
+	defer r.Body.Close()
 
 	return nil
 }

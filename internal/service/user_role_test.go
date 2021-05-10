@@ -11,38 +11,26 @@ import (
 )
 
 func TestUserRoleService_FindAllUser(t *testing.T) {
-	tt := []struct {
+	type test struct {
 		name   string
-		fn     func(userRole *m.UserRole)
+		fn     func(userRole *m.UserRole, data test)
 		expRes []model.User
 		expErr error
-	}{
+	}
+	tt := []test{
 		{
 			name: "FindAllUser errors",
-			fn: func(userRole *m.UserRole) {
+			fn: func(userRole *m.UserRole, data test) {
 				userRole.On("FindAllUser").
-					Return(nil, errors.New(""))
+					Return(data.expRes, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find users"),
 		},
 		{
 			name: "All ok",
-			fn: func(userRole *m.UserRole) {
+			fn: func(userRole *m.UserRole, data test) {
 				userRole.On("FindAllUser").
-					Return([]model.User{
-						{
-							ID:       1,
-							Login:    "test",
-							Password: "test",
-							RoleID:   dto.USER,
-						},
-						{
-							ID:       2,
-							Login:    "test1",
-							Password: "test1",
-							RoleID:   dto.USER,
-						},
-					}, nil)
+					Return(data.expRes, nil)
 			},
 			expRes: []model.User{
 				{
@@ -65,7 +53,7 @@ func TestUserRoleService_FindAllUser(t *testing.T) {
 			userRole := new(m.UserRole)
 			service := NewUserRoleService(userRole)
 			if tc.fn != nil {
-				tc.fn(userRole)
+				tc.fn(userRole, tc)
 			}
 			user, err := service.FindAllUser()
 			if err != nil {

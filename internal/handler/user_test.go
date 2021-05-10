@@ -17,12 +17,14 @@ import (
 )
 
 const (
+	user         = "user"
 	slash        = "/"
 	login        = "login"
 	registration = "registration"
 	api          = "api"
 	getAll       = "getAll"
 )
+const authorizationHeader = "Authorization"
 
 func TestUser_Login(t *testing.T) {
 	api, err := service.InitTest4Mock()
@@ -30,38 +32,33 @@ func TestUser_Login(t *testing.T) {
 	id := 15
 	token, err := api.TokenManager.NewJWT(strconv.Itoa(id))
 	tt := []struct {
-		name     string
-		path     string
-		method   string
-		isOkBody bool
-		isOkRes  bool
-		fn       func(userService *m.User)
-		expCode  int
-		expBody  string
+		name    string
+		path    string
+		method  string
+		isOkRes bool
+		fn      func(userService *m.User)
+		expCode int
+		expBody string
 	}{
+
 		{
-			name:    "bad body",
-			path:    userPath + slash + login,
-			method:  http.MethodPost,
-			expCode: http.StatusBadRequest,
-		},
-		{
-			name:     "no user",
-			path:     userPath + slash + login,
-			method:   http.MethodPost,
-			isOkBody: true,
+			name:   "no user",
+			path:   slash + user + slash + login,
+			method: http.MethodPost,
 			fn: func(userService *m.User) {
-				userService.On("FindByCredentials", mock.Anything).
+				userService.On("FindByCredentials", model.LoginUserRequest{
+					Login:    "test",
+					Password: "test",
+				}).
 					Return("", nil)
 			},
 			expCode: http.StatusNotFound,
 		},
 		{
-			name:     "all ok",
-			path:     userPath + slash + login,
-			method:   http.MethodPost,
-			isOkBody: true,
-			isOkRes:  true,
+			name:    "all ok",
+			path:    slash + user + slash + login,
+			method:  http.MethodPost,
+			isOkRes: true,
 			fn: func(userService *m.User) {
 				userService.On("FindByCredentials", mock.Anything).
 					Return(token, nil)
@@ -81,10 +78,8 @@ func TestUser_Login(t *testing.T) {
 				tc.fn(userService)
 			}
 
-			if tc.isOkBody {
-				userLogin.Login = "test"
-				userLogin.Password = "test"
-			}
+			userLogin.Login = "test"
+			userLogin.Password = "test"
 
 			payloadBuf := new(bytes.Buffer)
 			err := json.NewEncoder(payloadBuf).Encode(&userLogin)
@@ -94,10 +89,10 @@ func TestUser_Login(t *testing.T) {
 			require.NoError(t, err)
 
 			res := httptest.NewRecorder()
-			router.loginUser(res, req)
+			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkBody && tc.isOkRes {
+			if tc.isOkRes {
 				err := json.NewDecoder(res.Body).Decode(&token)
 				require.NoError(t, err)
 			}
@@ -111,27 +106,20 @@ func TestUser_Registration(t *testing.T) {
 	require.NoError(t, err)
 	id := 23
 	tt := []struct {
-		name     string
-		path     string
-		method   string
-		isOkBody bool
-		isOkRes  bool
-		fn       func(userService *m.User)
-		expCode  int
-		expBody  string
+		name    string
+		path    string
+		method  string
+		isOkRes bool
+		fn      func(userService *m.User)
+		expCode int
+		expBody string
 	}{
+
 		{
-			name:    "bad body",
-			path:    userPath + slash + registration,
+			name:    "existed user",
+			path:    slash + user + slash + registration,
 			method:  http.MethodPost,
-			expCode: http.StatusBadRequest,
-		},
-		{
-			name:     "existed user",
-			path:     userPath + slash + registration,
-			method:   http.MethodPost,
-			isOkBody: true,
-			isOkRes:  true,
+			isOkRes: true,
 			fn: func(userService *m.User) {
 				userService.On("IsExist", mock.Anything).
 					Return(true, nil)
@@ -140,25 +128,10 @@ func TestUser_Registration(t *testing.T) {
 			expBody: "this user already exist",
 		},
 		{
-			name:     "all ok",
-			path:     userPath + slash + registration,
-			method:   http.MethodPost,
-			isOkBody: true,
-			isOkRes:  true,
-			fn: func(userService *m.User) {
-				userService.On("IsExist", mock.Anything).
-					Return(false, nil)
-				userService.On("Create", mock.Anything).
-					Return(id, nil)
-			},
-			expCode: http.StatusOK,
-			expBody: strconv.Itoa(id),
-		}, {
-			name:     "all ok",
-			path:     userPath + slash + registration,
-			method:   http.MethodPost,
-			isOkBody: true,
-			isOkRes:  true,
+			name:    "all ok",
+			path:    slash + user + slash + registration,
+			method:  http.MethodPost,
+			isOkRes: true,
 			fn: func(userService *m.User) {
 				userService.On("IsExist", mock.Anything).
 					Return(false, nil)
@@ -181,10 +154,8 @@ func TestUser_Registration(t *testing.T) {
 				tc.fn(userService)
 			}
 
-			if tc.isOkBody {
-				userLogin.Login = "test"
-				userLogin.Password = "test"
-			}
+			userLogin.Login = "test"
+			userLogin.Password = "test"
 
 			payloadBuf := new(bytes.Buffer)
 			err := json.NewEncoder(payloadBuf).Encode(&userLogin)
@@ -194,10 +165,10 @@ func TestUser_Registration(t *testing.T) {
 			require.NoError(t, err)
 
 			res := httptest.NewRecorder()
-			router.registerUser(res, req)
+			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkBody && tc.isOkRes {
+			if tc.isOkRes {
 				err := json.NewDecoder(res.Body).Decode(&userRes)
 				require.NoError(t, err)
 			}
@@ -210,7 +181,8 @@ func TestUserRole_FindAll(t *testing.T) {
 	testApi, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	id := 15
-	_, err = testApi.TokenManager.NewJWT(strconv.Itoa(id))
+	token, err := testApi.TokenManager.NewJWT(strconv.Itoa(id))
+	require.NoError(t, err)
 	tt := []struct {
 		name    string
 		path    string
@@ -221,7 +193,7 @@ func TestUserRole_FindAll(t *testing.T) {
 	}{
 		{
 			name:   "all ok",
-			path:   userPath + slash + api + slash + getAll,
+			path:   slash + user + slash + api + slash + getAll,
 			method: http.MethodGet,
 			fn: func(userRoleService *m.UserRole) {
 				userRoleService.On("FindAllUser").
@@ -266,8 +238,10 @@ func TestUserRole_FindAll(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path, nil)
 			require.NoError(t, err)
 
+			req.Header.Set(authorizationHeader, "Bearer "+token)
+
 			res := httptest.NewRecorder()
-			router.getAllUser(res, req)
+			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
 			err = json.NewDecoder(res.Body).Decode(&users)
