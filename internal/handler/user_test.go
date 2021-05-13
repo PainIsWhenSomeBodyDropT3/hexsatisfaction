@@ -28,10 +28,10 @@ const (
 const authorizationHeader = "Authorization"
 
 func TestUser_Login(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 	type test struct {
 		name     string
@@ -108,8 +108,8 @@ func TestUser_Login(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var r string
 			userService := new(m.User)
-			testApi.Services.User = userService
-			router := newUser(testApi.Services, testApi.TokenManager)
+			testAPI.Services.User = userService
+			router := newUser(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(userService, tc)
 			}
@@ -135,7 +135,7 @@ func TestUser_Login(t *testing.T) {
 }
 
 func TestUser_Registration(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
 		name    string
@@ -230,8 +230,8 @@ func TestUser_Registration(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var r string
 			userService := new(m.User)
-			testApi.Services.User = userService
-			router := newUser(testApi.Services, testApi.TokenManager)
+			testAPI.Services.User = userService
+			router := newUser(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(userService, tc)
 			}
@@ -255,10 +255,10 @@ func TestUser_Registration(t *testing.T) {
 }
 
 func TestUserRole_FindAll(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -310,8 +310,8 @@ func TestUserRole_FindAll(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var r []model.User
 			userRoleService := new(m.UserRole)
-			testApi.Services.UserRole = userRoleService
-			router := newUser(testApi.Services, testApi.TokenManager)
+			testAPI.Services.UserRole = userRoleService
+			router := newUser(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(userRoleService, tc)
 			}

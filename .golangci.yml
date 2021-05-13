@@ -32,6 +32,8 @@ linters:
   - gocritic
   - govet
   - unused
+  disable:
+    - errcheck
 
 issues:
   exclude-use-default: false

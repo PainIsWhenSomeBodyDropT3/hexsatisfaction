@@ -32,15 +32,15 @@ func newPurchase(services *service.Services, tokenManager auth.TokenManager) pur
 
 	secure.Path("/{id}").
 		Methods(http.MethodGet).
-		HandlerFunc(handler.findByIdPurchase)
+		HandlerFunc(handler.findByIDPurchase)
 
 	secure.Path("/last/user/{id}").
 		Methods(http.MethodGet).
-		HandlerFunc(handler.findLastByUserIdPurchase)
+		HandlerFunc(handler.findLastByUserIDPurchase)
 
 	secure.Path("/user/{id}").
 		Methods(http.MethodGet).
-		HandlerFunc(handler.findAllByUserIdPurchase)
+		HandlerFunc(handler.findAllByUserIDPurchase)
 
 	secure.Path("/last/").
 		Methods(http.MethodGet).
@@ -52,7 +52,7 @@ func newPurchase(services *service.Services, tokenManager auth.TokenManager) pur
 
 	secure.Path("/user/{id}/file/{file}").
 		Methods(http.MethodGet).
-		HandlerFunc(handler.findByUserIdAndFileNamePurchase)
+		HandlerFunc(handler.findByUserIDAndFileNamePurchase)
 
 	secure.Path("/file/{file}").
 		Methods(http.MethodGet).
@@ -64,15 +64,15 @@ func newPurchase(services *service.Services, tokenManager auth.TokenManager) pur
 
 	secure.Path("/period/user/{id}").
 		Methods(http.MethodPost).
-		HandlerFunc(handler.findByUserIdAndPeriodPurchase)
+		HandlerFunc(handler.findByUserIDAndPeriodPurchase)
 
 	secure.Path("/after/user/{id}").
 		Methods(http.MethodPost).
-		HandlerFunc(handler.findByUserIdAfterDatePurchase)
+		HandlerFunc(handler.findByUserIDAfterDatePurchase)
 
 	secure.Path("/before/user/{id}").
 		Methods(http.MethodPost).
-		HandlerFunc(handler.findByUserIdBeforeDatePurchase)
+		HandlerFunc(handler.findByUserIDBeforeDatePurchase)
 
 	secure.Path("/period").
 		Methods(http.MethodPost).
@@ -112,7 +112,7 @@ func (req *createPurchaseRequest) Build(r *http.Request) error {
 // Validate validates request for create purchase.
 func (req *createPurchaseRequest) Validate() error {
 	switch {
-	case req.UserId < 1:
+	case req.UserID < 1:
 		return fmt.Errorf("not correct user id")
 	case req.Date == time.Time{}:
 		return fmt.Errorf("date is required")
@@ -146,17 +146,17 @@ type deletePurchaseRequest struct {
 
 // Build builds request to delete purchase.
 func (req *deletePurchaseRequest) Build(r *http.Request) error {
-	vId, ok := mux.Vars(r)["id"]
+	vID, ok := mux.Vars(r)["id"]
 	if !ok {
 		return fmt.Errorf("no id")
 	}
 
-	id, err := strconv.Atoi(vId)
+	id, err := strconv.Atoi(vID)
 	if err != nil {
 		return err
 	}
 
-	req.Id = id
+	req.ID = id
 
 	return nil
 }
@@ -164,7 +164,7 @@ func (req *deletePurchaseRequest) Build(r *http.Request) error {
 // Validate validates request to delete purchase.
 func (req *deletePurchaseRequest) Validate() error {
 	switch {
-	case req.Id < 1:
+	case req.ID < 1:
 		return fmt.Errorf("not correct id")
 	default:
 		return nil
@@ -194,22 +194,22 @@ func (p *purchaseRouter) deletePurchase(w http.ResponseWriter, r *http.Request) 
 }
 
 type idPurchaseRequest struct {
-	model.IdPurchaseRequest
+	model.IDPurchaseRequest
 }
 
 // Build builds request to find purchase by id.
 func (req *idPurchaseRequest) Build(r *http.Request) error {
-	vId, ok := mux.Vars(r)["id"]
+	vID, ok := mux.Vars(r)["id"]
 	if !ok {
 		return fmt.Errorf("no id")
 	}
 
-	id, err := strconv.Atoi(vId)
+	id, err := strconv.Atoi(vID)
 	if err != nil {
 		return err
 	}
 
-	req.Id = id
+	req.ID = id
 
 	return nil
 }
@@ -217,14 +217,14 @@ func (req *idPurchaseRequest) Build(r *http.Request) error {
 // Validate validates request to find purchase by id.
 func (req *idPurchaseRequest) Validate() error {
 	switch {
-	case req.Id < 1:
+	case req.ID < 1:
 		return fmt.Errorf("not correct id")
 	default:
 		return nil
 	}
 }
 
-func (p *purchaseRouter) findByIdPurchase(w http.ResponseWriter, r *http.Request) {
+func (p *purchaseRouter) findByIDPurchase(w http.ResponseWriter, r *http.Request) {
 	var req idPurchaseRequest
 	err := middleware.ParseRequest(r, &req)
 	if err != nil {
@@ -232,7 +232,7 @@ func (p *purchaseRouter) findByIdPurchase(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	purchase, err := p.services.Purchase.FindById(req.IdPurchaseRequest)
+	purchase, err := p.services.Purchase.FindByID(req.IDPurchaseRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return
@@ -246,46 +246,46 @@ func (p *purchaseRouter) findByIdPurchase(w http.ResponseWriter, r *http.Request
 	middleware.JSONReturn(w, http.StatusOK, purchase)
 }
 
-type lastUserIdPurchaseRequest struct {
-	model.UserIdPurchaseRequest
+type lastUserIDPurchaseRequest struct {
+	model.UserIDPurchaseRequest
 }
 
 // Build builds request to find last purchase by user id.
-func (req *lastUserIdPurchaseRequest) Build(r *http.Request) error {
-	vId, ok := mux.Vars(r)["id"]
+func (req *lastUserIDPurchaseRequest) Build(r *http.Request) error {
+	vID, ok := mux.Vars(r)["id"]
 	if !ok {
 		return fmt.Errorf("no id")
 	}
 
-	id, err := strconv.Atoi(vId)
+	id, err := strconv.Atoi(vID)
 	if err != nil {
 		return err
 	}
 
-	req.Id = id
+	req.ID = id
 
 	return nil
 }
 
 // Validate validates request to find last purchase by user id.
-func (req *lastUserIdPurchaseRequest) Validate() error {
+func (req *lastUserIDPurchaseRequest) Validate() error {
 	switch {
-	case req.Id < 1:
+	case req.ID < 1:
 		return fmt.Errorf("not correct id")
 	default:
 		return nil
 	}
 }
 
-func (p *purchaseRouter) findLastByUserIdPurchase(w http.ResponseWriter, r *http.Request) {
-	var req lastUserIdPurchaseRequest
+func (p *purchaseRouter) findLastByUserIDPurchase(w http.ResponseWriter, r *http.Request) {
+	var req lastUserIDPurchaseRequest
 	err := middleware.ParseRequest(r, &req)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	purchase, err := p.services.Purchase.FindLastByUserId(req.UserIdPurchaseRequest)
+	purchase, err := p.services.Purchase.FindLastByUserID(req.UserIDPurchaseRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return
@@ -299,46 +299,46 @@ func (p *purchaseRouter) findLastByUserIdPurchase(w http.ResponseWriter, r *http
 	middleware.JSONReturn(w, http.StatusOK, purchase)
 }
 
-type userIdPurchaseRequest struct {
-	model.UserIdPurchaseRequest
+type userIDPurchaseRequest struct {
+	model.UserIDPurchaseRequest
 }
 
 // Build builds request to find all purchases by user id.
-func (req *userIdPurchaseRequest) Build(r *http.Request) error {
-	vId, ok := mux.Vars(r)["id"]
+func (req *userIDPurchaseRequest) Build(r *http.Request) error {
+	vID, ok := mux.Vars(r)["id"]
 	if !ok {
 		return fmt.Errorf("no id")
 	}
 
-	id, err := strconv.Atoi(vId)
+	id, err := strconv.Atoi(vID)
 	if err != nil {
 		return err
 	}
 
-	req.Id = id
+	req.ID = id
 
 	return nil
 }
 
 // Validate validates request to find all purchases by user id.
-func (req *userIdPurchaseRequest) Validate() error {
+func (req *userIDPurchaseRequest) Validate() error {
 	switch {
-	case req.Id < 1:
+	case req.ID < 1:
 		return fmt.Errorf("not correct id")
 	default:
 		return nil
 	}
 }
 
-func (p *purchaseRouter) findAllByUserIdPurchase(w http.ResponseWriter, r *http.Request) {
-	var req userIdPurchaseRequest
+func (p *purchaseRouter) findAllByUserIDPurchase(w http.ResponseWriter, r *http.Request) {
+	var req userIDPurchaseRequest
 	err := middleware.ParseRequest(r, &req)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	purchases, err := p.services.Purchase.FindAllByUserId(req.UserIdPurchaseRequest)
+	purchases, err := p.services.Purchase.FindAllByUserID(req.UserIDPurchaseRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return
@@ -352,38 +352,38 @@ func (p *purchaseRouter) findAllByUserIdPurchase(w http.ResponseWriter, r *http.
 	middleware.JSONReturn(w, http.StatusOK, purchases)
 }
 
-type userIdPeriodPurchaseRequest struct {
-	model.UserIdPeriodPurchaseRequest
+type userIDPeriodPurchaseRequest struct {
+	model.UserIDPeriodPurchaseRequest
 }
 
 // Build builds request to find all purchases by user id and date period.
-func (req *userIdPeriodPurchaseRequest) Build(r *http.Request) error {
-	err := json.NewDecoder(r.Body).Decode(&req.UserIdPeriodPurchaseRequest)
+func (req *userIDPeriodPurchaseRequest) Build(r *http.Request) error {
+	err := json.NewDecoder(r.Body).Decode(&req.UserIDPeriodPurchaseRequest)
 	if err != nil {
 		return err
 	}
 
 	defer r.Body.Close()
 
-	vId, ok := mux.Vars(r)["id"]
+	vID, ok := mux.Vars(r)["id"]
 	if !ok {
 		return fmt.Errorf("no id")
 	}
 
-	id, err := strconv.Atoi(vId)
+	id, err := strconv.Atoi(vID)
 	if err != nil {
 		return err
 	}
 
-	req.Id = id
+	req.ID = id
 
 	return nil
 }
 
 // Validate validates request to find all purchases by user id and date period.
-func (req *userIdPeriodPurchaseRequest) Validate() error {
+func (req *userIDPeriodPurchaseRequest) Validate() error {
 	switch {
-	case req.Id < 1:
+	case req.ID < 1:
 		return fmt.Errorf("not correct id")
 	case req.Start == time.Time{}:
 		return fmt.Errorf("start date is required")
@@ -394,15 +394,15 @@ func (req *userIdPeriodPurchaseRequest) Validate() error {
 	}
 }
 
-func (p *purchaseRouter) findByUserIdAndPeriodPurchase(w http.ResponseWriter, r *http.Request) {
-	var req userIdPeriodPurchaseRequest
+func (p *purchaseRouter) findByUserIDAndPeriodPurchase(w http.ResponseWriter, r *http.Request) {
+	var req userIDPeriodPurchaseRequest
 	err := middleware.ParseRequest(r, &req)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	purchases, err := p.services.Purchase.FindByUserIdAndPeriod(req.UserIdPeriodPurchaseRequest)
+	purchases, err := p.services.Purchase.FindByUserIDAndPeriod(req.UserIDPeriodPurchaseRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return
@@ -416,38 +416,38 @@ func (p *purchaseRouter) findByUserIdAndPeriodPurchase(w http.ResponseWriter, r 
 	middleware.JSONReturn(w, http.StatusOK, purchases)
 }
 
-type userIdAfterDatePurchaseRequest struct {
-	model.UserIdAfterDatePurchaseRequest
+type userIDAfterDatePurchaseRequest struct {
+	model.UserIDAfterDatePurchaseRequest
 }
 
 // Build builds request to find all purchases by user id after date.
-func (req *userIdAfterDatePurchaseRequest) Build(r *http.Request) error {
-	err := json.NewDecoder(r.Body).Decode(&req.UserIdAfterDatePurchaseRequest)
+func (req *userIDAfterDatePurchaseRequest) Build(r *http.Request) error {
+	err := json.NewDecoder(r.Body).Decode(&req.UserIDAfterDatePurchaseRequest)
 	if err != nil {
 		return err
 	}
 
 	defer r.Body.Close()
 
-	vId, ok := mux.Vars(r)["id"]
+	vID, ok := mux.Vars(r)["id"]
 	if !ok {
 		return fmt.Errorf("no id")
 	}
 
-	id, err := strconv.Atoi(vId)
+	id, err := strconv.Atoi(vID)
 	if err != nil {
 		return err
 	}
 
-	req.Id = id
+	req.ID = id
 
 	return nil
 }
 
 // Validate validates request to find all purchases by user id after date.
-func (req *userIdAfterDatePurchaseRequest) Validate() error {
+func (req *userIDAfterDatePurchaseRequest) Validate() error {
 	switch {
-	case req.Id < 1:
+	case req.ID < 1:
 		return fmt.Errorf("not correct id")
 	case req.Start == time.Time{}:
 		return fmt.Errorf("start date is required")
@@ -456,15 +456,15 @@ func (req *userIdAfterDatePurchaseRequest) Validate() error {
 	}
 }
 
-func (p *purchaseRouter) findByUserIdAfterDatePurchase(w http.ResponseWriter, r *http.Request) {
-	var req userIdAfterDatePurchaseRequest
+func (p *purchaseRouter) findByUserIDAfterDatePurchase(w http.ResponseWriter, r *http.Request) {
+	var req userIDAfterDatePurchaseRequest
 	err := middleware.ParseRequest(r, &req)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	purchases, err := p.services.Purchase.FindByUserIdAfterDate(req.UserIdAfterDatePurchaseRequest)
+	purchases, err := p.services.Purchase.FindByUserIDAfterDate(req.UserIDAfterDatePurchaseRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return
@@ -478,38 +478,38 @@ func (p *purchaseRouter) findByUserIdAfterDatePurchase(w http.ResponseWriter, r 
 	middleware.JSONReturn(w, http.StatusOK, purchases)
 }
 
-type userIdBeforeDatePurchaseRequest struct {
-	model.UserIdBeforeDatePurchaseRequest
+type userIDBeforeDatePurchaseRequest struct {
+	model.UserIDBeforeDatePurchaseRequest
 }
 
 // Build builds request to find all purchases by user id before date.
-func (req *userIdBeforeDatePurchaseRequest) Build(r *http.Request) error {
-	err := json.NewDecoder(r.Body).Decode(&req.UserIdBeforeDatePurchaseRequest)
+func (req *userIDBeforeDatePurchaseRequest) Build(r *http.Request) error {
+	err := json.NewDecoder(r.Body).Decode(&req.UserIDBeforeDatePurchaseRequest)
 	if err != nil {
 		return err
 	}
 
 	defer r.Body.Close()
 
-	vId, ok := mux.Vars(r)["id"]
+	vID, ok := mux.Vars(r)["id"]
 	if !ok {
 		return fmt.Errorf("no id")
 	}
 
-	id, err := strconv.Atoi(vId)
+	id, err := strconv.Atoi(vID)
 	if err != nil {
 		return err
 	}
 
-	req.Id = id
+	req.ID = id
 
 	return nil
 }
 
 // Validate validates request to find all purchases by user id before date.
-func (req *userIdBeforeDatePurchaseRequest) Validate() error {
+func (req *userIDBeforeDatePurchaseRequest) Validate() error {
 	switch {
-	case req.Id < 1:
+	case req.ID < 1:
 		return fmt.Errorf("not correct id")
 	case req.End == time.Time{}:
 		return fmt.Errorf("end date is required")
@@ -518,15 +518,15 @@ func (req *userIdBeforeDatePurchaseRequest) Validate() error {
 	}
 }
 
-func (p *purchaseRouter) findByUserIdBeforeDatePurchase(w http.ResponseWriter, r *http.Request) {
-	var req userIdBeforeDatePurchaseRequest
+func (p *purchaseRouter) findByUserIDBeforeDatePurchase(w http.ResponseWriter, r *http.Request) {
+	var req userIDBeforeDatePurchaseRequest
 	err := middleware.ParseRequest(r, &req)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	purchases, err := p.services.Purchase.FindByUserIdBeforeDate(req.UserIdBeforeDatePurchaseRequest)
+	purchases, err := p.services.Purchase.FindByUserIDBeforeDate(req.UserIDBeforeDatePurchaseRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return
@@ -540,19 +540,19 @@ func (p *purchaseRouter) findByUserIdBeforeDatePurchase(w http.ResponseWriter, r
 	middleware.JSONReturn(w, http.StatusOK, purchases)
 }
 
-type userIdFileNamePurchaseRequest struct {
-	model.UserIdFileNamePurchaseRequest
+type userIDFileNamePurchaseRequest struct {
+	model.UserIDFileNamePurchaseRequest
 }
 
 // Build builds request to find all purchases by user id and file name.
-func (req *userIdFileNamePurchaseRequest) Build(r *http.Request) error {
+func (req *userIDFileNamePurchaseRequest) Build(r *http.Request) error {
 
-	vId, ok := mux.Vars(r)["id"]
+	vID, ok := mux.Vars(r)["id"]
 	if !ok {
 		return fmt.Errorf("no id")
 	}
 
-	id, err := strconv.Atoi(vId)
+	id, err := strconv.Atoi(vID)
 	if err != nil {
 		return err
 	}
@@ -561,16 +561,16 @@ func (req *userIdFileNamePurchaseRequest) Build(r *http.Request) error {
 		return fmt.Errorf("no file name")
 	}
 
-	req.Id = id
+	req.ID = id
 	req.FileName = name
 
 	return nil
 }
 
 // Validate validates request to find all purchases by user id and file name.
-func (req *userIdFileNamePurchaseRequest) Validate() error {
+func (req *userIDFileNamePurchaseRequest) Validate() error {
 	switch {
-	case req.Id < 1:
+	case req.ID < 1:
 		return fmt.Errorf("not correct id")
 	case req.FileName == "":
 		return fmt.Errorf("file name is required")
@@ -579,15 +579,15 @@ func (req *userIdFileNamePurchaseRequest) Validate() error {
 	}
 }
 
-func (p *purchaseRouter) findByUserIdAndFileNamePurchase(w http.ResponseWriter, r *http.Request) {
-	var req userIdFileNamePurchaseRequest
+func (p *purchaseRouter) findByUserIDAndFileNamePurchase(w http.ResponseWriter, r *http.Request) {
+	var req userIDFileNamePurchaseRequest
 	err := middleware.ParseRequest(r, &req)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	purchases, err := p.services.Purchase.FindByUserIdAndFileName(req.UserIdFileNamePurchaseRequest)
+	purchases, err := p.services.Purchase.FindByUserIDAndFileName(req.UserIDFileNamePurchaseRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return

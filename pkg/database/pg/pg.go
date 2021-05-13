@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/JesusG2000/hexsatisfaction/internal/config"
+	// pg driver
 	_ "github.com/lib/pq"
 )
 

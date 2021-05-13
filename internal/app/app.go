@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"time"
@@ -14,8 +15,10 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/service"
 	"github.com/JesusG2000/hexsatisfaction/pkg/auth"
 	"github.com/JesusG2000/hexsatisfaction/pkg/database/pg"
+	"github.com/go-openapi/runtime/middleware"
 )
 
+// Run runs hexsatisfaction service
 func Run(configPath string) {
 
 	ctx := context.Background()
@@ -43,8 +46,11 @@ func Run(configPath string) {
 		TokenManager: tokenManager,
 	})
 
-	newHandler := handler.NewHandler(services, tokenManager)
-	srv := server.NewServer(cfg, newHandler)
+	router := handler.NewHandler(services, tokenManager)
+
+	routeSwagger(router)
+
+	srv := server.NewServer(cfg, router)
 
 	go startService(ctx, srv)
 
@@ -56,7 +62,7 @@ func Run(configPath string) {
 	defer shutdown()
 
 	if err := srv.Stop(ctx); err != nil {
-		log.Fatal("failed to stop server: ", err)
+		log.Printf("failed to stop server: %v", err)
 	}
 
 	log.Printf("shutting down server...")
@@ -66,4 +72,11 @@ func startService(ctx context.Context, coreService *server.Server) {
 	if err := coreService.Run(); err != nil {
 		log.Fatal(ctx, "service shutdown: ", err.Error())
 	}
+}
+func routeSwagger(router *handler.API) {
+	ops := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	sh := middleware.Redoc(ops, nil)
+
+	router.Handle("/docs", sh)
+	router.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 }

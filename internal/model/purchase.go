@@ -5,7 +5,7 @@ import "time"
 // Purchase represents purchase model.
 type Purchase struct {
 	ID       int       `json:"id,omitempty"`
-	UserId   int       `json:"user_id"`
+	UserID   int       `json:"userID"`
 	Date     time.Time `json:"date"`
-	FileName string    `json:"file_name"`
+	FileName string    `json:"fileName"`
 }

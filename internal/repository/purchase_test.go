@@ -25,7 +25,7 @@ func TestPurchaseRepo_Create(t *testing.T) {
 				RoleID:   dto.USER,
 			},
 			purchase: model.Purchase{
-				UserId:   1,
+				UserID:   1,
 				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
 				FileName: "some name",
 			},
@@ -39,10 +39,10 @@ func TestPurchaseRepo_Create(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
-			tc.purchase.UserId = userId
+			tc.purchase.UserID = userID
 			id, err := repos.Purchase.Create(tc.purchase)
 			require.NoError(t, err)
 			require.NotZero(t, id)
@@ -84,16 +84,16 @@ func TestPurchaseRepo_Delete(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
-			tc.purchase.UserId = userId
+			tc.purchase.UserID = userID
 			id, err := repos.Purchase.Create(tc.purchase)
 			require.NoError(t, err)
 
-			delId, err := repos.Purchase.Delete(id)
+			delID, err := repos.Purchase.Delete(id)
 			require.NoError(t, err)
-			require.NotZero(t, delId)
+			require.NotZero(t, delID)
 
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
@@ -148,16 +148,16 @@ func TestPurchaseRepo_FindById(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
-				tc.purchase.UserId = userId
+				tc.purchase.UserID = userID
 				id, err = repos.Purchase.Create(tc.purchase)
 				require.NoError(t, err)
-				tc.expPurchase.UserId = userId
+				tc.expPurchase.UserID = userID
 			}
-			p, err := repos.Purchase.FindById(id)
+			p, err := repos.Purchase.FindByID(id)
 			require.NoError(t, err)
 			tc.expPurchase.Date = p.Date
 			tc.expPurchase.ID = p.ID
@@ -223,18 +223,18 @@ func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
-				tc.expPurchase.UserId = userId
+				tc.expPurchase.UserID = userID
 			}
-			p, err := repos.Purchase.FindLastByUserId(userId)
+			p, err := repos.Purchase.FindLastByUserID(userID)
 			require.NoError(t, err)
 			tc.expPurchase.Date = p.Date
 			tc.expPurchase.ID = p.ID
@@ -306,20 +306,20 @@ func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
-			p, err := repos.Purchase.FindAllByUserId(userId)
+			p, err := repos.Purchase.FindAllByUserID(userID)
 			require.NoError(t, err)
 			for i := range p {
 				tc.expPurchases[i].Date = p[i].Date
@@ -398,20 +398,20 @@ func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
-			p, err := repos.Purchase.FindByUserIdAndPeriod(userId, tc.start, tc.end)
+			p, err := repos.Purchase.FindByUserIDAndPeriod(userID, tc.start, tc.end)
 			require.NoError(t, err)
 			for i := range p {
 				tc.expPurchases[i].Date = p[i].Date
@@ -487,20 +487,20 @@ func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
-			p, err := repos.Purchase.FindByUserIdAfterDate(userId, tc.start)
+			p, err := repos.Purchase.FindByUserIDAfterDate(userID, tc.start)
 			require.NoError(t, err)
 			for i := range p {
 				tc.expPurchases[i].Date = p[i].Date
@@ -576,20 +576,20 @@ func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
-			p, err := repos.Purchase.FindByUserIdBeforeDate(userId, tc.end)
+			p, err := repos.Purchase.FindByUserIDBeforeDate(userID, tc.end)
 			require.NoError(t, err)
 			for i := range p {
 				tc.expPurchases[i].Date = p[i].Date
@@ -661,20 +661,20 @@ func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
-			p, err := repos.Purchase.FindByUserIdAndFileName(userId, tc.fileName)
+			p, err := repos.Purchase.FindByUserIDAndFileName(userID, tc.fileName)
 			require.NoError(t, err)
 			for i := range p {
 				tc.expPurchases[i].Date = p[i].Date
@@ -742,16 +742,16 @@ func TestPurchaseRepo_FindLast(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
-				tc.expPurchase.UserId = userId
+				tc.expPurchase.UserID = userID
 			}
 			p, err := repos.Purchase.FindLast()
 			require.NoError(t, err)
@@ -824,17 +824,17 @@ func TestPurchaseRepo_FindAll(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
 			p, err := repos.Purchase.FindAll()
@@ -916,17 +916,17 @@ func TestPurchaseRepo_FindByPeriod(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
 			p, err := repos.Purchase.FindByPeriod(tc.start, tc.end)
@@ -1005,17 +1005,17 @@ func TestPurchaseRepo_FindAfterDate(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
 			p, err := repos.Purchase.FindAfterDate(tc.start)
@@ -1094,17 +1094,17 @@ func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
 			p, err := repos.Purchase.FindBeforeDate(tc.end)
@@ -1179,17 +1179,17 @@ func TestPurchaseRepo_FindFileName(t *testing.T) {
 			_, err = db.Exec("DELETE FROM users")
 			require.NoError(t, err)
 
-			userId, err := repos.User.Create(tc.user)
+			userID, err := repos.User.Create(tc.user)
 			require.NoError(t, err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
-					tc.purchases[i].UserId = userId
+					tc.purchases[i].UserID = userID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					require.NoError(t, err)
 				}
 				for i := range tc.expPurchases {
-					tc.expPurchases[i].UserId = userId
+					tc.expPurchases[i].UserID = userID
 				}
 			}
 			p, err := repos.Purchase.FindByFileName(tc.fileName)

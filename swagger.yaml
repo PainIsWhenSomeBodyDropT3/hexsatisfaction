@@ -1,0 +1,13 @@
+consumes:
+- application/json
+host: localhost:8000
+info:
+  description: The purpose of this application to provide users basic functionality
+  title: Hexsatisfaction microservice
+  version: 0.0.1
+paths: {}
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"

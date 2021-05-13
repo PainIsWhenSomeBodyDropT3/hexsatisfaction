@@ -15,43 +15,43 @@ func TestPurchaseService_Create(t *testing.T) {
 		name   string
 		req    model.CreatePurchaseRequest
 		fn     func(purchase *m.Purchase, data test)
-		expId  int
+		expID  int
 		expErr error
 	}
 	tt := []test{
 		{
 			name: "Create errors",
 			req: model.CreatePurchaseRequest{
-				UserId:   23,
+				UserID:   23,
 				Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				FileName: "some name",
 			},
 			fn: func(purchase *m.Purchase, data test) {
 				purchase.On("Create", model.Purchase{
-					UserId:   data.req.UserId,
+					UserID:   data.req.UserID,
 					Date:     data.req.Date,
 					FileName: data.req.FileName,
 				}).
-					Return(data.expId, errors.New(""))
+					Return(data.expID, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't create purchase"),
 		},
 		{
 			name: "All ok",
 			req: model.CreatePurchaseRequest{
-				UserId:   23,
+				UserID:   23,
 				Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				FileName: "some name",
 			},
 			fn: func(purchase *m.Purchase, data test) {
 				purchase.On("Create", model.Purchase{
-					UserId:   data.req.UserId,
+					UserID:   data.req.UserID,
 					Date:     data.req.Date,
 					FileName: data.req.FileName,
 				}).
-					Return(data.expId, nil)
+					Return(data.expID, nil)
 			},
-			expId: 15,
+			expID: 15,
 		},
 	}
 	for _, tc := range tt {
@@ -64,7 +64,7 @@ func TestPurchaseService_Create(t *testing.T) {
 			id, err := service.Create(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expId, id)
+				require.Equal(t, tc.expID, id)
 			} else {
 				require.Nil(t, err)
 			}
@@ -77,31 +77,31 @@ func TestPurchaseService_Delete(t *testing.T) {
 		name   string
 		req    model.DeletePurchaseRequest
 		fn     func(purchase *m.Purchase, data test)
-		expId  int
+		expID  int
 		expErr error
 	}
 	tt := []test{
 		{
 			name: "Delete errors",
 			req: model.DeletePurchaseRequest{
-				Id: 15,
+				ID: 15,
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("Delete", data.req.Id).
-					Return(data.expId, errors.New(""))
+				purchase.On("Delete", data.req.ID).
+					Return(data.expID, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't delete purchase"),
 		},
 		{
 			name: "All ok",
 			req: model.DeletePurchaseRequest{
-				Id: 15,
+				ID: 15,
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("Delete", data.req.Id).
-					Return(data.expId, nil)
+				purchase.On("Delete", data.req.ID).
+					Return(data.expID, nil)
 			},
-			expId: 15,
+			expID: 15,
 		},
 	}
 	for _, tc := range tt {
@@ -114,7 +114,7 @@ func TestPurchaseService_Delete(t *testing.T) {
 			id, err := service.Delete(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expId, id)
+				require.Equal(t, tc.expID, id)
 			} else {
 				require.Nil(t, err)
 			}
@@ -125,32 +125,32 @@ func TestPurchaseService_Delete(t *testing.T) {
 func TestPurchaseService_FindById(t *testing.T) {
 	type test struct {
 		name        string
-		req         model.IdPurchaseRequest
+		req         model.IDPurchaseRequest
 		fn          func(purchase *m.Purchase, data test)
 		expPurchase *model.Purchase
 		expErr      error
 	}
 	tt := []test{
 		{
-			name: "FindById errors",
+			name: "FindByID errors",
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindById", 0).
+				purchase.On("FindByID", 0).
 					Return(nil, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find purchase"),
 		},
 		{
 			name: "All ok",
-			req: model.IdPurchaseRequest{
-				Id: 15,
+			req: model.IDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindById", data.req.Id).
+				purchase.On("FindByID", data.req.ID).
 					Return(data.expPurchase, nil)
 			},
 			expPurchase: &model.Purchase{
 				ID:       15,
-				UserId:   23,
+				UserID:   23,
 				Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				FileName: "some name",
 			},
@@ -163,7 +163,7 @@ func TestPurchaseService_FindById(t *testing.T) {
 			if tc.fn != nil {
 				tc.fn(purchase, tc)
 			}
-			p, err := service.FindById(tc.req)
+			p, err := service.FindByID(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
 				require.Equal(t, tc.expPurchase, p)
@@ -177,35 +177,35 @@ func TestPurchaseService_FindById(t *testing.T) {
 func TestPurchaseService_FindLastByUserId(t *testing.T) {
 	type test struct {
 		name        string
-		req         model.UserIdPurchaseRequest
+		req         model.UserIDPurchaseRequest
 		fn          func(purchase *m.Purchase, data test)
 		expPurchase *model.Purchase
 		expErr      error
 	}
 	tt := []test{
 		{
-			name: "FindLastByUserId errors",
-			req: model.UserIdPurchaseRequest{
-				Id: 15,
+			name: "FindLastByUserID errors",
+			req: model.UserIDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindLastByUserId", data.req.Id).
+				purchase.On("FindLastByUserID", data.req.ID).
 					Return(data.expPurchase, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find purchase"),
 		},
 		{
 			name: "All ok",
-			req: model.UserIdPurchaseRequest{
-				Id: 15,
+			req: model.UserIDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindLastByUserId", data.req.Id).
+				purchase.On("FindLastByUserID", data.req.ID).
 					Return(data.expPurchase, nil)
 			},
 			expPurchase: &model.Purchase{
 				ID:       15,
-				UserId:   23,
+				UserID:   23,
 				Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				FileName: "some name",
 			},
@@ -218,7 +218,7 @@ func TestPurchaseService_FindLastByUserId(t *testing.T) {
 			if tc.fn != nil {
 				tc.fn(purchase, tc)
 			}
-			p, err := service.FindLastByUserId(tc.req)
+			p, err := service.FindLastByUserID(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
 				require.Equal(t, tc.expPurchase, p)
@@ -232,42 +232,42 @@ func TestPurchaseService_FindLastByUserId(t *testing.T) {
 func TestPurchaseService_FindAllByUserId(t *testing.T) {
 	type test struct {
 		name        string
-		req         model.UserIdPurchaseRequest
+		req         model.UserIDPurchaseRequest
 		fn          func(purchase *m.Purchase, data test)
 		expPurchase []model.Purchase
 		expErr      error
 	}
 	tt := []test{
 		{
-			name: "FindAllByUserId errors",
-			req: model.UserIdPurchaseRequest{
-				Id: 15,
+			name: "FindAllByUserID errors",
+			req: model.UserIDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindAllByUserId", data.req.Id).
+				purchase.On("FindAllByUserID", data.req.ID).
 					Return(data.expPurchase, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find purchases"),
 		},
 		{
 			name: "All ok",
-			req: model.UserIdPurchaseRequest{
-				Id: 15,
+			req: model.UserIDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindAllByUserId", data.req.Id).
+				purchase.On("FindAllByUserID", data.req.ID).
 					Return(data.expPurchase, nil)
 			},
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name1",
 				},
@@ -281,7 +281,7 @@ func TestPurchaseService_FindAllByUserId(t *testing.T) {
 			if tc.fn != nil {
 				tc.fn(purchase, tc)
 			}
-			p, err := service.FindAllByUserId(tc.req)
+			p, err := service.FindAllByUserID(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
 				require.Equal(t, tc.expPurchase, p)
@@ -295,46 +295,46 @@ func TestPurchaseService_FindAllByUserId(t *testing.T) {
 func TestPurchaseService_FindByUserIdAndPeriod(t *testing.T) {
 	type test struct {
 		name        string
-		req         model.UserIdPeriodPurchaseRequest
+		req         model.UserIDPeriodPurchaseRequest
 		fn          func(purchase *m.Purchase, data test)
 		expPurchase []model.Purchase
 		expErr      error
 	}
 	tt := []test{
 		{
-			name: "FindByUserIdAndPeriod errors",
-			req: model.UserIdPeriodPurchaseRequest{
-				Id:    15,
+			name: "FindByUserIDAndPeriod errors",
+			req: model.UserIDPeriodPurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				End:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindByUserIdAndPeriod", data.req.Id, data.req.Start, data.req.End).
+				purchase.On("FindByUserIDAndPeriod", data.req.ID, data.req.Start, data.req.End).
 					Return(data.expPurchase, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find purchases"),
 		},
 		{
 			name: "All ok",
-			req: model.UserIdPeriodPurchaseRequest{
-				Id:    15,
+			req: model.UserIDPeriodPurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				End:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindByUserIdAndPeriod", data.req.Id, data.req.Start, data.req.End).
+				purchase.On("FindByUserIDAndPeriod", data.req.ID, data.req.Start, data.req.End).
 					Return(data.expPurchase, nil)
 			},
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 15, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 3, 23, 0, 0, 0, time.Local),
 					FileName: "some name1",
 				},
@@ -348,7 +348,7 @@ func TestPurchaseService_FindByUserIdAndPeriod(t *testing.T) {
 			if tc.fn != nil {
 				tc.fn(purchase, tc)
 			}
-			p, err := service.FindByUserIdAndPeriod(tc.req)
+			p, err := service.FindByUserIDAndPeriod(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
 				require.Equal(t, tc.expPurchase, p)
@@ -362,44 +362,44 @@ func TestPurchaseService_FindByUserIdAndPeriod(t *testing.T) {
 func TestPurchaseService_FindByUserIdAfterDate(t *testing.T) {
 	type test struct {
 		name        string
-		req         model.UserIdAfterDatePurchaseRequest
+		req         model.UserIDAfterDatePurchaseRequest
 		fn          func(purchase *m.Purchase, data test)
 		expPurchase []model.Purchase
 		expErr      error
 	}
 	tt := []test{
 		{
-			name: "FindByUserIdAfterDate errors",
-			req: model.UserIdAfterDatePurchaseRequest{
-				Id:    15,
+			name: "FindByUserIDAfterDate errors",
+			req: model.UserIDAfterDatePurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindByUserIdAfterDate", data.req.Id, data.req.Start).
+				purchase.On("FindByUserIDAfterDate", data.req.ID, data.req.Start).
 					Return(data.expPurchase, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find purchases"),
 		},
 		{
 			name: "All ok",
-			req: model.UserIdAfterDatePurchaseRequest{
-				Id:    15,
+			req: model.UserIDAfterDatePurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindByUserIdAfterDate", data.req.Id, data.req.Start).
+				purchase.On("FindByUserIDAfterDate", data.req.ID, data.req.Start).
 					Return(data.expPurchase, nil)
 			},
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name1",
 				},
@@ -413,7 +413,7 @@ func TestPurchaseService_FindByUserIdAfterDate(t *testing.T) {
 			if tc.fn != nil {
 				tc.fn(purchase, tc)
 			}
-			p, err := service.FindByUserIdAfterDate(tc.req)
+			p, err := service.FindByUserIDAfterDate(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
 				require.Equal(t, tc.expPurchase, p)
@@ -427,44 +427,44 @@ func TestPurchaseService_FindByUserIdAfterDate(t *testing.T) {
 func TestPurchaseService_FindByUserIdBeforeDate(t *testing.T) {
 	type test struct {
 		name        string
-		req         model.UserIdBeforeDatePurchaseRequest
+		req         model.UserIDBeforeDatePurchaseRequest
 		fn          func(purchase *m.Purchase, data test)
 		expPurchase []model.Purchase
 		expErr      error
 	}
 	tt := []test{
 		{
-			name: "FindByUserIdBeforeDate errors",
-			req: model.UserIdBeforeDatePurchaseRequest{
-				Id:  15,
+			name: "FindByUserIDBeforeDate errors",
+			req: model.UserIDBeforeDatePurchaseRequest{
+				ID:  15,
 				End: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindByUserIdBeforeDate", data.req.Id, data.req.End).
+				purchase.On("FindByUserIDBeforeDate", data.req.ID, data.req.End).
 					Return(data.expPurchase, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find purchases"),
 		},
 		{
 			name: "All ok",
-			req: model.UserIdBeforeDatePurchaseRequest{
-				Id:  15,
+			req: model.UserIDBeforeDatePurchaseRequest{
+				ID:  15,
 				End: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindByUserIdBeforeDate", data.req.Id, data.req.End).
+				purchase.On("FindByUserIDBeforeDate", data.req.ID, data.req.End).
 					Return(data.expPurchase, nil)
 			},
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name1",
 				},
@@ -478,7 +478,7 @@ func TestPurchaseService_FindByUserIdBeforeDate(t *testing.T) {
 			if tc.fn != nil {
 				tc.fn(purchase, tc)
 			}
-			p, err := service.FindByUserIdBeforeDate(tc.req)
+			p, err := service.FindByUserIDBeforeDate(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
 				require.Equal(t, tc.expPurchase, p)
@@ -492,44 +492,44 @@ func TestPurchaseService_FindByUserIdBeforeDate(t *testing.T) {
 func TestPurchaseService_FindByUserIdAndFileName(t *testing.T) {
 	type test struct {
 		name        string
-		req         model.UserIdFileNamePurchaseRequest
+		req         model.UserIDFileNamePurchaseRequest
 		fn          func(purchase *m.Purchase, data test)
 		expPurchase []model.Purchase
 		expErr      error
 	}
 	tt := []test{
 		{
-			name: "FindByUserIdAndFileName errors",
-			req: model.UserIdFileNamePurchaseRequest{
-				Id:       15,
+			name: "FindByUserIDAndFileName errors",
+			req: model.UserIDFileNamePurchaseRequest{
+				ID:       15,
 				FileName: "test",
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindByUserIdAndFileName", data.req.Id, data.req.FileName).
+				purchase.On("FindByUserIDAndFileName", data.req.ID, data.req.FileName).
 					Return(data.expPurchase, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find purchases"),
 		},
 		{
 			name: "All ok",
-			req: model.UserIdFileNamePurchaseRequest{
-				Id:       15,
+			req: model.UserIDFileNamePurchaseRequest{
+				ID:       15,
 				FileName: "test",
 			},
 			fn: func(purchase *m.Purchase, data test) {
-				purchase.On("FindByUserIdAndFileName", data.req.Id, data.req.FileName).
+				purchase.On("FindByUserIDAndFileName", data.req.ID, data.req.FileName).
 					Return(data.expPurchase, nil)
 			},
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
@@ -543,7 +543,7 @@ func TestPurchaseService_FindByUserIdAndFileName(t *testing.T) {
 			if tc.fn != nil {
 				tc.fn(purchase, tc)
 			}
-			p, err := service.FindByUserIdAndFileName(tc.req)
+			p, err := service.FindByUserIDAndFileName(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
 				require.Equal(t, tc.expPurchase, p)
@@ -578,7 +578,7 @@ func TestPurchaseService_FindLast(t *testing.T) {
 			},
 			expPurchase: &model.Purchase{
 				ID:       23,
-				UserId:   15,
+				UserID:   15,
 				Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				FileName: "some name",
 			},
@@ -627,13 +627,13 @@ func TestPurchaseService_FindAll(t *testing.T) {
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name1",
 				},
@@ -692,13 +692,13 @@ func TestPurchaseService_FindByPeriod(t *testing.T) {
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name1",
 				},
@@ -755,13 +755,13 @@ func TestPurchaseService_FindAfterDate(t *testing.T) {
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name1",
 				},
@@ -815,13 +815,13 @@ func TestPurchaseService_FindBeforeDate(t *testing.T) {
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name1",
 				},
@@ -878,13 +878,13 @@ func TestPurchaseService_FindByFileName(t *testing.T) {
 			expPurchase: []model.Purchase{
 				{
 					ID:       23,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},
 				{
 					ID:       24,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "some name",
 				},

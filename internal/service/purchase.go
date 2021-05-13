@@ -19,7 +19,7 @@ func NewPurchaseService(purchase repository.Purchase) *PurchaseService {
 // Create creates new Purchase and returns id.
 func (p PurchaseService) Create(request model.CreatePurchaseRequest) (int, error) {
 	purchase := model.Purchase{
-		UserId:   request.UserId,
+		UserID:   request.UserID,
 		Date:     request.Date,
 		FileName: request.FileName,
 	}
@@ -33,7 +33,7 @@ func (p PurchaseService) Create(request model.CreatePurchaseRequest) (int, error
 
 // Delete deletes Purchase and returns deleted id.
 func (p PurchaseService) Delete(request model.DeletePurchaseRequest) (int, error) {
-	id, err := p.Purchase.Delete(request.Id)
+	id, err := p.Purchase.Delete(request.ID)
 	if err != nil {
 		return 0, errors.Wrap(err, "couldn't delete purchase")
 	}
@@ -41,9 +41,9 @@ func (p PurchaseService) Delete(request model.DeletePurchaseRequest) (int, error
 	return id, nil
 }
 
-// FindById finds Purchase by id.
-func (p PurchaseService) FindById(request model.IdPurchaseRequest) (*model.Purchase, error) {
-	purchase, err := p.Purchase.FindById(request.Id)
+// FindByID finds Purchase by id.
+func (p PurchaseService) FindByID(request model.IDPurchaseRequest) (*model.Purchase, error) {
+	purchase, err := p.Purchase.FindByID(request.ID)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find purchase")
 	}
@@ -51,9 +51,9 @@ func (p PurchaseService) FindById(request model.IdPurchaseRequest) (*model.Purch
 	return purchase, nil
 }
 
-// FindLastByUserId finds last Purchase by userId.
-func (p PurchaseService) FindLastByUserId(request model.UserIdPurchaseRequest) (*model.Purchase, error) {
-	purchase, err := p.Purchase.FindLastByUserId(request.Id)
+// FindLastByUserID finds last Purchase by userId.
+func (p PurchaseService) FindLastByUserID(request model.UserIDPurchaseRequest) (*model.Purchase, error) {
+	purchase, err := p.Purchase.FindLastByUserID(request.ID)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find purchase")
 	}
@@ -61,9 +61,9 @@ func (p PurchaseService) FindLastByUserId(request model.UserIdPurchaseRequest) (
 	return purchase, nil
 }
 
-// FindAllByUserId finds all Purchase by userId.
-func (p PurchaseService) FindAllByUserId(request model.UserIdPurchaseRequest) ([]model.Purchase, error) {
-	purchases, err := p.Purchase.FindAllByUserId(request.Id)
+// FindAllByUserID finds all Purchase by userId.
+func (p PurchaseService) FindAllByUserID(request model.UserIDPurchaseRequest) ([]model.Purchase, error) {
+	purchases, err := p.Purchase.FindAllByUserID(request.ID)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find purchases")
 	}
@@ -71,9 +71,9 @@ func (p PurchaseService) FindAllByUserId(request model.UserIdPurchaseRequest) ([
 	return purchases, nil
 }
 
-// FindByUserIdAndPeriod finds all Purchase by userId and date period.
-func (p PurchaseService) FindByUserIdAndPeriod(request model.UserIdPeriodPurchaseRequest) ([]model.Purchase, error) {
-	purchases, err := p.Purchase.FindByUserIdAndPeriod(request.Id, request.Start, request.End)
+// FindByUserIDAndPeriod finds all Purchase by userId and date period.
+func (p PurchaseService) FindByUserIDAndPeriod(request model.UserIDPeriodPurchaseRequest) ([]model.Purchase, error) {
+	purchases, err := p.Purchase.FindByUserIDAndPeriod(request.ID, request.Start, request.End)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find purchases")
 	}
@@ -81,9 +81,9 @@ func (p PurchaseService) FindByUserIdAndPeriod(request model.UserIdPeriodPurchas
 	return purchases, nil
 }
 
-// FindByUserIdAfterDate finds all Purchase by userId and after date.
-func (p PurchaseService) FindByUserIdAfterDate(request model.UserIdAfterDatePurchaseRequest) ([]model.Purchase, error) {
-	purchases, err := p.Purchase.FindByUserIdAfterDate(request.Id, request.Start)
+// FindByUserIDAfterDate finds all Purchase by userId and after date.
+func (p PurchaseService) FindByUserIDAfterDate(request model.UserIDAfterDatePurchaseRequest) ([]model.Purchase, error) {
+	purchases, err := p.Purchase.FindByUserIDAfterDate(request.ID, request.Start)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find purchases")
 	}
@@ -91,9 +91,9 @@ func (p PurchaseService) FindByUserIdAfterDate(request model.UserIdAfterDatePurc
 	return purchases, nil
 }
 
-// FindByUserIdBeforeDate finds all Purchase by userId and before date.
-func (p PurchaseService) FindByUserIdBeforeDate(request model.UserIdBeforeDatePurchaseRequest) ([]model.Purchase, error) {
-	purchases, err := p.Purchase.FindByUserIdBeforeDate(request.Id, request.End)
+// FindByUserIDBeforeDate finds all Purchase by userId and before date.
+func (p PurchaseService) FindByUserIDBeforeDate(request model.UserIDBeforeDatePurchaseRequest) ([]model.Purchase, error) {
+	purchases, err := p.Purchase.FindByUserIDBeforeDate(request.ID, request.End)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find purchases")
 	}
@@ -101,9 +101,9 @@ func (p PurchaseService) FindByUserIdBeforeDate(request model.UserIdBeforeDatePu
 	return purchases, nil
 }
 
-// FindByUserIdAndFileName finds all Purchase by userId and file name.
-func (p PurchaseService) FindByUserIdAndFileName(request model.UserIdFileNamePurchaseRequest) ([]model.Purchase, error) {
-	purchases, err := p.Purchase.FindByUserIdAndFileName(request.Id, request.FileName)
+// FindByUserIDAndFileName finds all Purchase by userId and file name.
+func (p PurchaseService) FindByUserIDAndFileName(request model.UserIDFileNamePurchaseRequest) ([]model.Purchase, error) {
+	purchases, err := p.Purchase.FindByUserIDAndFileName(request.ID, request.FileName)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find purchases")
 	}

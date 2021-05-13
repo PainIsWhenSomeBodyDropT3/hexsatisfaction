@@ -88,7 +88,7 @@ func (u *userRouter) loginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(token) == 0 {
+	if token == "" {
 		middleware.Empty(w, http.StatusNotFound)
 		return
 	}

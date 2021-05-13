@@ -19,42 +19,42 @@ func NewPurchaseRepo(db *sql.DB) *PurchaseRepo {
 
 // Create creates new Purchase and returns id.
 func (p PurchaseRepo) Create(purchase model.Purchase) (int, error) {
-	var creatId int
-	rows, err := p.db.Query("INSERT INTO purchase (userID , date,fileName) VALUES ($1,$2,$3) RETURNING id ", purchase.UserId, purchase.Date, purchase.FileName)
+	var creatID int
+	rows, err := p.db.Query("INSERT INTO purchase (userID , date,fileName) VALUES ($1,$2,$3) RETURNING id ", purchase.UserID, purchase.Date, purchase.FileName)
 	if err != nil {
 		return 0, err
 	}
 
 	if rows.Next() {
-		err = rows.Scan(&creatId)
+		err = rows.Scan(&creatID)
 		if err != nil {
 			return 0, err
 		}
 	}
-	return creatId, rows.Err()
+	return creatID, rows.Err()
 
 }
 
 // Delete deletes Purchase and returns deleted id.
 func (p PurchaseRepo) Delete(id int) (int, error) {
-	var delId int
+	var delID int
 	rows, err := p.db.Query("DELETE FROM purchase WHERE id=$1 RETURNING id ", id)
 	if err != nil {
 		return 0, err
 	}
 
 	if rows.Next() {
-		err = rows.Scan(&delId)
+		err = rows.Scan(&delID)
 		if err != nil {
 			return 0, err
 		}
 	}
 
-	return delId, rows.Err()
+	return delID, rows.Err()
 }
 
-// FindById finds Purchase by id.
-func (p PurchaseRepo) FindById(id int) (*model.Purchase, error) {
+// FindByID finds Purchase by id.
+func (p PurchaseRepo) FindByID(id int) (*model.Purchase, error) {
 	var purchase model.Purchase
 	rows, err := p.db.Query("SELECT * FROM purchase WHERE id=$1", id)
 	if err != nil {
@@ -62,7 +62,7 @@ func (p PurchaseRepo) FindById(id int) (*model.Purchase, error) {
 	}
 
 	if rows.Next() {
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -71,15 +71,15 @@ func (p PurchaseRepo) FindById(id int) (*model.Purchase, error) {
 	return &purchase, rows.Err()
 }
 
-// FindLastByUserId finds last Purchase by userId.
-func (p PurchaseRepo) FindLastByUserId(id int) (*model.Purchase, error) {
+// FindLastByUserID finds last Purchase by userId.
+func (p PurchaseRepo) FindLastByUserID(id int) (*model.Purchase, error) {
 	var purchase model.Purchase
 	rows, err := p.db.Query("SELECT * FROM purchase WHERE userID = $1 ORDER BY id DESC limit 1;", id)
 	if err != nil {
 		return nil, err
 	}
 	if rows.Next() {
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -88,8 +88,8 @@ func (p PurchaseRepo) FindLastByUserId(id int) (*model.Purchase, error) {
 	return &purchase, rows.Err()
 }
 
-// FindAllByUserId finds all Purchase by userId.
-func (p PurchaseRepo) FindAllByUserId(id int) ([]model.Purchase, error) {
+// FindAllByUserID finds all Purchase by userId.
+func (p PurchaseRepo) FindAllByUserID(id int) ([]model.Purchase, error) {
 	var purchases []model.Purchase
 	var purchase model.Purchase
 	rows, err := p.db.Query("SELECT * FROM purchase WHERE userID=$1", id)
@@ -99,7 +99,7 @@ func (p PurchaseRepo) FindAllByUserId(id int) ([]model.Purchase, error) {
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -109,8 +109,8 @@ func (p PurchaseRepo) FindAllByUserId(id int) ([]model.Purchase, error) {
 	return purchases, rows.Err()
 }
 
-// FindByUserIdAndPeriod finds all Purchase by userId and date period.
-func (p PurchaseRepo) FindByUserIdAndPeriod(id int, start, end time.Time) ([]model.Purchase, error) {
+// FindByUserIDAndPeriod finds all Purchase by userId and date period.
+func (p PurchaseRepo) FindByUserIDAndPeriod(id int, start, end time.Time) ([]model.Purchase, error) {
 	var purchases []model.Purchase
 	var purchase model.Purchase
 	rows, err := p.db.Query("SELECT * FROM purchase WHERE userID=$1 AND date BETWEEN $2 AND $3", id, start, end)
@@ -120,7 +120,7 @@ func (p PurchaseRepo) FindByUserIdAndPeriod(id int, start, end time.Time) ([]mod
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -130,8 +130,8 @@ func (p PurchaseRepo) FindByUserIdAndPeriod(id int, start, end time.Time) ([]mod
 	return purchases, rows.Err()
 }
 
-// FindByUserIdAfterDate finds all Purchase by userId and after date.
-func (p PurchaseRepo) FindByUserIdAfterDate(id int, start time.Time) ([]model.Purchase, error) {
+// FindByUserIDAfterDate finds all Purchase by userId and after date.
+func (p PurchaseRepo) FindByUserIDAfterDate(id int, start time.Time) ([]model.Purchase, error) {
 	var purchases []model.Purchase
 	var purchase model.Purchase
 	rows, err := p.db.Query("SELECT * FROM purchase WHERE userID=$1 AND date >= $2", id, start)
@@ -141,7 +141,7 @@ func (p PurchaseRepo) FindByUserIdAfterDate(id int, start time.Time) ([]model.Pu
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -151,8 +151,8 @@ func (p PurchaseRepo) FindByUserIdAfterDate(id int, start time.Time) ([]model.Pu
 	return purchases, rows.Err()
 }
 
-// FindByUserIdBeforeDate finds all Purchase by userId and before date.
-func (p PurchaseRepo) FindByUserIdBeforeDate(id int, end time.Time) ([]model.Purchase, error) {
+// FindByUserIDBeforeDate finds all Purchase by userId and before date.
+func (p PurchaseRepo) FindByUserIDBeforeDate(id int, end time.Time) ([]model.Purchase, error) {
 	var purchases []model.Purchase
 	var purchase model.Purchase
 	rows, err := p.db.Query("SELECT * FROM purchase WHERE userID=$1 AND date <= $2", id, end)
@@ -162,7 +162,7 @@ func (p PurchaseRepo) FindByUserIdBeforeDate(id int, end time.Time) ([]model.Pur
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -172,8 +172,8 @@ func (p PurchaseRepo) FindByUserIdBeforeDate(id int, end time.Time) ([]model.Pur
 	return purchases, rows.Err()
 }
 
-// FindByUserIdAndFileName finds all Purchase by userId and file name.
-func (p PurchaseRepo) FindByUserIdAndFileName(id int, name string) ([]model.Purchase, error) {
+// FindByUserIDAndFileName finds all Purchase by userId and file name.
+func (p PurchaseRepo) FindByUserIDAndFileName(id int, name string) ([]model.Purchase, error) {
 	var purchases []model.Purchase
 	var purchase model.Purchase
 	rows, err := p.db.Query("SELECT * FROM purchase WHERE userID=$1 AND fileName = $2", id, name)
@@ -183,7 +183,7 @@ func (p PurchaseRepo) FindByUserIdAndFileName(id int, name string) ([]model.Purc
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -201,7 +201,7 @@ func (p PurchaseRepo) FindLast() (*model.Purchase, error) {
 		return nil, err
 	}
 	if rows.Next() {
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -221,7 +221,7 @@ func (p PurchaseRepo) FindAll() ([]model.Purchase, error) {
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -242,7 +242,7 @@ func (p PurchaseRepo) FindByPeriod(start, end time.Time) ([]model.Purchase, erro
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -263,7 +263,7 @@ func (p PurchaseRepo) FindAfterDate(start time.Time) ([]model.Purchase, error) {
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -284,7 +284,7 @@ func (p PurchaseRepo) FindBeforeDate(end time.Time) ([]model.Purchase, error) {
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}
@@ -305,7 +305,7 @@ func (p PurchaseRepo) FindByFileName(name string) ([]model.Purchase, error) {
 
 	for i := 0; rows.Next(); i++ {
 
-		err = rows.Scan(&purchase.ID, &purchase.UserId, &purchase.Date, &purchase.FileName)
+		err = rows.Scan(&purchase.ID, &purchase.UserID, &purchase.Date, &purchase.FileName)
 		if err != nil {
 			return nil, err
 		}

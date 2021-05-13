@@ -12,14 +12,16 @@ import (
 	"github.com/spf13/viper"
 )
 
-type api struct {
+// TestAPI represents a struct for tests api.
+type TestAPI struct {
 	*Services
 	auth.TokenManager
 }
 
 const configPath = "config/main"
 
-func InitTest4Mock() (*api, error) {
+// InitTest4Mock initialize an a TestAPI for mock testing.
+func InitTest4Mock() (*TestAPI, error) {
 	env := ".env"
 	envPath, err := os.Getwd()
 	if err != nil {
@@ -42,7 +44,7 @@ func InitTest4Mock() (*api, error) {
 	return initServices4Test(), nil
 }
 
-func initServices4Test() *api {
+func initServices4Test() *TestAPI {
 	cfg, err := config.Init(configPath)
 	if err != nil {
 		log.Fatal("Init config error: ", err)
@@ -57,7 +59,7 @@ func initServices4Test() *api {
 		log.Fatal(err)
 	}
 
-	return &api{
+	return &TestAPI{
 		Services: NewServices(Deps{
 			Repos:        repos,
 			TokenManager: tokenManager,
