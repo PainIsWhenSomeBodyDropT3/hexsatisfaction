@@ -78,5 +78,5 @@ func routeSwagger(router *handler.API) {
 	sh := middleware.Redoc(ops, nil)
 
 	router.Handle("/docs", sh)
-	router.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
+	router.Handle("/swagger.yaml", http.FileServer(http.Dir("./docs/")))
 }
