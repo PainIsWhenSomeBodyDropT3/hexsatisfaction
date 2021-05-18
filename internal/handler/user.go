@@ -3,6 +3,8 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -57,7 +59,12 @@ func (req *loginRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	return nil
 }
@@ -119,7 +126,12 @@ func (req *registerRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	return nil
 }

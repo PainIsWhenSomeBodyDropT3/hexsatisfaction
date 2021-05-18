@@ -3,6 +3,8 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -104,7 +106,12 @@ func (req *createPurchaseRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	return nil
 }
@@ -422,7 +429,12 @@ func (req *userIDPeriodPurchaseRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	vID, ok := mux.Vars(r)["id"]
 	if !ok {
@@ -499,7 +511,12 @@ func (req *userIDAfterDatePurchaseRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	vID, ok := mux.Vars(r)["id"]
 	if !ok {
@@ -574,7 +591,12 @@ func (req *userIDBeforeDatePurchaseRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	vID, ok := mux.Vars(r)["id"]
 	if !ok {
@@ -773,7 +795,12 @@ func (req *periodPurchaseRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	return nil
 }
@@ -835,7 +862,12 @@ func (req *afterDatePurchaseRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	return nil
 }
@@ -895,7 +927,12 @@ func (req *beforeDatePurchaseRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	return nil
 }
