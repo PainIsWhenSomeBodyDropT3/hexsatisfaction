@@ -53,6 +53,8 @@ func TestPurchaseRepo_Create(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_Delete(t *testing.T) {
@@ -99,6 +101,8 @@ func TestPurchaseRepo_Delete(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindById(t *testing.T) {
@@ -170,6 +174,8 @@ func TestPurchaseRepo_FindById(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
@@ -248,6 +254,8 @@ func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
@@ -334,6 +342,8 @@ func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
@@ -426,6 +436,8 @@ func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
@@ -515,6 +527,8 @@ func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
@@ -604,6 +618,8 @@ func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
@@ -689,6 +705,8 @@ func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindLast(t *testing.T) {
@@ -766,6 +784,8 @@ func TestPurchaseRepo_FindLast(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindAll(t *testing.T) {
@@ -852,6 +872,8 @@ func TestPurchaseRepo_FindAll(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindByPeriod(t *testing.T) {
@@ -944,6 +966,8 @@ func TestPurchaseRepo_FindByPeriod(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindAfterDate(t *testing.T) {
@@ -1033,6 +1057,8 @@ func TestPurchaseRepo_FindAfterDate(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
@@ -1122,6 +1148,8 @@ func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestPurchaseRepo_FindFileName(t *testing.T) {
@@ -1207,4 +1235,6 @@ func TestPurchaseRepo_FindFileName(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }

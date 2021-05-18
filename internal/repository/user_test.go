@@ -60,6 +60,8 @@ func TestUser_FindByCredentials(t *testing.T) {
 			}
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestUser_IsExist(t *testing.T) {
@@ -103,6 +105,8 @@ func TestUser_IsExist(t *testing.T) {
 			}
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestUser_FindByLogin(t *testing.T) {
@@ -150,6 +154,8 @@ func TestUser_FindByLogin(t *testing.T) {
 			}
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestUserRepo_Create(t *testing.T) {
@@ -180,4 +186,6 @@ func TestUserRepo_Create(t *testing.T) {
 			require.NoError(t, err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }

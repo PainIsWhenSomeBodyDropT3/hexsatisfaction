@@ -70,4 +70,6 @@ func TestUserRole_FindAllUser(t *testing.T) {
 			}
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
