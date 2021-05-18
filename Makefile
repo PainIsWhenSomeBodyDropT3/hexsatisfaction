@@ -6,3 +6,13 @@ migrate_up:
 
 migrate_down:
 	    migrate -path migrations/ -database "postgresql://postgres:18051965q@localhost:5432/postgres?sslmode=disable" down
+
+.PHONY swagger:swagger-spec
+
+swagger-spec:
+	swag init -g cmd/main.go
+
+run:
+	go run cmd/main.go
+
+start : lint  swagger  run

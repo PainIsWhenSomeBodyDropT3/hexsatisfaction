@@ -33,6 +33,7 @@ linters:
   - govet
   - unused
 
+
 issues:
   exclude-use-default: false
   max-same-issues: 10

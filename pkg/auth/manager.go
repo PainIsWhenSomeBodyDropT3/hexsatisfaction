@@ -14,7 +14,7 @@ const authorizationHeader = "Authorization"
 
 // TokenManager provides logic for a JWT token generation and parsing.
 type TokenManager interface {
-	NewJWT(userId string) (string, error)
+	NewJWT(userID string) (string, error)
 	Parse(accessToken string) (string, error)
 	UserIdentity(next http.Handler) http.Handler
 }
@@ -34,9 +34,9 @@ func NewManager(signingKey string) (*Manager, error) {
 }
 
 // NewJWT creates a new JWT token.
-func (m *Manager) NewJWT(userId string) (string, error) {
+func (m *Manager) NewJWT(userID string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Subject: userId,
+		Subject: userID,
 	})
 
 	return token.SignedString([]byte(m.signingKey))

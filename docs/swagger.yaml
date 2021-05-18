@@ -1,0 +1,719 @@
+basePath: /
+definitions:
+  middleware.SwagEmptyError:
+    type: object
+  middleware.SwagError:
+    properties:
+      message:
+        type: string
+    type: object
+  model.AfterDatePurchaseRequest:
+    properties:
+      start:
+        description: 'required: true'
+        type: string
+    type: object
+  model.BeforeDatePurchaseRequest:
+    properties:
+      end:
+        description: 'required: true'
+        type: string
+    type: object
+  model.CreatePurchaseRequest:
+    properties:
+      date:
+        description: 'required: true'
+        type: string
+      fileName:
+        description: 'required: true'
+        type: string
+      userID:
+        description: 'required: true'
+        type: integer
+    type: object
+  model.LoginUserRequest:
+    properties:
+      login:
+        description: 'required: true'
+        type: string
+      password:
+        description: 'required: true'
+        type: string
+    type: object
+  model.PeriodPurchaseRequest:
+    properties:
+      end:
+        description: 'required: true'
+        type: string
+      start:
+        description: 'required: true'
+        type: string
+    type: object
+  model.Purchase:
+    properties:
+      date:
+        type: string
+      fileName:
+        type: string
+      id:
+        type: integer
+      userID:
+        type: integer
+    type: object
+  model.RegisterUserRequest:
+    properties:
+      login:
+        description: 'required: true'
+        type: string
+      password:
+        description: 'required: true'
+        type: string
+    type: object
+  model.UserIDAfterDatePurchaseRequest:
+    properties:
+      start:
+        description: 'required: true'
+        type: string
+    type: object
+  model.UserIDBeforeDatePurchaseRequest:
+    properties:
+      end:
+        description: 'required: true'
+        type: string
+    type: object
+  model.UserIDPeriodPurchaseRequest:
+    properties:
+      end:
+        description: 'required: true'
+        type: string
+      start:
+        description: 'required: true'
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: API Service for Hexsatisfaction
+  title: Hexsatisfaction API
+  version: "1.0"
+paths:
+  /purchase/api/:
+    get:
+      consumes:
+      - application/json
+      description: Find all purchases
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "404":
+          description: No purchase
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindAll
+      tags:
+      - purchase
+    post:
+      consumes:
+      - application/json
+      description: Create purchase
+      parameters:
+      - description: Purchase
+        in: body
+        name: purchase
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreatePurchaseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create
+      tags:
+      - purchase
+  /purchase/api/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete
+      parameters:
+      - description: Purchase id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchase
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete
+      tags:
+      - purchase
+    get:
+      consumes:
+      - application/json
+      description: Find purchase by id
+      parameters:
+      - description: Purchase id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Purchase'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchase
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByID
+      tags:
+      - purchase
+  /purchase/api/after:
+    post:
+      consumes:
+      - application/json
+      description: Find after date
+      parameters:
+      - description: After date
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/model.AfterDatePurchaseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchases
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindAfterDate
+      tags:
+      - purchase
+  /purchase/api/after/user/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Find by user id after date
+      parameters:
+      - description: After date
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserIDAfterDatePurchaseRequest'
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchases
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByUserIDAfterDate
+      tags:
+      - purchase
+  /purchase/api/before:
+    post:
+      consumes:
+      - application/json
+      description: Find before date
+      parameters:
+      - description: Before date
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/model.BeforeDatePurchaseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchases
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindBeforeDate
+      tags:
+      - purchase
+  /purchase/api/before/user/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Find by user id before date
+      parameters:
+      - description: Before date
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserIDBeforeDatePurchaseRequest'
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchases
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByUserIDBeforeDate
+      tags:
+      - purchase
+  /purchase/api/file/{file}:
+    get:
+      consumes:
+      - application/json
+      description: Find purchases by file name
+      parameters:
+      - description: File name
+        in: path
+        name: file
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchases
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByFileName
+      tags:
+      - purchase
+  /purchase/api/last/:
+    get:
+      consumes:
+      - application/json
+      description: Find last purchase
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Purchase'
+        "404":
+          description: No purchase
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindLast
+      tags:
+      - purchase
+  /purchase/api/last/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Find last purchase by user id
+      parameters:
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Purchase'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchase
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindLastByUserID
+      tags:
+      - purchase
+  /purchase/api/period:
+    post:
+      consumes:
+      - application/json
+      description: Find by period
+      parameters:
+      - description: Period
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/model.PeriodPurchaseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchases
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByPeriod
+      tags:
+      - purchase
+  /purchase/api/period/user/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Find by user id and period
+      parameters:
+      - description: Period
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserIDPeriodPurchaseRequest'
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchases
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByUserIDAndPeriod
+      tags:
+      - purchase
+  /purchase/api/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Find purchases by user id
+      parameters:
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchases
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindAllByUserID
+      tags:
+      - purchase
+  /purchase/api/user/{id}/file/{file}:
+    get:
+      consumes:
+      - application/json
+      description: Find purchases by user id and file name
+      parameters:
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: File name
+        in: path
+        name: file
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Purchase'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No purchases
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByUserIDAndFileName
+      tags:
+      - purchase
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: User credentials
+        in: body
+        name: userCred
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: SingIn
+      tags:
+      - user
+  /user/registration:
+    post:
+      consumes:
+      - application/json
+      description: Register user
+      parameters:
+      - description: User credentials
+        in: body
+        name: userCred
+        required: true
+        schema:
+          $ref: '#/definitions/model.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "302":
+          description: Found
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: SingUp
+      tags:
+      - user
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

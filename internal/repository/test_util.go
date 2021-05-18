@@ -10,6 +10,7 @@ import (
 
 const configPath = "config/main"
 
+// Connect2Repositories connects to a pg database.
 func Connect2Repositories() (*sql.DB, *Repositories, error) {
 
 	cfg, err := config.Init(configPath)

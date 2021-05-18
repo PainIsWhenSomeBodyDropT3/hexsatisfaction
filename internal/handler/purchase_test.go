@@ -27,9 +27,9 @@ const (
 )
 
 func TestPurchase_Create(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -48,7 +48,7 @@ func TestPurchase_Create(t *testing.T) {
 			path:   slash + purchase + slash + api + slash,
 			method: http.MethodPost,
 			req: model.CreatePurchaseRequest{
-				UserId:   0,
+				UserID:   0,
 				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				FileName: "some name",
 			},
@@ -64,7 +64,7 @@ func TestPurchase_Create(t *testing.T) {
 			path:   slash + purchase + slash + api + slash,
 			method: http.MethodPost,
 			req: model.CreatePurchaseRequest{
-				UserId:   23,
+				UserID:   23,
 				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				FileName: "some name",
 			},
@@ -79,7 +79,7 @@ func TestPurchase_Create(t *testing.T) {
 			path:   slash + purchase + slash + api + slash,
 			method: http.MethodPost,
 			req: model.CreatePurchaseRequest{
-				UserId:   23,
+				UserID:   23,
 				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				FileName: "some name",
 			},
@@ -95,8 +95,8 @@ func TestPurchase_Create(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var r string
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -122,9 +122,9 @@ func TestPurchase_Create(t *testing.T) {
 }
 
 func TestPurchase_Delete(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -145,7 +145,7 @@ func TestPurchase_Delete(t *testing.T) {
 			method:  http.MethodDelete,
 			isOkRes: true,
 			req: model.DeletePurchaseRequest{
-				Id: 0,
+				ID: 0,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
 				purchaseService.On("Delete", data.req).
@@ -160,7 +160,7 @@ func TestPurchase_Delete(t *testing.T) {
 			method:  http.MethodDelete,
 			isOkRes: true,
 			req: model.DeletePurchaseRequest{
-				Id: 15,
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
 				purchaseService.On("Delete", data.req).
@@ -173,7 +173,7 @@ func TestPurchase_Delete(t *testing.T) {
 			path:   slash + purchase + slash + api + slash,
 			method: http.MethodDelete,
 			req: model.DeletePurchaseRequest{
-				Id: 15,
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
 				purchaseService.On("Delete", data.req).
@@ -187,7 +187,7 @@ func TestPurchase_Delete(t *testing.T) {
 			method:  http.MethodDelete,
 			isOkRes: true,
 			req: model.DeletePurchaseRequest{
-				Id: 15,
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
 				purchaseService.On("Delete", data.req).
@@ -201,13 +201,13 @@ func TestPurchase_Delete(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var r string
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
 
-			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.Id), nil)
+			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
 			require.NoError(t, err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
@@ -226,9 +226,9 @@ func TestPurchase_Delete(t *testing.T) {
 }
 
 func TestPurchase_FindById(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -237,7 +237,7 @@ func TestPurchase_FindById(t *testing.T) {
 		method      string
 		isOkMessage bool
 		isOkRes     bool
-		req         model.IdPurchaseRequest
+		req         model.IDPurchaseRequest
 		fn          func(purchaseService *m.Purchase, data test)
 		expCode     int
 		expRes      model.Purchase
@@ -250,11 +250,11 @@ func TestPurchase_FindById(t *testing.T) {
 			path:        slash + purchase + slash + api + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.IdPurchaseRequest{
-				Id: 0,
+			req: model.IDPurchaseRequest{
+				ID: 0,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindById", data.req).
+				purchaseService.On("FindByID", data.req).
 					Return(&data.expRes, nil)
 			},
 			expCode: http.StatusBadRequest,
@@ -265,11 +265,11 @@ func TestPurchase_FindById(t *testing.T) {
 			path:        slash + purchase + slash + api + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.IdPurchaseRequest{
-				Id: 15,
+			req: model.IDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindById", data.req).
+				purchaseService.On("FindByID", data.req).
 					Return(&data.expRes, errors.New(""))
 			},
 			expCode: http.StatusInternalServerError,
@@ -278,11 +278,11 @@ func TestPurchase_FindById(t *testing.T) {
 			name:   "not found",
 			path:   slash + purchase + slash + api + slash,
 			method: http.MethodGet,
-			req: model.IdPurchaseRequest{
-				Id: 15,
+			req: model.IDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindById", data.req).
+				purchaseService.On("FindByID", data.req).
 					Return(&data.expRes, nil)
 			},
 			expCode: http.StatusNotFound,
@@ -292,17 +292,17 @@ func TestPurchase_FindById(t *testing.T) {
 			path:    slash + purchase + slash + api + slash,
 			method:  http.MethodGet,
 			isOkRes: true,
-			req: model.IdPurchaseRequest{
-				Id: 15,
+			req: model.IDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindById", data.req).
+				purchaseService.On("FindByID", data.req).
 					Return(&data.expRes, nil)
 			},
 			expCode: http.StatusOK,
 			expRes: model.Purchase{
 				ID:       15,
-				UserId:   15,
+				UserID:   15,
 				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				FileName: "test",
 			},
@@ -313,13 +313,13 @@ func TestPurchase_FindById(t *testing.T) {
 			var r string
 			var p model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
 
-			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.Id), nil)
+			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
 			require.NoError(t, err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
@@ -328,15 +328,16 @@ func TestPurchase_FindById(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -344,9 +345,9 @@ func TestPurchase_FindById(t *testing.T) {
 }
 
 func TestPurchase_FindLastByUserId(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -355,7 +356,7 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 		method      string
 		isOkMessage bool
 		isOkRes     bool
-		req         model.UserIdPurchaseRequest
+		req         model.UserIDPurchaseRequest
 		fn          func(purchaseService *m.Purchase, data test)
 		expCode     int
 		expRes      model.Purchase
@@ -368,11 +369,11 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + last + slash + user + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.UserIdPurchaseRequest{
-				Id: 0,
+			req: model.UserIDPurchaseRequest{
+				ID: 0,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindLastByUserId", data.req).
+				purchaseService.On("FindLastByUserID", data.req).
 					Return(&data.expRes, nil)
 			},
 			expCode: http.StatusBadRequest,
@@ -383,11 +384,11 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + last + slash + user + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.UserIdPurchaseRequest{
-				Id: 15,
+			req: model.UserIDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindLastByUserId", data.req).
+				purchaseService.On("FindLastByUserID", data.req).
 					Return(&data.expRes, errors.New(""))
 			},
 			expCode: http.StatusInternalServerError,
@@ -396,11 +397,11 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 			name:   "not found",
 			path:   slash + purchase + slash + api + slash + last + slash + user + slash,
 			method: http.MethodGet,
-			req: model.UserIdPurchaseRequest{
-				Id: 15,
+			req: model.UserIDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindLastByUserId", data.req).
+				purchaseService.On("FindLastByUserID", data.req).
 					Return(&data.expRes, nil)
 			},
 			expCode: http.StatusNotFound,
@@ -410,17 +411,17 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + last + slash + user + slash,
 			method:  http.MethodGet,
 			isOkRes: true,
-			req: model.IdPurchaseRequest{
-				Id: 15,
+			req: model.IDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindLastByUserId", data.req).
+				purchaseService.On("FindLastByUserID", data.req).
 					Return(&data.expRes, nil)
 			},
 			expCode: http.StatusOK,
 			expRes: model.Purchase{
 				ID:       15,
-				UserId:   15,
+				UserID:   15,
 				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				FileName: "test",
 			},
@@ -431,13 +432,13 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 			var r string
 			var p model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
 
-			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.Id), nil)
+			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
 			require.NoError(t, err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
@@ -446,15 +447,16 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -462,9 +464,9 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 }
 
 func TestPurchase_FindAllByUserId(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -473,7 +475,7 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 		method      string
 		isOkMessage bool
 		isOkRes     bool
-		req         model.UserIdPurchaseRequest
+		req         model.UserIDPurchaseRequest
 		fn          func(purchaseService *m.Purchase, data test)
 		expCode     int
 		expRes      []model.Purchase
@@ -486,11 +488,11 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + user + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.UserIdPurchaseRequest{
-				Id: 0,
+			req: model.UserIDPurchaseRequest{
+				ID: 0,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindAllByUserId", data.req).
+				purchaseService.On("FindAllByUserID", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusBadRequest,
@@ -501,11 +503,11 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + user + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.UserIdPurchaseRequest{
-				Id: 15,
+			req: model.UserIDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindAllByUserId", data.req).
+				purchaseService.On("FindAllByUserID", data.req).
 					Return(data.expRes, errors.New(""))
 			},
 			expCode: http.StatusInternalServerError,
@@ -514,11 +516,11 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 			name:   "not found",
 			path:   slash + purchase + slash + api + slash + user + slash,
 			method: http.MethodGet,
-			req: model.UserIdPurchaseRequest{
-				Id: 15,
+			req: model.UserIDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindAllByUserId", data.req).
+				purchaseService.On("FindAllByUserID", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusNotFound,
@@ -528,24 +530,24 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + user + slash,
 			method:  http.MethodGet,
 			isOkRes: true,
-			req: model.IdPurchaseRequest{
-				Id: 15,
+			req: model.IDPurchaseRequest{
+				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindAllByUserId", data.req).
+				purchaseService.On("FindAllByUserID", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -557,13 +559,13 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
 
-			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.Id), nil)
+			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
 			require.NoError(t, err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
@@ -572,15 +574,16 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -588,9 +591,9 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 }
 
 func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -599,7 +602,7 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 		method      string
 		isOkMessage bool
 		isOkRes     bool
-		req         model.UserIdPeriodPurchaseRequest
+		req         model.UserIDPeriodPurchaseRequest
 		fn          func(purchaseService *m.Purchase, data test)
 		expCode     int
 		expRes      []model.Purchase
@@ -612,13 +615,13 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + period + slash + user + slash,
 			method:      http.MethodPost,
 			isOkMessage: true,
-			req: model.UserIdPeriodPurchaseRequest{
-				Id:    0,
+			req: model.UserIDPeriodPurchaseRequest{
+				ID:    0,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				End:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAndPeriod", data.req).
+				purchaseService.On("FindByUserIDAndPeriod", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusBadRequest,
@@ -629,13 +632,13 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + period + slash + user + slash,
 			method:      http.MethodPost,
 			isOkMessage: true,
-			req: model.UserIdPeriodPurchaseRequest{
-				Id:    15,
+			req: model.UserIDPeriodPurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				End:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAndPeriod", data.req).
+				purchaseService.On("FindByUserIDAndPeriod", data.req).
 					Return(data.expRes, errors.New(""))
 			},
 			expCode: http.StatusInternalServerError,
@@ -644,13 +647,13 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 			name:   "not found",
 			path:   slash + purchase + slash + api + slash + period + slash + user + slash,
 			method: http.MethodPost,
-			req: model.UserIdPeriodPurchaseRequest{
-				Id:    15,
+			req: model.UserIDPeriodPurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				End:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAndPeriod", data.req).
+				purchaseService.On("FindByUserIDAndPeriod", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusNotFound,
@@ -660,26 +663,26 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + period + slash + user + slash,
 			method:  http.MethodPost,
 			isOkRes: true,
-			req: model.UserIdPeriodPurchaseRequest{
-				Id:    15,
+			req: model.UserIDPeriodPurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				End:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAndPeriod", data.req).
+				purchaseService.On("FindByUserIDAndPeriod", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -691,8 +694,8 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -701,7 +704,7 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 			err := json.NewEncoder(body).Encode(&tc.req)
 			require.NoError(t, err)
 
-			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.Id), body)
+			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), body)
 			require.NoError(t, err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
@@ -710,15 +713,16 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -726,9 +730,9 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 }
 
 func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -737,7 +741,7 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 		method      string
 		isOkMessage bool
 		isOkRes     bool
-		req         model.UserIdAfterDatePurchaseRequest
+		req         model.UserIDAfterDatePurchaseRequest
 		fn          func(purchaseService *m.Purchase, data test)
 		expCode     int
 		expRes      []model.Purchase
@@ -750,12 +754,12 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + after + slash + user + slash,
 			method:      http.MethodPost,
 			isOkMessage: true,
-			req: model.UserIdAfterDatePurchaseRequest{
-				Id:    0,
+			req: model.UserIDAfterDatePurchaseRequest{
+				ID:    0,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAfterDate", data.req).
+				purchaseService.On("FindByUserIDAfterDate", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusBadRequest,
@@ -766,12 +770,12 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + after + slash + user + slash,
 			method:      http.MethodPost,
 			isOkMessage: true,
-			req: model.UserIdAfterDatePurchaseRequest{
-				Id:    15,
+			req: model.UserIDAfterDatePurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAfterDate", data.req).
+				purchaseService.On("FindByUserIDAfterDate", data.req).
 					Return(data.expRes, errors.New(""))
 			},
 			expCode: http.StatusInternalServerError,
@@ -780,12 +784,12 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 			name:   "not found",
 			path:   slash + purchase + slash + api + slash + after + slash + user + slash,
 			method: http.MethodPost,
-			req: model.UserIdAfterDatePurchaseRequest{
-				Id:    15,
+			req: model.UserIDAfterDatePurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAfterDate", data.req).
+				purchaseService.On("FindByUserIDAfterDate", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusNotFound,
@@ -795,25 +799,25 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + after + slash + user + slash,
 			method:  http.MethodPost,
 			isOkRes: true,
-			req: model.UserIdAfterDatePurchaseRequest{
-				Id:    15,
+			req: model.UserIDAfterDatePurchaseRequest{
+				ID:    15,
 				Start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAfterDate", data.req).
+				purchaseService.On("FindByUserIDAfterDate", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -825,8 +829,8 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -835,7 +839,7 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 			err := json.NewEncoder(body).Encode(&tc.req)
 			require.NoError(t, err)
 
-			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.Id), body)
+			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), body)
 			require.NoError(t, err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
@@ -844,15 +848,16 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -860,9 +865,9 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 }
 
 func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -871,7 +876,7 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 		method      string
 		isOkMessage bool
 		isOkRes     bool
-		req         model.UserIdBeforeDatePurchaseRequest
+		req         model.UserIDBeforeDatePurchaseRequest
 		fn          func(purchaseService *m.Purchase, data test)
 		expCode     int
 		expRes      []model.Purchase
@@ -884,12 +889,12 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + before + slash + user + slash,
 			method:      http.MethodPost,
 			isOkMessage: true,
-			req: model.UserIdBeforeDatePurchaseRequest{
-				Id:  0,
+			req: model.UserIDBeforeDatePurchaseRequest{
+				ID:  0,
 				End: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdBeforeDate", data.req).
+				purchaseService.On("FindByUserIDBeforeDate", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusBadRequest,
@@ -900,12 +905,12 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + before + slash + user + slash,
 			method:      http.MethodPost,
 			isOkMessage: true,
-			req: model.UserIdBeforeDatePurchaseRequest{
-				Id:  15,
+			req: model.UserIDBeforeDatePurchaseRequest{
+				ID:  15,
 				End: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdBeforeDate", data.req).
+				purchaseService.On("FindByUserIDBeforeDate", data.req).
 					Return(data.expRes, errors.New(""))
 			},
 			expCode: http.StatusInternalServerError,
@@ -914,12 +919,12 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 			name:   "not found",
 			path:   slash + purchase + slash + api + slash + before + slash + user + slash,
 			method: http.MethodPost,
-			req: model.UserIdBeforeDatePurchaseRequest{
-				Id:  15,
+			req: model.UserIDBeforeDatePurchaseRequest{
+				ID:  15,
 				End: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdBeforeDate", data.req).
+				purchaseService.On("FindByUserIDBeforeDate", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusNotFound,
@@ -929,25 +934,25 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + before + slash + user + slash,
 			method:  http.MethodPost,
 			isOkRes: true,
-			req: model.UserIdBeforeDatePurchaseRequest{
-				Id:  15,
+			req: model.UserIDBeforeDatePurchaseRequest{
+				ID:  15,
 				End: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdBeforeDate", data.req).
+				purchaseService.On("FindByUserIDBeforeDate", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -959,8 +964,8 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -969,7 +974,7 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 			err := json.NewEncoder(body).Encode(&tc.req)
 			require.NoError(t, err)
 
-			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.Id), body)
+			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), body)
 			require.NoError(t, err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
@@ -978,15 +983,16 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -994,9 +1000,9 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 }
 
 func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1005,7 +1011,7 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 		method      string
 		isOkMessage bool
 		isOkRes     bool
-		req         model.UserIdFileNamePurchaseRequest
+		req         model.UserIDFileNamePurchaseRequest
 		fn          func(purchaseService *m.Purchase, data test)
 		expCode     int
 		expRes      []model.Purchase
@@ -1018,12 +1024,12 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + user + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.UserIdFileNamePurchaseRequest{
-				Id:       0,
+			req: model.UserIDFileNamePurchaseRequest{
+				ID:       0,
 				FileName: "test",
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAndFileName", data.req).
+				purchaseService.On("FindByUserIDAndFileName", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusBadRequest,
@@ -1034,12 +1040,12 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + user + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.UserIdFileNamePurchaseRequest{
-				Id:       15,
+			req: model.UserIDFileNamePurchaseRequest{
+				ID:       15,
 				FileName: "test",
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAndFileName", data.req).
+				purchaseService.On("FindByUserIDAndFileName", data.req).
 					Return(data.expRes, errors.New(""))
 			},
 			expCode: http.StatusInternalServerError,
@@ -1048,12 +1054,12 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 			name:   "not found",
 			path:   slash + purchase + slash + api + slash + user + slash,
 			method: http.MethodGet,
-			req: model.UserIdFileNamePurchaseRequest{
-				Id:       15,
+			req: model.UserIDFileNamePurchaseRequest{
+				ID:       15,
 				FileName: "test",
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAndFileName", data.req).
+				purchaseService.On("FindByUserIDAndFileName", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusNotFound,
@@ -1063,25 +1069,25 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + user + slash,
 			method:  http.MethodGet,
 			isOkRes: true,
-			req: model.UserIdFileNamePurchaseRequest{
-				Id:       15,
+			req: model.UserIDFileNamePurchaseRequest{
+				ID:       15,
 				FileName: "test",
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIdAndFileName", data.req).
+				purchaseService.On("FindByUserIDAndFileName", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -1093,13 +1099,13 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
 
-			fullPath := tc.path + strconv.Itoa(tc.req.Id) + slash + file + slash + tc.req.FileName
+			fullPath := tc.path + strconv.Itoa(tc.req.ID) + slash + file + slash + tc.req.FileName
 			req, err := http.NewRequest(tc.method, fullPath, nil)
 			require.NoError(t, err)
 
@@ -1109,15 +1115,16 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -1125,9 +1132,9 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 }
 
 func TestPurchase_FindLast(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1179,7 +1186,7 @@ func TestPurchase_FindLast(t *testing.T) {
 			expCode: http.StatusOK,
 			expRes: model.Purchase{
 				ID:       15,
-				UserId:   15,
+				UserID:   15,
 				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				FileName: "test",
 			},
@@ -1190,8 +1197,8 @@ func TestPurchase_FindLast(t *testing.T) {
 			var r string
 			var p model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -1205,15 +1212,16 @@ func TestPurchase_FindLast(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -1221,9 +1229,9 @@ func TestPurchase_FindLast(t *testing.T) {
 }
 
 func TestPurchase_FindAll(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1273,13 +1281,13 @@ func TestPurchase_FindAll(t *testing.T) {
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -1291,8 +1299,8 @@ func TestPurchase_FindAll(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -1306,15 +1314,16 @@ func TestPurchase_FindAll(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -1322,9 +1331,9 @@ func TestPurchase_FindAll(t *testing.T) {
 }
 
 func TestPurchase_FindByPeriod(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1402,13 +1411,13 @@ func TestPurchase_FindByPeriod(t *testing.T) {
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -1420,8 +1429,8 @@ func TestPurchase_FindByPeriod(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -1439,15 +1448,16 @@ func TestPurchase_FindByPeriod(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -1455,9 +1465,9 @@ func TestPurchase_FindByPeriod(t *testing.T) {
 }
 
 func TestPurchase_FindAfterDate(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1532,13 +1542,13 @@ func TestPurchase_FindAfterDate(t *testing.T) {
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -1550,8 +1560,8 @@ func TestPurchase_FindAfterDate(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -1569,15 +1579,16 @@ func TestPurchase_FindAfterDate(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -1585,9 +1596,9 @@ func TestPurchase_FindAfterDate(t *testing.T) {
 }
 
 func TestPurchase_FindBeforeDate(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1662,13 +1673,13 @@ func TestPurchase_FindBeforeDate(t *testing.T) {
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -1680,8 +1691,8 @@ func TestPurchase_FindBeforeDate(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -1699,15 +1710,16 @@ func TestPurchase_FindBeforeDate(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})
@@ -1715,9 +1727,9 @@ func TestPurchase_FindBeforeDate(t *testing.T) {
 }
 
 func TestPurchase_FindByFileName(t *testing.T) {
-	testApi, err := service.InitTest4Mock()
+	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testApi.TokenManager.NewJWT(mock.Anything)
+	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1778,13 +1790,13 @@ func TestPurchase_FindByFileName(t *testing.T) {
 			expRes: []model.Purchase{
 				{
 					ID:       15,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
 				{
 					ID:       16,
-					UserId:   15,
+					UserID:   15,
 					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 					FileName: "test",
 				},
@@ -1796,8 +1808,8 @@ func TestPurchase_FindByFileName(t *testing.T) {
 			var r string
 			var p []model.Purchase
 			purchaseService := new(m.Purchase)
-			testApi.Services.Purchase = purchaseService
-			router := newPurchase(testApi.Services, testApi.TokenManager)
+			testAPI.Services.Purchase = purchaseService
+			router := newPurchase(testAPI.Services, testAPI.TokenManager)
 			if tc.fn != nil {
 				tc.fn(purchaseService, tc)
 			}
@@ -1811,15 +1823,16 @@ func TestPurchase_FindByFileName(t *testing.T) {
 			router.ServeHTTP(res, req)
 			require.Equal(t, tc.expCode, res.Code)
 
-			if tc.isOkMessage {
+			switch {
+			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
 				require.NoError(t, err)
 				require.Equal(t, tc.message, r)
-			} else if tc.isOkRes {
+			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
 				require.NoError(t, err)
 				require.Equal(t, tc.expRes, p)
-			} else {
+			default:
 				require.Equal(t, tc.message, r)
 			}
 		})

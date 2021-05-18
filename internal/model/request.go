@@ -6,14 +6,18 @@ type (
 
 	// RegisterUserRequest represents a request for user registration.
 	RegisterUserRequest struct {
-		Login    string
-		Password string
+		// required: true
+		Login string `json:"login"`
+		// required: true
+		Password string `json:"password"`
 	}
 
 	// LoginUserRequest represents a request for user login.
 	LoginUserRequest struct {
-		Login    string
-		Password string
+		// required: true
+		Login string `json:"login"`
+		// required: true
+		Password string `json:"password"`
 	}
 )
 
@@ -21,69 +25,89 @@ type (
 
 	// CreatePurchaseRequest represents a request to create purchase.
 	CreatePurchaseRequest struct {
-		UserId   int
-		Date     time.Time
-		FileName string
+		// required: true
+		UserID int `json:"userID"`
+		// required: true
+		Date time.Time `json:"date"`
+		// required: true
+		FileName string `json:"fileName"`
 	}
 
-	// IdPurchaseRequest represents a request to find the purchase by id.
-	IdPurchaseRequest struct {
-		Id int
+	// IDPurchaseRequest represents a request to find the purchase by id.
+	IDPurchaseRequest struct {
+		// required: true
+		ID int `json:"-"`
 	}
 
 	// DeletePurchaseRequest represents a request to delete purchase.
 	DeletePurchaseRequest = struct {
-		Id int
+		// required: true
+		ID int `json:"-"`
 	}
 
-	// UserIdPurchaseRequest represents a request to find last added purchase by user id.
-	UserIdPurchaseRequest = struct {
-		Id int
+	// UserIDPurchaseRequest represents a request to find last added purchase by user id.
+	UserIDPurchaseRequest = struct {
+		// required: true
+		ID int `json:"-"`
 	}
 
-	// UserIdPeriodPurchaseRequest represents a request to find all purchases by user id and date period.
-	UserIdPeriodPurchaseRequest struct {
-		Id    int
-		Start time.Time
-		End   time.Time
+	// UserIDPeriodPurchaseRequest represents a request to find all purchases by user id and date period.
+	UserIDPeriodPurchaseRequest struct {
+		// required: true
+		ID int `json:"-"`
+		// required: true
+		Start time.Time `json:"start"`
+		// required: true
+		End time.Time `json:"end"`
 	}
 
-	// UserIdAfterDatePurchaseRequest represents a request to find all purchases by user id after date.
-	UserIdAfterDatePurchaseRequest struct {
-		Id    int
-		Start time.Time
+	// UserIDAfterDatePurchaseRequest represents a request to find all purchases by user id after date.
+	UserIDAfterDatePurchaseRequest struct {
+		// required: true
+		ID int `json:"-"`
+		// required: true
+		Start time.Time `json:"start"`
 	}
 
-	// UserIdBeforeDatePurchaseRequest represents a request to find all purchases by user id before date.
-	UserIdBeforeDatePurchaseRequest struct {
-		Id  int
-		End time.Time
+	// UserIDBeforeDatePurchaseRequest represents a request to find all purchases by user id before date.
+	UserIDBeforeDatePurchaseRequest struct {
+		// required: true
+		ID int `json:"-"`
+		// required: true
+		End time.Time `json:"end"`
 	}
 
-	// UserIdFileNamePurchaseRequest represents a request to find all purchases by user id and file name.
-	UserIdFileNamePurchaseRequest struct {
-		Id       int
-		FileName string
+	// UserIDFileNamePurchaseRequest represents a request to find all purchases by user id and file name.
+	UserIDFileNamePurchaseRequest struct {
+		// required: true
+		ID int `json:"-"`
+		// required: true
+		FileName string `json:"fileName"`
 	}
 
 	// PeriodPurchaseRequest represents a request to find all purchases by date period.
 	PeriodPurchaseRequest struct {
-		Start time.Time
-		End   time.Time
+		// required: true
+		Start time.Time `json:"start"`
+		// required: true
+		End time.Time `json:"end"`
 	}
 
 	// AfterDatePurchaseRequest represents a request to find all purchases after date.
 	AfterDatePurchaseRequest struct {
-		Start time.Time
+		// required: true
+		Start time.Time `json:"start"`
 	}
 
 	// BeforeDatePurchaseRequest represents a request to find all purchases before date.
 	BeforeDatePurchaseRequest struct {
-		End time.Time
+		// required: true
+		End time.Time `json:"end"`
 	}
 
 	// FileNamePurchaseRequest represents a request to find all purchases by file name.
 	FileNamePurchaseRequest struct {
-		FileName string
+		// required: true
+		FileName string `json:"-"`
 	}
 )

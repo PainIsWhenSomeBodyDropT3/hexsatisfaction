@@ -3,6 +3,8 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -57,7 +59,12 @@ func (req *loginRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	return nil
 }
@@ -74,6 +81,17 @@ func (req *loginRequest) Validate() error {
 	}
 }
 
+// @Summary SingIn
+// @Tags user
+// @Description Login user
+// @Accept  json
+// @Produce  json
+// @Param userCred body model.LoginUserRequest true "User credentials"
+// @Success 200 {string} string token
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError
+// @Failure 500 {object} middleware.SwagError
+// @Router /user/login [post]
 func (u *userRouter) loginUser(w http.ResponseWriter, r *http.Request) {
 	var req loginRequest
 	err := middleware.ParseRequest(r, &req)
@@ -88,7 +106,7 @@ func (u *userRouter) loginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(token) == 0 {
+	if token == "" {
 		middleware.Empty(w, http.StatusNotFound)
 		return
 	}
@@ -108,7 +126,12 @@ func (req *registerRequest) Build(r *http.Request) error {
 		return err
 	}
 
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(r.Body)
 
 	return nil
 }
@@ -125,6 +148,17 @@ func (req *registerRequest) Validate() error {
 	}
 }
 
+// @Summary SingUp
+// @Tags user
+// @Description Register user
+// @Accept  json
+// @Produce  json
+// @Param userCred body model.RegisterUserRequest true "User credentials"
+// @Success 200 {string} string id
+// @Failure 302 {object} middleware.SwagError
+// @Failure 400 {object} middleware.SwagError
+// @Failure 500 {object} middleware.SwagError
+// @Router /user/registration [post]
 func (u *userRouter) registerUser(w http.ResponseWriter, r *http.Request) {
 	var req registerRequest
 	err := middleware.ParseRequest(r, &req)

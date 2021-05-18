@@ -22,7 +22,7 @@ func TestUser_FindByLogin(t *testing.T) {
 	}
 	tt := []test{
 		{
-			name:  "FindById errors",
+			name:  "FindByID errors",
 			login: "test",
 			fn: func(userDB *m.User, data test) {
 				userDB.On("FindByLogin", data.login).
@@ -181,7 +181,7 @@ func TestUser_Create(t *testing.T) {
 		name   string
 		req    model.RegisterUserRequest
 		fn     func(userDB *m.User, data test)
-		expId  int
+		expID  int
 		expErr error
 	}
 	tt := []test{
@@ -211,9 +211,9 @@ func TestUser_Create(t *testing.T) {
 					Login:    data.req.Login,
 					Password: data.req.Password,
 				}).
-					Return(data.expId, nil)
+					Return(data.expID, nil)
 			},
-			expId: 15,
+			expID: 15,
 		},
 	}
 	for _, tc := range tt {
@@ -226,7 +226,7 @@ func TestUser_Create(t *testing.T) {
 			id, err := service.Create(tc.req)
 			if err != nil {
 				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expId, id)
+				require.Equal(t, tc.expID, id)
 			} else {
 				require.Nil(t, err)
 			}

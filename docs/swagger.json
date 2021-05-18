@@ -1,0 +1,1116 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API Service for Hexsatisfaction",
+        "title": "Hexsatisfaction API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "paths": {
+        "/purchase/api/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find all purchases",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindAll",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No purchase",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create purchase",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "Create",
+                "parameters": [
+                    {
+                        "description": "Purchase",
+                        "name": "purchase",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreatePurchaseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/after": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find after date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindAfterDate",
+                "parameters": [
+                    {
+                        "description": "After date",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AfterDatePurchaseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchases",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/after/user/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find by user id after date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindByUserIDAfterDate",
+                "parameters": [
+                    {
+                        "description": "After date",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserIDAfterDatePurchaseRequest"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchases",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/before": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find before date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindBeforeDate",
+                "parameters": [
+                    {
+                        "description": "Before date",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BeforeDatePurchaseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchases",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/before/user/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find by user id before date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindByUserIDBeforeDate",
+                "parameters": [
+                    {
+                        "description": "Before date",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserIDBeforeDatePurchaseRequest"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchases",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/file/{file}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find purchases by file name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindByFileName",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "File name",
+                        "name": "file",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchases",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/last/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find last purchase",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindLast",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Purchase"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchase",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/last/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find last purchase by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindLastByUserID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Purchase"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchase",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/period": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find by period",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindByPeriod",
+                "parameters": [
+                    {
+                        "description": "Period",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodPurchaseRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchases",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/period/user/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find by user id and period",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindByUserIDAndPeriod",
+                "parameters": [
+                    {
+                        "description": "Period",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserIDPeriodPurchaseRequest"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchases",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find purchases by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindAllByUserID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchases",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/user/{id}/file/{file}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find purchases by user id and file name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindByUserIDAndFileName",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "File name",
+                        "name": "file",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Purchase"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchases",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/purchase/api/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find purchase by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "FindByID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Purchase id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Purchase"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchase",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "purchase"
+                ],
+                "summary": "Delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Purchase id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No purchase",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "Login user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "SingIn",
+                "parameters": [
+                    {
+                        "description": "User credentials",
+                        "name": "userCred",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/registration": {
+            "post": {
+                "description": "Register user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "SingUp",
+                "parameters": [
+                    {
+                        "description": "User credentials",
+                        "name": "userCred",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.RegisterUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "302": {
+                        "description": "Found",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "middleware.SwagEmptyError": {
+            "type": "object"
+        },
+        "middleware.SwagError": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AfterDatePurchaseRequest": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.BeforeDatePurchaseRequest": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreatePurchaseRequest": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "fileName": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "userID": {
+                    "description": "required: true",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.LoginUserRequest": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PeriodPurchaseRequest": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "start": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Purchase": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "fileName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.RegisterUserRequest": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserIDAfterDatePurchaseRequest": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserIDBeforeDatePurchaseRequest": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserIDPeriodPurchaseRequest": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "start": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

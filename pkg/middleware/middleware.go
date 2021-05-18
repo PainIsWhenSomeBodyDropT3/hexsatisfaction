@@ -11,6 +11,15 @@ type request interface {
 	Validate() error
 }
 
+// SwagError represents a struct for swagger errors.
+type SwagError struct {
+	Message string `json:"message"`
+}
+
+// SwagEmptyError represents a struct for swagger errors without message.
+type SwagEmptyError struct {
+}
+
 // ParseRequest parses request from http Request, stores it in the value pointed to by s and validates it.
 // You must close r.Body in the Build method if you used it.
 func ParseRequest(r *http.Request, s request) error {
