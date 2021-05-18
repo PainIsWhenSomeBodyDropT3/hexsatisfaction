@@ -111,3 +111,77 @@ type (
 		FileName string `json:"-"`
 	}
 )
+
+type (
+
+	// CreateCommentRequest represents a request to create comment.
+	CreateCommentRequest struct {
+		// required: true
+		UserID int `json:"userID"`
+		// required: true
+		PurchaseID int `json:"purchaseID"`
+		// required: true
+		Date time.Time `json:"Date"`
+		// required: true
+		Text string `json:"Text"`
+	}
+
+	// UpdateCommentRequest represents a request to update comment.
+	UpdateCommentRequest struct {
+		// required: true
+		ID int `json:"-"`
+		// required: true
+		UserID int `json:"userID"`
+		// required: true
+		PurchaseID int `json:"purchaseID"`
+		// required: true
+		Date time.Time `json:"date"`
+		// required: true
+		Text string `json:"text"`
+	}
+
+	// DeleteCommentRequest represents a request to delete comment.
+	DeleteCommentRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// IDCommentRequest represents a request to find comment by id.
+	IDCommentRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// UserIDCommentRequest represents a request to find comments by user id.
+	UserIDCommentRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// PurchaseIDCommentRequest represents a request to find comments by purchase id.
+	PurchaseIDCommentRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// UserPurchaseIDCommentRequest represents a request to find comments by purchase and user ids.
+	UserPurchaseIDCommentRequest struct {
+		// required: true
+		UserID     int `json:"-"`
+		PurchaseID int `json:"-"`
+	}
+
+	// TextCommentRequest represents a request to find comments by text.
+	TextCommentRequest struct {
+		// required: true
+		Text string `json:"text"`
+	}
+
+	// PeriodCommentRequest represents a request to find comments by date period.
+	PeriodCommentRequest struct {
+		// required: true
+		Start time.Time `json:"start"`
+		// required: true
+		End time.Time `json:"end"`
+	}
+)

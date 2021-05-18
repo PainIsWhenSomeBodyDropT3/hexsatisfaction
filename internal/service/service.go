@@ -38,11 +38,26 @@ type Purchase interface {
 	FindByFileName(request model.FileNamePurchaseRequest) ([]model.Purchase, error)
 }
 
+// Comment is an interface for CommentService repository methods.
+type Comment interface {
+	Create(request model.CreateCommentRequest) (int, error)
+	Update(request model.UpdateCommentRequest) (int, error)
+	Delete(request model.DeleteCommentRequest) (int, error)
+	FindByID(request model.IDCommentRequest) (*model.Comment, error)
+	FindAllByUserID(request model.UserIDCommentRequest) ([]model.Comment, error)
+	FindByPurchaseID(request model.PurchaseIDCommentRequest) ([]model.Comment, error)
+	FindByUserIDAndPurchaseID(request model.UserPurchaseIDCommentRequest) ([]model.Comment, error)
+	FindAll() ([]model.Comment, error)
+	FindByText(request model.TextCommentRequest) ([]model.Comment, error)
+	FindByPeriod(request model.PeriodCommentRequest) ([]model.Comment, error)
+}
+
 // Services collects all service interfaces.
 type Services struct {
 	User     User
 	UserRole UserRole
 	Purchase Purchase
+	Comment  Comment
 }
 
 // Deps represents dependencies for services.
@@ -57,5 +72,6 @@ func NewServices(deps Deps) *Services {
 		User:     NewUserService(deps.Repos.User, deps.TokenManager),
 		UserRole: NewUserRoleService(deps.Repos.UserRole),
 		Purchase: NewPurchaseService(deps.Repos.Purchase),
+		Comment:  NewCommentService(deps.Repos.Comment),
 	}
 }
