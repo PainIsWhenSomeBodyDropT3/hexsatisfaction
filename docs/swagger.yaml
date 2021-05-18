@@ -19,6 +19,34 @@ definitions:
         description: 'required: true'
         type: string
     type: object
+  model.Comment:
+    properties:
+      date:
+        type: string
+      id:
+        type: integer
+      purchaseID:
+        type: integer
+      text:
+        type: string
+      userID:
+        type: integer
+    type: object
+  model.CreateCommentRequest:
+    properties:
+      Date:
+        description: 'required: true'
+        type: string
+      Text:
+        description: 'required: true'
+        type: string
+      purchaseID:
+        description: 'required: true'
+        type: integer
+      userID:
+        description: 'required: true'
+        type: integer
+    type: object
   model.CreatePurchaseRequest:
     properties:
       date:
@@ -37,6 +65,15 @@ definitions:
         description: 'required: true'
         type: string
       password:
+        description: 'required: true'
+        type: string
+    type: object
+  model.PeriodCommentRequest:
+    properties:
+      end:
+        description: 'required: true'
+        type: string
+      start:
         description: 'required: true'
         type: string
     type: object
@@ -69,6 +106,27 @@ definitions:
         description: 'required: true'
         type: string
     type: object
+  model.TextCommentRequest:
+    properties:
+      text:
+        description: 'required: true'
+        type: string
+    type: object
+  model.UpdateCommentRequest:
+    properties:
+      date:
+        description: 'required: true'
+        type: string
+      purchaseID:
+        description: 'required: true'
+        type: integer
+      text:
+        description: 'required: true'
+        type: string
+      userID:
+        description: 'required: true'
+        type: integer
+    type: object
   model.UserIDAfterDatePurchaseRequest:
     properties:
       start:
@@ -97,6 +155,359 @@ info:
   title: Hexsatisfaction API
   version: "1.0"
 paths:
+  /comment/api/:
+    get:
+      consumes:
+      - application/json
+      description: Find all comments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No comments
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindAll
+      tags:
+      - comment
+    post:
+      consumes:
+      - application/json
+      description: Create comment
+      parameters:
+      - description: Comment
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create
+      tags:
+      - comment
+  /comment/api/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete comment
+      parameters:
+      - description: Comment id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No comment
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete
+      tags:
+      - comment
+    get:
+      consumes:
+      - application/json
+      description: Find comment by id
+      parameters:
+      - description: Comment id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No comment
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByID
+      tags:
+      - comment
+    put:
+      consumes:
+      - application/json
+      description: Update comment
+      parameters:
+      - description: Comment id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Comment
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No comment
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update
+      tags:
+      - comment
+  /comment/period:
+    post:
+      consumes:
+      - application/json
+      description: Find comments by period
+      parameters:
+      - description: Comment period
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/model.PeriodCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No comments
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindByPeriod
+      tags:
+      - comment
+  /comment/purchase/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Find comments by purchase id
+      parameters:
+      - description: Purchase id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No comments
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindByPurchaseID
+      tags:
+      - comment
+  /comment/text:
+    post:
+      consumes:
+      - application/json
+      description: Find comments by text
+      parameters:
+      - description: Comment text
+        in: body
+        name: text
+        required: true
+        schema:
+          $ref: '#/definitions/model.TextCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No comments
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindByText
+      tags:
+      - comment
+  /comment/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Find comments by user id
+      parameters:
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No comments
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindAllByUserID
+      tags:
+      - comment
+  /comment/user/{userID}/purchase/{purchaseID}:
+    get:
+      consumes:
+      - application/json
+      description: Find comments by purchase and user ids
+      parameters:
+      - description: User id
+        in: path
+        name: userID
+        required: true
+        type: integer
+      - description: Purchase id
+        in: path
+        name: purchaseID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No comments
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindByUserIDAndPurchaseID
+      tags:
+      - comment
   /purchase/api/:
     get:
       consumes:

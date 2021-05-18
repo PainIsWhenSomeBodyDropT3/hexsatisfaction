@@ -9,6 +9,550 @@
     "host": "localhost:8000",
     "basePath": "/",
     "paths": {
+        "/comment/api/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find all comments",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "FindAll",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Comment"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No comments",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "Create",
+                "parameters": [
+                    {
+                        "description": "Comment",
+                        "name": "comment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateCommentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/comment/api/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find comment by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "FindByID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Comment id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Comment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No comment",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Comment id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Comment",
+                        "name": "comment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateCommentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No comment",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "Delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Comment id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No comment",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/comment/period": {
+            "post": {
+                "description": "Find comments by period",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "FindByPeriod",
+                "parameters": [
+                    {
+                        "description": "Comment period",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PeriodCommentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Comment"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No comments",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/comment/purchase/{id}": {
+            "get": {
+                "description": "Find comments by purchase id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "FindByPurchaseID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Purchase id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Comment"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No comments",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/comment/text": {
+            "post": {
+                "description": "Find comments by text",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "FindByText",
+                "parameters": [
+                    {
+                        "description": "Comment text",
+                        "name": "text",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.TextCommentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Comment"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No comments",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/comment/user/{id}": {
+            "get": {
+                "description": "Find comments by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "FindAllByUserID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Comment"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No comments",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/comment/user/{userID}/purchase/{purchaseID}": {
+            "get": {
+                "description": "Find comments by purchase and user ids",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "FindByUserIDAndPurchaseID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Purchase id",
+                        "name": "purchaseID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Comment"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No comments",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
         "/purchase/api/": {
             "get": {
                 "security": [
@@ -1001,6 +1545,47 @@
                 }
             }
         },
+        "model.Comment": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "purchaseID": {
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.CreateCommentRequest": {
+            "type": "object",
+            "properties": {
+                "Date": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "Text": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "purchaseID": {
+                    "description": "required: true",
+                    "type": "integer"
+                },
+                "userID": {
+                    "description": "required: true",
+                    "type": "integer"
+                }
+            }
+        },
         "model.CreatePurchaseRequest": {
             "type": "object",
             "properties": {
@@ -1026,6 +1611,19 @@
                     "type": "string"
                 },
                 "password": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PeriodCommentRequest": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "start": {
                     "description": "required: true",
                     "type": "string"
                 }
@@ -1071,6 +1669,36 @@
                 "password": {
                     "description": "required: true",
                     "type": "string"
+                }
+            }
+        },
+        "model.TextCommentRequest": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateCommentRequest": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "purchaseID": {
+                    "description": "required: true",
+                    "type": "integer"
+                },
+                "text": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "userID": {
+                    "description": "required: true",
+                    "type": "integer"
                 }
             }
         },

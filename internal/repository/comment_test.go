@@ -273,6 +273,7 @@ func TestCommentRepo_FindById(t *testing.T) {
 				tc.comment.UserID = userID
 				tc.comment.PurchaseID = purchaseID
 				id, err = repos.Comment.Create(tc.comment)
+				require.NoError(t, err)
 				tc.exp.UserID = userID
 				tc.exp.PurchaseID = purchaseID
 			}
@@ -373,6 +374,7 @@ func TestCommentRepo_FindAllByUserID(t *testing.T) {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
+					require.NoError(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -480,6 +482,7 @@ func TestCommentRepo_FindByPurchaseID(t *testing.T) {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
+					require.NoError(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -587,6 +590,7 @@ func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
+					require.NoError(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -694,6 +698,7 @@ func TestCommentRepo_FindAll(t *testing.T) {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
+					require.NoError(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -799,6 +804,7 @@ func TestCommentRepo_FindByText(t *testing.T) {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
+					require.NoError(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -908,6 +914,7 @@ func TestCommentRepo_FindByPeriod(t *testing.T) {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
+					require.NoError(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID

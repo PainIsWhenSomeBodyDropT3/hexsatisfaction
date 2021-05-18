@@ -113,6 +113,17 @@ func (req *createCommentRequest) Validate() error {
 	}
 }
 
+// @Summary Create
+// @Security ApiKeyAuth
+// @Tags comment
+// @Description Create comment
+// @Accept  json
+// @Produce  json
+// @Param comment body model.CreateCommentRequest true "Comment"
+// @Success 200 {string} string id
+// @Failure 400 {object} middleware.SwagError
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/api/ [post]
 func (c *commentRouter) createComment(w http.ResponseWriter, r *http.Request) {
 	var req createCommentRequest
 	err := middleware.ParseRequest(r, &req)
@@ -181,6 +192,19 @@ func (req *updateCommentRequest) Validate() error {
 	}
 }
 
+// @Summary Update
+// @Security ApiKeyAuth
+// @Tags comment
+// @Description Update comment
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Comment id"
+// @Param comment body model.UpdateCommentRequest true "Comment"
+// @Success 200 {string} string id
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No comment"
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/api/{id} [put]
 func (c *commentRouter) updateComment(w http.ResponseWriter, r *http.Request) {
 	var req updateCommentRequest
 	err := middleware.ParseRequest(r, &req)
@@ -234,6 +258,18 @@ func (req *deleteCommentRequest) Validate() error {
 	}
 }
 
+// @Summary Delete
+// @Security ApiKeyAuth
+// @Tags comment
+// @Description Delete comment
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Comment id"
+// @Success 200 {string} string id
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No comment"
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/api/{id} [delete]
 func (c *commentRouter) deleteComment(w http.ResponseWriter, r *http.Request) {
 	var req deleteCommentRequest
 	err := middleware.ParseRequest(r, &req)
@@ -287,6 +323,18 @@ func (req *idCommentRequest) Validate() error {
 	}
 }
 
+// @Summary FindByID
+// @Security ApiKeyAuth
+// @Tags comment
+// @Description Find comment by id
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Comment id"
+// @Success 200 {object} model.Comment
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No comment"
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/api/{id} [get]
 func (c *commentRouter) findByIDComment(w http.ResponseWriter, r *http.Request) {
 	var req idCommentRequest
 	err := middleware.ParseRequest(r, &req)
@@ -340,6 +388,17 @@ func (req *userIDCommentRequest) Validate() error {
 	}
 }
 
+// @Summary FindAllByUserID
+// @Tags comment
+// @Description Find comments by user id
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User id"
+// @Success 200 {array} model.Comment
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No comments"
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/user/{id} [get]
 func (c *commentRouter) findByUserIDComment(w http.ResponseWriter, r *http.Request) {
 	var req userIDCommentRequest
 	err := middleware.ParseRequest(r, &req)
@@ -393,6 +452,17 @@ func (req *purchaseIDCommentRequest) Validate() error {
 	}
 }
 
+// @Summary FindByPurchaseID
+// @Tags comment
+// @Description Find comments by purchase id
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Purchase id"
+// @Success 200 {array} model.Comment
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No comments"
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/purchase/{id} [get]
 func (c *commentRouter) findByPurchaseIDComment(w http.ResponseWriter, r *http.Request) {
 	var req purchaseIDCommentRequest
 	err := middleware.ParseRequest(r, &req)
@@ -452,12 +522,24 @@ func (req *userPurchaseIDCommentRequest) Validate() error {
 	case req.UserID < 1:
 		return fmt.Errorf("not correct user id")
 	case req.PurchaseID < 1:
-		return fmt.Errorf("not correct purcahse id")
+		return fmt.Errorf("not correct purchase id")
 	default:
 		return nil
 	}
 }
 
+// @Summary FindByUserIDAndPurchaseID
+// @Tags comment
+// @Description Find comments by purchase and user ids
+// @Accept  json
+// @Produce  json
+// @Param userID path int true "User id"
+// @Param purchaseID path int true "Purchase id"
+// @Success 200 {array} model.Comment
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No comments"
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/user/{userID}/purchase/{purchaseID} [get]
 func (c *commentRouter) findByUserIDAndPurchaseIDComment(w http.ResponseWriter, r *http.Request) {
 	var req userPurchaseIDCommentRequest
 	err := middleware.ParseRequest(r, &req)
@@ -480,6 +562,17 @@ func (c *commentRouter) findByUserIDAndPurchaseIDComment(w http.ResponseWriter, 
 	middleware.JSONReturn(w, http.StatusOK, comments)
 }
 
+// @Summary FindAll
+// @Security ApiKeyAuth
+// @Tags comment
+// @Description Find all comments
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.Comment
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No comments"
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/api/ [get]
 func (c *commentRouter) findAllComment(w http.ResponseWriter, r *http.Request) {
 	comments, err := c.services.Comment.FindAll()
 	if err != nil {
@@ -526,6 +619,17 @@ func (req *textCommentRequest) Validate() error {
 	}
 }
 
+// @Summary FindByText
+// @Tags comment
+// @Description Find comments by text
+// @Accept  json
+// @Produce  json
+// @Param text body model.TextCommentRequest true "Comment text"
+// @Success 200 {array} model.Comment
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No comments"
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/text [post]
 func (c *commentRouter) findByTextComment(w http.ResponseWriter, r *http.Request) {
 	var req textCommentRequest
 	err := middleware.ParseRequest(r, &req)
@@ -581,6 +685,17 @@ func (req *periodCommentRequest) Validate() error {
 	}
 }
 
+// @Summary FindByPeriod
+// @Tags comment
+// @Description Find comments by period
+// @Accept  json
+// @Produce  json
+// @Param period body model.PeriodCommentRequest true "Comment period"
+// @Success 200 {array} model.Comment
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No comments"
+// @Failure 500 {object} middleware.SwagError
+// @Router /comment/period [post]
 func (c *commentRouter) findByPeriodComment(w http.ResponseWriter, r *http.Request) {
 	var req periodCommentRequest
 	err := middleware.ParseRequest(r, &req)
