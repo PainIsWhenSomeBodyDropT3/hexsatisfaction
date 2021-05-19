@@ -62,7 +62,7 @@ func (req *loginRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -129,7 +129,7 @@ func (req *registerRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 

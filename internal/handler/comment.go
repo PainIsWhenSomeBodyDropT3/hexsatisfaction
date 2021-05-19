@@ -90,7 +90,7 @@ func (req *createCommentRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -155,7 +155,7 @@ func (req *updateCommentRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -602,7 +602,7 @@ func (req *textCommentRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -666,7 +666,7 @@ func (req *periodCommentRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 

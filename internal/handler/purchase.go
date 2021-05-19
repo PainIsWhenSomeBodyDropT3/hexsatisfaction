@@ -109,7 +109,7 @@ func (req *createPurchaseRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -432,7 +432,7 @@ func (req *userIDPeriodPurchaseRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -514,7 +514,7 @@ func (req *userIDAfterDatePurchaseRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -594,7 +594,7 @@ func (req *userIDBeforeDatePurchaseRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -798,7 +798,7 @@ func (req *periodPurchaseRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -865,7 +865,7 @@ func (req *afterDatePurchaseRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
@@ -930,7 +930,7 @@ func (req *beforeDatePurchaseRequest) Build(r *http.Request) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%v", err)
 		}
 	}(r.Body)
 
