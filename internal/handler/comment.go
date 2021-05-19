@@ -491,11 +491,12 @@ type userPurchaseIDCommentRequest struct {
 
 // Build builds request to find comment by user id and purchase id.
 func (req *userPurchaseIDCommentRequest) Build(r *http.Request) error {
-	userID, ok := mux.Vars(r)["userID"]
+	vars := mux.Vars(r)
+	userID, ok := vars["userID"]
 	if !ok {
 		return fmt.Errorf("no user id")
 	}
-	purchaseID, ok := mux.Vars(r)["purchaseID"]
+	purchaseID, ok := vars["purchaseID"]
 	if !ok {
 		return fmt.Errorf("no purchase id")
 	}

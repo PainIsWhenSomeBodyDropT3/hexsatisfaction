@@ -666,8 +666,8 @@ type userIDFileNamePurchaseRequest struct {
 
 // Build builds request to find all purchases by user id and file name.
 func (req *userIDFileNamePurchaseRequest) Build(r *http.Request) error {
-
-	vID, ok := mux.Vars(r)["id"]
+	vars := mux.Vars(r)
+	vID, ok := vars["id"]
 	if !ok {
 		return fmt.Errorf("no id")
 	}
@@ -676,7 +676,7 @@ func (req *userIDFileNamePurchaseRequest) Build(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	name, ok := mux.Vars(r)["file"]
+	name, ok := vars["file"]
 	if !ok {
 		return fmt.Errorf("no file name")
 	}
