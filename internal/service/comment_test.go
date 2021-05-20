@@ -7,10 +7,11 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	m "github.com/JesusG2000/hexsatisfaction/internal/service/mock"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCommentService_Create(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		req    model.CreateCommentRequest
@@ -67,16 +68,15 @@ func TestCommentService_Create(t *testing.T) {
 			}
 			id, err := service.Create(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expID, id)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.expID, id)
 		})
 	}
 }
 
 func TestCommentService_Update(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		req    model.UpdateCommentRequest
@@ -135,16 +135,15 @@ func TestCommentService_Update(t *testing.T) {
 			}
 			id, err := service.Update(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expID, id)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.expID, id)
 		})
 	}
 }
 
 func TestCommentService_Delete(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		req    model.DeleteCommentRequest
@@ -185,16 +184,15 @@ func TestCommentService_Delete(t *testing.T) {
 			}
 			id, err := service.Delete(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expID, id)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.expID, id)
 		})
 	}
 }
 
 func TestCommentService_FindByID(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		req    model.IDCommentRequest
@@ -241,16 +239,15 @@ func TestCommentService_FindByID(t *testing.T) {
 			}
 			c, err := service.FindByID(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.exp, c)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.exp, c)
 		})
 	}
 }
 
 func TestCommentService_FindAllByUserID(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		req    model.UserIDCommentRequest
@@ -306,16 +303,15 @@ func TestCommentService_FindAllByUserID(t *testing.T) {
 			}
 			c, err := service.FindAllByUserID(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.exp, c)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.exp, c)
 		})
 	}
 }
 
 func TestCommentService_FindAllByPurchaseID(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		req    model.PurchaseIDCommentRequest
@@ -371,16 +367,15 @@ func TestCommentService_FindAllByPurchaseID(t *testing.T) {
 			}
 			c, err := service.FindByPurchaseID(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.exp, c)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.exp, c)
 		})
 	}
 }
 
 func TestCommentService_FindByUserIDAndPurchaseID(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		req    model.UserPurchaseIDCommentRequest
@@ -438,16 +433,15 @@ func TestCommentService_FindByUserIDAndPurchaseID(t *testing.T) {
 			}
 			c, err := service.FindByUserIDAndPurchaseID(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.exp, c)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.exp, c)
 		})
 	}
 }
 
 func TestCommentService_FindAll(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		fn     func(purchase *m.Comment, data test)
@@ -497,16 +491,15 @@ func TestCommentService_FindAll(t *testing.T) {
 			}
 			c, err := service.FindAll()
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.exp, c)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.exp, c)
 		})
 	}
 }
 
 func TestCommentService_FindByText(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		req    model.TextCommentRequest
@@ -562,16 +555,15 @@ func TestCommentService_FindByText(t *testing.T) {
 			}
 			c, err := service.FindByText(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.exp, c)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.exp, c)
 		})
 	}
 }
 
 func TestCommentService_FindByPeriod(t *testing.T) {
+	a := assert.New(t)
 	type test struct {
 		name   string
 		req    model.PeriodCommentRequest
@@ -629,11 +621,9 @@ func TestCommentService_FindByPeriod(t *testing.T) {
 			}
 			c, err := service.FindByPeriod(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.exp, c)
-			} else {
-				require.Nil(t, err)
+				a.Equal(tc.expErr.Error(), err.Error())
 			}
+			a.Equal(tc.exp, c)
 		})
 	}
 }
