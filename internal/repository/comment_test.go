@@ -6,6 +6,7 @@ import (
 
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	"github.com/JesusG2000/hexsatisfaction/internal/model/dto"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -38,32 +39,33 @@ func TestCommentRepo_Create(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.comment.UserID = userID
 			tc.comment.PurchaseID = purchaseID
 			id, err := repos.Comment.Create(tc.comment)
-			require.NoError(t, err)
-			require.NotZero(t, id)
+			a.Nil(err)
+			a.NotZero(id)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()
@@ -99,35 +101,36 @@ func TestCommentRepo_Delete(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.comment.UserID = userID
 			tc.comment.PurchaseID = purchaseID
 			commentID, err := repos.Comment.Create(tc.comment)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			id, err := repos.Comment.Delete(commentID)
-			require.NoError(t, err)
-			require.NotZero(t, id)
+			a.Nil(err)
+			a.NotZero(id)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()
@@ -168,37 +171,38 @@ func TestCommentRepo_Update(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.comment.UserID = userID
 			tc.comment.PurchaseID = purchaseID
 			commentID, err := repos.Comment.Create(tc.comment)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.update.UserID = userID
 			tc.update.PurchaseID = purchaseID
 			id, err := repos.Comment.Update(commentID, tc.update)
-			require.NoError(t, err)
-			require.NotZero(t, id)
+			a.Nil(err)
+			a.NotZero(id)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()
@@ -254,41 +258,42 @@ func TestCommentRepo_FindById(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			var id int
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			if tc.isOk {
 				tc.comment.UserID = userID
 				tc.comment.PurchaseID = purchaseID
 				id, err = repos.Comment.Create(tc.comment)
-				require.NoError(t, err)
+				a.Nil(err)
 				tc.exp.UserID = userID
 				tc.exp.PurchaseID = purchaseID
 			}
 			p, err := repos.Comment.FindByID(id)
-			require.NoError(t, err)
+			a.Nil(err)
 			tc.exp.Date = p.Date
 			tc.exp.ID = p.ID
-			require.Equal(t, tc.exp, p)
+			a.Equal(tc.exp, p)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()
@@ -355,26 +360,27 @@ func TestCommentRepo_FindAllByUserID(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					require.NoError(t, err)
+					a.Nil(err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -383,20 +389,20 @@ func TestCommentRepo_FindAllByUserID(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindAllByUserID(userID)
-			require.NoError(t, err)
+			a.Nil(err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			require.Equal(t, tc.exp, c)
+			a.Equal(tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()
@@ -463,26 +469,27 @@ func TestCommentRepo_FindByPurchaseID(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					require.NoError(t, err)
+					a.Nil(err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -491,20 +498,20 @@ func TestCommentRepo_FindByPurchaseID(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindByPurchaseID(purchaseID)
-			require.NoError(t, err)
+			a.Nil(err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			require.Equal(t, tc.exp, c)
+			a.Equal(tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()
@@ -571,26 +578,27 @@ func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					require.NoError(t, err)
+					a.Nil(err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -599,20 +607,20 @@ func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindByUserIDAndPurchaseID(userID, purchaseID)
-			require.NoError(t, err)
+			a.Nil(err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			require.Equal(t, tc.exp, c)
+			a.Equal(tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()
@@ -679,26 +687,27 @@ func TestCommentRepo_FindAll(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					require.NoError(t, err)
+					a.Nil(err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -707,20 +716,20 @@ func TestCommentRepo_FindAll(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindAll()
-			require.NoError(t, err)
+			a.Nil(err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			require.Equal(t, tc.exp, c)
+			a.Equal(tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()
@@ -785,26 +794,27 @@ func TestCommentRepo_FindByText(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					require.NoError(t, err)
+					a.Nil(err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -813,20 +823,20 @@ func TestCommentRepo_FindByText(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindByText(tc.text)
-			require.NoError(t, err)
+			a.Nil(err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			require.Equal(t, tc.exp, c)
+			a.Equal(tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()
@@ -895,26 +905,27 @@ func TestCommentRepo_FindByPeriod(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 
 			userID, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					require.NoError(t, err)
+					a.Nil(err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -923,20 +934,20 @@ func TestCommentRepo_FindByPeriod(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindByPeriod(tc.start, tc.end)
-			require.NoError(t, err)
+			a.Nil(err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			require.Equal(t, tc.exp, c)
+			a.Equal(tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
-			require.NoError(t, err)
+			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 		})
 	}
 	err = db.Close()

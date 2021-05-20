@@ -5,6 +5,7 @@ import (
 
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	"github.com/JesusG2000/hexsatisfaction/internal/model/dto"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -52,21 +53,22 @@ func TestUserRole_FindAllUser(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
+			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			a.Nil(err)
 			if tc.isOk {
 				for i := range tc.users {
 					id, err := repos.User.Create(tc.users[i])
-					require.NoError(t, err)
+					a.Nil(err)
 					tc.expUsers[i].ID = id
 				}
 			}
 			users, err := repos.UserRole.FindAllUser()
-			require.NoError(t, err)
-			require.Equal(t, tc.expUsers, users)
+			a.Nil(err)
+			a.Equal(tc.expUsers, users)
 			if tc.isOk {
 				_, err := db.Exec("DELETE FROM users")
-				require.NoError(t, err)
+				a.Nil(err)
 			}
 		})
 	}
