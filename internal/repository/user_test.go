@@ -11,6 +11,7 @@ import (
 )
 
 func TestUser_FindByCredentials(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -44,7 +45,6 @@ func TestUser_FindByCredentials(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			var id int
 			_, err := db.Exec("DELETE FROM users")
 			a.Nil(err)
@@ -67,6 +67,7 @@ func TestUser_FindByCredentials(t *testing.T) {
 }
 
 func TestUser_IsExist(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	user := model.User{
@@ -92,7 +93,6 @@ func TestUser_IsExist(t *testing.T) {
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM users")
 			a.Nil(err)
 			if tc.isOk {
@@ -113,6 +113,7 @@ func TestUser_IsExist(t *testing.T) {
 }
 
 func TestUser_FindByLogin(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -140,7 +141,6 @@ func TestUser_FindByLogin(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			var id int
 			_, err := db.Exec("DELETE FROM users")
 			a.Nil(err)
@@ -163,6 +163,7 @@ func TestUser_FindByLogin(t *testing.T) {
 }
 
 func TestUserRepo_Create(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -181,7 +182,6 @@ func TestUserRepo_Create(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM users")
 			a.Nil(err)
 			id, err := repos.User.Create(tc.user)

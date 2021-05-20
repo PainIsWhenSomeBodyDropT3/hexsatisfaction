@@ -11,6 +11,7 @@ import (
 )
 
 func TestCommentRepo_Create(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -39,7 +40,6 @@ func TestCommentRepo_Create(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
@@ -73,6 +73,7 @@ func TestCommentRepo_Create(t *testing.T) {
 }
 
 func TestCommentRepo_Delete(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -101,7 +102,6 @@ func TestCommentRepo_Delete(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
@@ -138,6 +138,7 @@ func TestCommentRepo_Delete(t *testing.T) {
 }
 
 func TestCommentRepo_Update(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -171,7 +172,6 @@ func TestCommentRepo_Update(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
@@ -210,6 +210,7 @@ func TestCommentRepo_Update(t *testing.T) {
 }
 
 func TestCommentRepo_FindById(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -258,7 +259,6 @@ func TestCommentRepo_FindById(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			var id int
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
@@ -301,6 +301,7 @@ func TestCommentRepo_FindById(t *testing.T) {
 }
 
 func TestCommentRepo_FindAllByUserID(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -360,7 +361,6 @@ func TestCommentRepo_FindAllByUserID(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
@@ -410,6 +410,7 @@ func TestCommentRepo_FindAllByUserID(t *testing.T) {
 }
 
 func TestCommentRepo_FindByPurchaseID(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -469,7 +470,6 @@ func TestCommentRepo_FindByPurchaseID(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
@@ -519,6 +519,7 @@ func TestCommentRepo_FindByPurchaseID(t *testing.T) {
 }
 
 func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -578,7 +579,6 @@ func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
@@ -628,6 +628,7 @@ func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
 }
 
 func TestCommentRepo_FindAll(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -687,7 +688,6 @@ func TestCommentRepo_FindAll(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
@@ -737,6 +737,7 @@ func TestCommentRepo_FindAll(t *testing.T) {
 }
 
 func TestCommentRepo_FindByText(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -794,7 +795,6 @@ func TestCommentRepo_FindByText(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")
@@ -844,6 +844,7 @@ func TestCommentRepo_FindByText(t *testing.T) {
 }
 
 func TestCommentRepo_FindByPeriod(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -905,7 +906,6 @@ func TestCommentRepo_FindByPeriod(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM comment")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM purchase")

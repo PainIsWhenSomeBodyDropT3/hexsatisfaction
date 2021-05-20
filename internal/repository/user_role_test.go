@@ -10,6 +10,7 @@ import (
 )
 
 func TestUserRole_FindAllUser(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -53,7 +54,6 @@ func TestUserRole_FindAllUser(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM users")
 			a.Nil(err)
 			if tc.isOk {

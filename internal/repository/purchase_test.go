@@ -11,6 +11,7 @@ import (
 )
 
 func TestPurchaseRepo_Create(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -35,7 +36,6 @@ func TestPurchaseRepo_Create(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -60,6 +60,7 @@ func TestPurchaseRepo_Create(t *testing.T) {
 }
 
 func TestPurchaseRepo_Delete(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -83,7 +84,6 @@ func TestPurchaseRepo_Delete(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 
@@ -113,6 +113,7 @@ func TestPurchaseRepo_Delete(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindById(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -153,7 +154,6 @@ func TestPurchaseRepo_FindById(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			var id int
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
@@ -187,6 +187,7 @@ func TestPurchaseRepo_FindById(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -232,7 +233,6 @@ func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -268,6 +268,7 @@ func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -318,7 +319,6 @@ func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -357,6 +357,7 @@ func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -413,7 +414,6 @@ func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -452,6 +452,7 @@ func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -505,7 +506,6 @@ func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -544,6 +544,7 @@ func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -597,7 +598,6 @@ func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -636,6 +636,7 @@ func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -685,7 +686,6 @@ func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -724,6 +724,7 @@ func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindLast(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -769,7 +770,6 @@ func TestPurchaseRepo_FindLast(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -804,6 +804,7 @@ func TestPurchaseRepo_FindLast(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindAll(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -854,7 +855,6 @@ func TestPurchaseRepo_FindAll(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -893,6 +893,7 @@ func TestPurchaseRepo_FindAll(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindByPeriod(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -949,7 +950,6 @@ func TestPurchaseRepo_FindByPeriod(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -988,6 +988,7 @@ func TestPurchaseRepo_FindByPeriod(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindAfterDate(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -1041,7 +1042,6 @@ func TestPurchaseRepo_FindAfterDate(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -1080,6 +1080,7 @@ func TestPurchaseRepo_FindAfterDate(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -1133,7 +1134,6 @@ func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
@@ -1172,6 +1172,7 @@ func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
 }
 
 func TestPurchaseRepo_FindFileName(t *testing.T) {
+	a := assert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -1221,7 +1222,6 @@ func TestPurchaseRepo_FindFileName(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			a := assert.New(t)
 			_, err := db.Exec("DELETE FROM purchase")
 			a.Nil(err)
 			_, err = db.Exec("DELETE FROM users")
