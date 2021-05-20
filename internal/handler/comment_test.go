@@ -13,6 +13,7 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	"github.com/JesusG2000/hexsatisfaction/internal/service"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -23,6 +24,7 @@ const (
 )
 
 func TestComment_Create(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -101,25 +103,26 @@ func TestComment_Create(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			err = json.NewDecoder(res.Body).Decode(&r)
-			require.NoError(t, err)
-			require.Equal(t, tc.expBody, r)
+			a.Nil(err)
+			a.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestComment_Update(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -220,27 +223,28 @@ func TestComment_Update(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), body)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			if tc.isOkRes {
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
+				a.Nil(err)
 			}
-			require.Equal(t, tc.expBody, r)
+			a.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestComment_Delete(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -327,24 +331,25 @@ func TestComment_Delete(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			if tc.isOkRes {
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
+				a.Nil(err)
 			}
-			require.Equal(t, tc.expBody, r)
+			a.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestComment_FindByID(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -440,31 +445,32 @@ func TestComment_FindByID(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				a.Nil(err)
+				a.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, c)
+				a.Nil(err)
+				a.Equal(tc.expRes, c)
 			default:
-				require.Equal(t, tc.message, r)
+				a.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindAll(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -537,31 +543,32 @@ func TestComment_FindAll(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path, nil)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				a.Nil(err)
+				a.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, c)
+				a.Nil(err)
+				a.Equal(tc.expRes, c)
 			default:
-				require.Equal(t, tc.message, r)
+				a.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindAllByUserID(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -659,31 +666,32 @@ func TestComment_FindAllByUserID(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				a.Nil(err)
+				a.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, c)
+				a.Nil(err)
+				a.Equal(tc.expRes, c)
 			default:
-				require.Equal(t, tc.message, r)
+				a.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindByPurchaseID(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -781,31 +789,32 @@ func TestComment_FindByPurchaseID(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				a.Nil(err)
+				a.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, c)
+				a.Nil(err)
+				a.Equal(tc.expRes, c)
 			default:
-				require.Equal(t, tc.message, r)
+				a.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindByUserIDAndPurchaseID(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -906,31 +915,32 @@ func TestComment_FindByUserIDAndPurchaseID(t *testing.T) {
 			}
 			fullPath := tc.path + strconv.Itoa(tc.req.UserID) + slash + purchase + slash + strconv.Itoa(tc.req.PurchaseID)
 			req, err := http.NewRequest(tc.method, fullPath, nil)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				a.Nil(err)
+				a.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, c)
+				a.Nil(err)
+				a.Equal(tc.expRes, c)
 			default:
-				require.Equal(t, tc.message, r)
+				a.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindByText(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1029,34 +1039,35 @@ func TestComment_FindByText(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				a.Nil(err)
+				a.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, c)
+				a.Nil(err)
+				a.Equal(tc.expRes, c)
 			default:
-				require.Equal(t, tc.message, r)
+				a.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindByPeriod(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1158,28 +1169,28 @@ func TestComment_FindByPeriod(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				a.Nil(err)
+				a.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, c)
+				a.Nil(err)
+				a.Equal(tc.expRes, c)
 			default:
-				require.Equal(t, tc.message, r)
+				a.Equal(tc.message, r)
 			}
 		})
 	}

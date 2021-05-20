@@ -13,6 +13,7 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model/dto"
 	"github.com/JesusG2000/hexsatisfaction/internal/service"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -28,6 +29,7 @@ const (
 const authorizationHeader = "Authorization"
 
 func TestUser_Login(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 
@@ -116,25 +118,26 @@ func TestUser_Login(t *testing.T) {
 
 			payloadBuf := new(bytes.Buffer)
 			err := json.NewEncoder(payloadBuf).Encode(&tc.req)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, payloadBuf)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			if !tc.isNoBody {
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
+				a.Nil(err)
 			}
-			require.Equal(t, tc.expBody, r)
+			a.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestUser_Registration(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -238,23 +241,24 @@ func TestUser_Registration(t *testing.T) {
 
 			payloadBuf := new(bytes.Buffer)
 			err := json.NewEncoder(payloadBuf).Encode(&tc.req)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, payloadBuf)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 
 			err = json.NewDecoder(res.Body).Decode(&r)
-			require.NoError(t, err)
-			require.Equal(t, tc.expBody, r)
+			a.Nil(err)
+			a.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestUserRole_FindAll(t *testing.T) {
+	a := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 
@@ -317,19 +321,19 @@ func TestUserRole_FindAll(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path, nil)
-			require.NoError(t, err)
+			a.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			a.Equal(tc.expCode, res.Code)
 			if tc.isOkRes {
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
+				a.Nil(err)
 			}
 
-			require.Equal(t, tc.expBody, r)
+			a.Equal(tc.expBody, r)
 		})
 	}
 }
