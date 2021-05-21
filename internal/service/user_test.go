@@ -12,7 +12,7 @@ import (
 )
 
 func TestUser_FindByLogin(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -56,15 +56,15 @@ func TestUser_FindByLogin(t *testing.T) {
 			}
 			user, err := service.FindByLogin(tc.login)
 			if err != nil {
-				a.Equal(tc.expErr.Error(), err.Error())
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
-			a.Equal(tc.expRes, user)
+			assert.Equal(tc.expRes, user)
 		})
 	}
 }
 
 func TestUser_FindByCredentials(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -118,16 +118,16 @@ func TestUser_FindByCredentials(t *testing.T) {
 			}
 			token, err := service.FindByCredentials(tc.req)
 			if err != nil {
-				a.Equal(tc.expErr.Error(), err.Error())
+				assert.Equal(tc.expErr.Error(), err.Error())
 			} else {
-				a.NotEmpty(token)
+				assert.NotEmpty(token)
 			}
 		})
 	}
 }
 
 func TestUser_IsExist(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -166,15 +166,15 @@ func TestUser_IsExist(t *testing.T) {
 			}
 			user, err := service.IsExist(tc.login)
 			if err != nil {
-				a.Equal(tc.expErr.Error(), err.Error())
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
-			a.Equal(tc.expRes, user)
+			assert.Equal(tc.expRes, user)
 		})
 	}
 }
 
 func TestUser_Create(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -225,9 +225,9 @@ func TestUser_Create(t *testing.T) {
 			}
 			id, err := service.Create(tc.req)
 			if err != nil {
-				a.Equal(tc.expErr.Error(), err.Error())
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
-			a.Equal(tc.expID, id)
+			assert.Equal(tc.expID, id)
 		})
 	}
 }

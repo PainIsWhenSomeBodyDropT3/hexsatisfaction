@@ -24,7 +24,7 @@ const (
 )
 
 func TestComment_Create(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -103,26 +103,26 @@ func TestComment_Create(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			err = json.NewDecoder(res.Body).Decode(&r)
-			a.Nil(err)
-			a.Equal(tc.expBody, r)
+			assert.Nil(err)
+			assert.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestComment_Update(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -223,28 +223,28 @@ func TestComment_Update(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), body)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			if tc.isOkRes {
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
+				assert.Nil(err)
 			}
-			a.Equal(tc.expBody, r)
+			assert.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestComment_Delete(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -331,25 +331,25 @@ func TestComment_Delete(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			if tc.isOkRes {
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
+				assert.Nil(err)
 			}
-			a.Equal(tc.expBody, r)
+			assert.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestComment_FindByID(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -445,32 +445,32 @@ func TestComment_FindByID(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
-				a.Equal(tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				a.Nil(err)
-				a.Equal(tc.expRes, c)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, c)
 			default:
-				a.Equal(tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindAll(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -543,32 +543,32 @@ func TestComment_FindAll(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path, nil)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
-				a.Equal(tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				a.Nil(err)
-				a.Equal(tc.expRes, c)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, c)
 			default:
-				a.Equal(tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindAllByUserID(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -666,32 +666,32 @@ func TestComment_FindAllByUserID(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
-				a.Equal(tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				a.Nil(err)
-				a.Equal(tc.expRes, c)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, c)
 			default:
-				a.Equal(tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindByPurchaseID(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -789,32 +789,32 @@ func TestComment_FindByPurchaseID(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
-				a.Equal(tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				a.Nil(err)
-				a.Equal(tc.expRes, c)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, c)
 			default:
-				a.Equal(tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindByUserIDAndPurchaseID(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -915,32 +915,32 @@ func TestComment_FindByUserIDAndPurchaseID(t *testing.T) {
 			}
 			fullPath := tc.path + strconv.Itoa(tc.req.UserID) + slash + purchase + slash + strconv.Itoa(tc.req.PurchaseID)
 			req, err := http.NewRequest(tc.method, fullPath, nil)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
-				a.Equal(tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				a.Nil(err)
-				a.Equal(tc.expRes, c)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, c)
 			default:
-				a.Equal(tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindByText(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1039,35 +1039,35 @@ func TestComment_FindByText(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
-				a.Equal(tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				a.Nil(err)
-				a.Equal(tc.expRes, c)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, c)
 			default:
-				a.Equal(tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestComment_FindByPeriod(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1169,28 +1169,28 @@ func TestComment_FindByPeriod(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
-				a.Equal(tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&c)
-				a.Nil(err)
-				a.Equal(tc.expRes, c)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, c)
 			default:
-				a.Equal(tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}

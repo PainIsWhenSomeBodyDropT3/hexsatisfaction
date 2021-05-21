@@ -29,7 +29,7 @@ const (
 const authorizationHeader = "Authorization"
 
 func TestUser_Login(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 
@@ -118,26 +118,26 @@ func TestUser_Login(t *testing.T) {
 
 			payloadBuf := new(bytes.Buffer)
 			err := json.NewEncoder(payloadBuf).Encode(&tc.req)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, payloadBuf)
-			a.Nil(err)
+			assert.Nil(err)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			if !tc.isNoBody {
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
+				assert.Nil(err)
 			}
-			a.Equal(tc.expBody, r)
+			assert.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestUser_Registration(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -241,24 +241,24 @@ func TestUser_Registration(t *testing.T) {
 
 			payloadBuf := new(bytes.Buffer)
 			err := json.NewEncoder(payloadBuf).Encode(&tc.req)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, payloadBuf)
-			a.Nil(err)
+			assert.Nil(err)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			err = json.NewDecoder(res.Body).Decode(&r)
-			a.Nil(err)
-			a.Equal(tc.expBody, r)
+			assert.Nil(err)
+			assert.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestUserRole_FindAll(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 
@@ -321,19 +321,19 @@ func TestUserRole_FindAll(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path, nil)
-			a.Nil(err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			a.Equal(tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 			if tc.isOkRes {
 				err = json.NewDecoder(res.Body).Decode(&r)
-				a.Nil(err)
+				assert.Nil(err)
 			}
 
-			a.Equal(tc.expBody, r)
+			assert.Equal(tc.expBody, r)
 		})
 	}
 }

@@ -11,7 +11,7 @@ import (
 )
 
 func TestUserRoleService_FindAllUser(t *testing.T) {
-	a := assert.New(t)
+	assert := assert.New(t)
 	type test struct {
 		name   string
 		fn     func(userRole *m.UserRole, data test)
@@ -58,9 +58,9 @@ func TestUserRoleService_FindAllUser(t *testing.T) {
 			}
 			user, err := service.FindAllUser()
 			if err != nil {
-				a.Equal(tc.expErr.Error(), err.Error())
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
-			a.Equal(tc.expRes, user)
+			assert.Equal(tc.expRes, user)
 		})
 	}
 }
