@@ -17,7 +17,7 @@ func NewUserRoleRepo(db *sql.DB) *UserRoleRepo {
 	return &UserRoleRepo{db: db}
 }
 
-// FindAllUser finds all User.
+// FindAllUser finds users.
 func (u UserRoleRepo) FindAllUser() ([]model.User, error) {
 	var users []model.User
 	var user model.User

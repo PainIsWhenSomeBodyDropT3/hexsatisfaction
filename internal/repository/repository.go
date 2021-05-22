@@ -30,13 +30,13 @@ type Purchase interface {
 	FindByUserIDAndPeriod(id int, start, end time.Time) ([]model.Purchase, error)
 	FindByUserIDAfterDate(id int, start time.Time) ([]model.Purchase, error)
 	FindByUserIDBeforeDate(id int, end time.Time) ([]model.Purchase, error)
-	FindByUserIDAndFileName(id int, name string) ([]model.Purchase, error)
+	FindByUserIDAndFileID(userID, fileID int) ([]model.Purchase, error)
 	FindLast() (*model.Purchase, error)
 	FindAll() ([]model.Purchase, error)
 	FindByPeriod(start, end time.Time) ([]model.Purchase, error)
 	FindAfterDate(start time.Time) ([]model.Purchase, error)
 	FindBeforeDate(end time.Time) ([]model.Purchase, error)
-	FindByFileName(name string) ([]model.Purchase, error)
+	FindByFileID(id int) ([]model.Purchase, error)
 }
 
 // Comment is an interface for comment repository methods.
@@ -53,12 +53,40 @@ type Comment interface {
 	FindByPeriod(start, end time.Time) ([]model.Comment, error)
 }
 
+// File is an interface for file repository methods.
+type File interface {
+	Create(file model.File) (int, error)
+	Update(id int, file model.File) (int, error)
+	Delete(id int) (int, error)
+	FindByID(id int) (*model.File, error)
+	FindByName(name string) ([]model.File, error)
+	FindAll() ([]model.File, error)
+	FindByAuthorID(id int) ([]model.File, error)
+	FindNotActual() ([]model.File, error)
+	FindActual() ([]model.File, error)
+	FindAddedByPeriod(start, end time.Time) ([]model.File, error)
+	FindUpdatedByPeriod(start, end time.Time) ([]model.File, error)
+}
+
+// Author is an interface for author repository methods.
+type Author interface {
+	Create(author model.Author) (int, error)
+	Update(id int, author model.Author) (int, error)
+	Delete(id int) (int, error)
+	FindByID(id int) (*model.Author, error)
+	FindByUserID(id int) (*model.Author, error)
+	FindByName(name string) ([]model.Author, error)
+	FindAll() ([]model.Author, error)
+}
+
 // Repositories collects all repository interfaces.
 type Repositories struct {
 	User     User
 	UserRole UserRole
 	Purchase Purchase
 	Comment  Comment
+	File     File
+	Author   Author
 }
 
 // NewRepositories is a Repositories constructor.
@@ -68,5 +96,7 @@ func NewRepositories(db *sql.DB) *Repositories {
 		UserRole: NewUserRoleRepo(db),
 		Purchase: NewPurchaseRepo(db),
 		Comment:  NewCommentRepo(db),
+		File:     NewFileRepo(db),
+		Author:   NewAuthorRepo(db),
 	}
 }

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"testing"
 	"time"
 
@@ -10,6 +11,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func deletePurchaseData(assertions *testAssert.Assertions, db *sql.DB) {
+	_, err := db.Exec("DELETE FROM purchase")
+	assertions.Nil(err)
+	_, err = db.Exec("DELETE FROM file")
+	assertions.Nil(err)
+	_, err = db.Exec("DELETE FROM author")
+	assertions.Nil(err)
+	_, err = db.Exec("DELETE FROM users")
+	assertions.Nil(err)
+}
+
 func TestPurchaseRepo_Create(t *testing.T) {
 	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()
@@ -17,6 +29,8 @@ func TestPurchaseRepo_Create(t *testing.T) {
 	tt := []struct {
 		name     string
 		user     model.User
+		author   model.Author
+		file     model.File
 		purchase model.Purchase
 	}{
 		{
@@ -26,33 +40,46 @@ func TestPurchaseRepo_Create(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			purchase: model.Purchase{
-				UserID:   1,
-				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
-				FileName: "some name",
+				Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
 			},
 		},
 	}
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
-
+			deletePurchaseData(assert, db)
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
 
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
+
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
+
 			tc.purchase.UserID = userID
+			tc.purchase.FileID = fileID
 			id, err := repos.Purchase.Create(tc.purchase)
 			assert.Nil(err)
 			assert.NotZero(id)
-
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -65,9 +92,34 @@ func TestPurchaseRepo_Delete(t *testing.T) {
 	require.NoError(t, err)
 	tt := []struct {
 		name     string
+		isOk     bool
 		user     model.User
+		author   model.Author
+		file     model.File
 		purchase model.Purchase
 	}{
+		{
+			name: "not found",
+			user: model.User{
+				Login:    "test",
+				Password: "test",
+				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
+		},
 		{
 			name: "all ok",
 			user: model.User{
@@ -75,37 +127,54 @@ func TestPurchaseRepo_Delete(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			purchase: model.Purchase{
-				Date:     time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC),
-				FileName: "some name",
+				Date: time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC),
 			},
 		},
 	}
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			var purchaseID int
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
 
-			tc.purchase.UserID = userID
-			id, err := repos.Purchase.Create(tc.purchase)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
 			assert.Nil(err)
 
-			delID, err := repos.Purchase.Delete(id)
-			assert.Nil(err)
-			assert.NotZero(delID)
-
-			_, err = db.Exec("DELETE FROM purchase")
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
 			assert.Nil(err)
 
-			_, err = db.Exec("DELETE FROM users")
+			if tc.isOk {
+				tc.purchase.UserID = userID
+				tc.purchase.FileID = fileID
+				purchaseID, err = repos.Purchase.Create(tc.purchase)
+				assert.Nil(err)
+			}
+
+			delID, err := repos.Purchase.Delete(purchaseID)
 			assert.Nil(err)
+			assert.Equal(purchaseID, delID)
+
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -120,6 +189,8 @@ func TestPurchaseRepo_FindById(t *testing.T) {
 		isOk        bool
 		name        string
 		user        model.User
+		author      model.Author
+		file        model.File
 		purchase    model.Purchase
 		expPurchase *model.Purchase
 	}{
@@ -130,7 +201,20 @@ func TestPurchaseRepo_FindById(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
-
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			expPurchase: &model.Purchase{},
 		},
 		{
@@ -142,12 +226,10 @@ func TestPurchaseRepo_FindById(t *testing.T) {
 				RoleID:   dto.USER,
 			},
 			purchase: model.Purchase{
-				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-				FileName: "some name1",
+				Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			},
 			expPurchase: &model.Purchase{
-				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-				FileName: "some name1",
+				Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			},
 		},
 	}
@@ -155,19 +237,25 @@ func TestPurchaseRepo_FindById(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			var id int
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
 
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
+
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				tc.purchase.UserID = userID
+				tc.purchase.FileID = fileID
 				id, err = repos.Purchase.Create(tc.purchase)
 				assert.Nil(err)
 				tc.expPurchase.UserID = userID
+				tc.expPurchase.FileID = fileID
 			}
 			p, err := repos.Purchase.FindByID(id)
 			assert.Nil(err)
@@ -175,11 +263,7 @@ func TestPurchaseRepo_FindById(t *testing.T) {
 			tc.expPurchase.ID = p.ID
 			assert.Equal(tc.expPurchase, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -194,6 +278,8 @@ func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
 		isOk        bool
 		name        string
 		user        model.User
+		author      model.Author
+		file        model.File
 		purchases   []model.Purchase
 		expPurchase *model.Purchase
 	}{
@@ -203,6 +289,20 @@ func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
 				Login:    "test",
 				Password: "test",
 				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
 			},
 			expPurchase: &model.Purchase{},
 		},
@@ -214,40 +314,56 @@ func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchase: &model.Purchase{
-				Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-				FileName: "some name2",
+				Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 		},
 	}
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
 
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				tc.expPurchase.UserID = userID
+				tc.expPurchase.FileID = fileID
 			}
 			p, err := repos.Purchase.FindLastByUserID(userID)
 			assert.Nil(err)
@@ -256,11 +372,7 @@ func TestPurchaseRepo_FindLastByUserId(t *testing.T) {
 
 			assert.Equal(tc.expPurchase, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -275,6 +387,8 @@ func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
 		isOk         bool
 		name         string
 		user         model.User
+		author       model.Author
+		file         model.File
 		purchases    []model.Purchase
 		expPurchases []model.Purchase
 	}{
@@ -285,6 +399,20 @@ func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 		},
 		{
 			name: "all ok",
@@ -294,24 +422,34 @@ func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -319,22 +457,28 @@ func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
 
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
+
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
 			p, err := repos.Purchase.FindAllByUserID(userID)
@@ -345,11 +489,7 @@ func TestPurchaseRepo_FindAllByUserId(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -364,6 +504,8 @@ func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
 		isOk         bool
 		name         string
 		user         model.User
+		author       model.Author
+		file         model.File
 		start        time.Time
 		end          time.Time
 		purchases    []model.Purchase
@@ -376,6 +518,20 @@ func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			end:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 		},
@@ -387,26 +543,36 @@ func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			end:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -414,22 +580,27 @@ func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
 
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
 			p, err := repos.Purchase.FindByUserIDAndPeriod(userID, tc.start, tc.end)
@@ -440,11 +611,7 @@ func TestPurchaseRepo_FindByUserIdAndPeriod(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -459,6 +626,8 @@ func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
 		isOk         bool
 		name         string
 		user         model.User
+		author       model.Author
+		file         model.File
 		start        time.Time
 		purchases    []model.Purchase
 		expPurchases []model.Purchase
@@ -470,6 +639,20 @@ func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 		},
 		{
@@ -480,25 +663,35 @@ func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -506,22 +699,27 @@ func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
 
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
 			p, err := repos.Purchase.FindByUserIDAfterDate(userID, tc.start)
@@ -532,11 +730,7 @@ func TestPurchaseRepo_FindByUserIdAfterDate(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -551,6 +745,8 @@ func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
 		isOk         bool
 		name         string
 		user         model.User
+		author       model.Author
+		file         model.File
 		end          time.Time
 		purchases    []model.Purchase
 		expPurchases []model.Purchase
@@ -562,6 +758,20 @@ func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			end: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 		},
 		{
@@ -572,25 +782,35 @@ func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			end: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -598,22 +818,28 @@ func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
+			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
+
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
 			assert.Nil(err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
 			p, err := repos.Purchase.FindByUserIDBeforeDate(userID, tc.end)
@@ -624,26 +850,24 @@ func TestPurchaseRepo_FindByUserIdBeforeDate(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
 	require.NoError(t, err)
 }
 
-func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
+func TestPurchaseRepo_FindByUserIdAndFileID(t *testing.T) {
 	assert := testAssert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
 		isOk         bool
 		name         string
 		user         model.User
-		fileName     string
+		author       model.Author
+		file         model.File
 		purchases    []model.Purchase
 		expPurchases []model.Purchase
 	}{
@@ -654,7 +878,20 @@ func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
-			fileName: "wrong name",
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 		},
 		{
 			name: "all ok",
@@ -664,21 +901,34 @@ func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
-			fileName: "some name1",
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+				},
+				{
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -686,25 +936,31 @@ func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
+			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
+
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
 			assert.Nil(err)
 
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
-			p, err := repos.Purchase.FindByUserIDAndFileName(userID, tc.fileName)
+			p, err := repos.Purchase.FindByUserIDAndFileID(userID, fileID)
 			assert.Nil(err)
 			for i := range p {
 				tc.expPurchases[i].Date = p[i].Date
@@ -712,11 +968,7 @@ func TestPurchaseRepo_FindByUserIdAndFileName(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -731,6 +983,8 @@ func TestPurchaseRepo_FindLast(t *testing.T) {
 		isOk        bool
 		name        string
 		user        model.User
+		author      model.Author
+		file        model.File
 		purchases   []model.Purchase
 		expPurchase *model.Purchase
 	}{
@@ -740,6 +994,20 @@ func TestPurchaseRepo_FindLast(t *testing.T) {
 				Login:    "test",
 				Password: "test",
 				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
 			},
 			expPurchase: &model.Purchase{},
 		},
@@ -751,40 +1019,56 @@ func TestPurchaseRepo_FindLast(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchase: &model.Purchase{
-				Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-				FileName: "some name2",
+				Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			},
 		},
 	}
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
 
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				tc.expPurchase.UserID = userID
+				tc.expPurchase.FileID = fileID
 			}
 			p, err := repos.Purchase.FindLast()
 			assert.Nil(err)
@@ -792,11 +1076,7 @@ func TestPurchaseRepo_FindLast(t *testing.T) {
 			tc.expPurchase.ID = p.ID
 			assert.Equal(tc.expPurchase, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -811,6 +1091,8 @@ func TestPurchaseRepo_FindAll(t *testing.T) {
 		isOk         bool
 		name         string
 		user         model.User
+		author       model.Author
+		file         model.File
 		purchases    []model.Purchase
 		expPurchases []model.Purchase
 	}{
@@ -830,24 +1112,34 @@ func TestPurchaseRepo_FindAll(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -855,22 +1147,27 @@ func TestPurchaseRepo_FindAll(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
 
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
 			p, err := repos.Purchase.FindAll()
@@ -881,11 +1178,7 @@ func TestPurchaseRepo_FindAll(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -900,6 +1193,8 @@ func TestPurchaseRepo_FindByPeriod(t *testing.T) {
 		isOk         bool
 		name         string
 		user         model.User
+		author       model.Author
+		file         model.File
 		start        time.Time
 		end          time.Time
 		purchases    []model.Purchase
@@ -923,26 +1218,36 @@ func TestPurchaseRepo_FindByPeriod(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			end:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -950,22 +1255,27 @@ func TestPurchaseRepo_FindByPeriod(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
 
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
 			p, err := repos.Purchase.FindByPeriod(tc.start, tc.end)
@@ -976,11 +1286,7 @@ func TestPurchaseRepo_FindByPeriod(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -995,6 +1301,8 @@ func TestPurchaseRepo_FindAfterDate(t *testing.T) {
 		isOk         bool
 		name         string
 		user         model.User
+		author       model.Author
+		file         model.File
 		start        time.Time
 		purchases    []model.Purchase
 		expPurchases []model.Purchase
@@ -1005,6 +1313,20 @@ func TestPurchaseRepo_FindAfterDate(t *testing.T) {
 				Login:    "test",
 				Password: "test",
 				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
 			},
 			start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 		},
@@ -1019,22 +1341,18 @@ func TestPurchaseRepo_FindAfterDate(t *testing.T) {
 			start: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -1042,22 +1360,27 @@ func TestPurchaseRepo_FindAfterDate(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
 
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
 			p, err := repos.Purchase.FindAfterDate(tc.start)
@@ -1068,11 +1391,7 @@ func TestPurchaseRepo_FindAfterDate(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
@@ -1087,6 +1406,8 @@ func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
 		isOk         bool
 		name         string
 		user         model.User
+		author       model.Author
+		file         model.File
 		end          time.Time
 		purchases    []model.Purchase
 		expPurchases []model.Purchase
@@ -1098,6 +1419,20 @@ func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 			end: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 		},
 		{
@@ -1111,22 +1446,18 @@ func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
 			end: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -1134,22 +1465,27 @@ func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
 
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
 			p, err := repos.Purchase.FindBeforeDate(tc.end)
@@ -1160,18 +1496,14 @@ func TestPurchaseRepo_FindBeforeDate(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()
 	require.NoError(t, err)
 }
 
-func TestPurchaseRepo_FindFileName(t *testing.T) {
+func TestPurchaseRepo_FindFileID(t *testing.T) {
 	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
@@ -1179,7 +1511,8 @@ func TestPurchaseRepo_FindFileName(t *testing.T) {
 		isOk         bool
 		name         string
 		user         model.User
-		fileName     string
+		author       model.Author
+		file         model.File
 		purchases    []model.Purchase
 		expPurchases []model.Purchase
 	}{
@@ -1190,7 +1523,20 @@ func TestPurchaseRepo_FindFileName(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
-			fileName: "wrong name",
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
 		},
 		{
 			name: "all ok",
@@ -1200,21 +1546,21 @@ func TestPurchaseRepo_FindFileName(t *testing.T) {
 				Password: "test",
 				RoleID:   dto.USER,
 			},
-			fileName: "some name1",
+
 			purchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
 				},
 				{
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name2",
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 			expPurchases: []model.Purchase{
 				{
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "some name1",
+					Date: time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+				},
+				{
+					Date: time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
 				},
 			},
 		},
@@ -1222,25 +1568,30 @@ func TestPurchaseRepo_FindFileName(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 
 			userID, err := repos.User.Create(tc.user)
 			assert.Nil(err)
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
 
+			tc.file.AuthorID = authorID
+			fileID, err := repos.File.Create(tc.file)
+			assert.Nil(err)
 			if tc.isOk {
 				for i := range tc.purchases {
 					tc.purchases[i].UserID = userID
+					tc.purchases[i].FileID = fileID
 					_, err = repos.Purchase.Create(tc.purchases[i])
 					assert.Nil(err)
 				}
 				for i := range tc.expPurchases {
 					tc.expPurchases[i].UserID = userID
+					tc.expPurchases[i].FileID = fileID
 				}
 			}
-			p, err := repos.Purchase.FindByFileName(tc.fileName)
+			p, err := repos.Purchase.FindByFileID(fileID)
 			assert.Nil(err)
 			for i := range p {
 				tc.expPurchases[i].Date = p[i].Date
@@ -1248,11 +1599,7 @@ func TestPurchaseRepo_FindFileName(t *testing.T) {
 			}
 			assert.Equal(tc.expPurchases, p)
 
-			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
-
-			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			deletePurchaseData(assert, db)
 		})
 	}
 	err = db.Close()

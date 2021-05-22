@@ -18,7 +18,7 @@ func NewCommentRepo(db *sql.DB) *CommentRepo {
 	return &CommentRepo{db: db}
 }
 
-// Create creates comments and returns id.
+// Create creates comment and returns id.
 func (c CommentRepo) Create(comment model.Comment) (int, error) {
 	var creatID int
 	rows, err := c.db.Query("INSERT INTO comment (userID, purchaseID, date, text) VALUES ($1,$2,$3,$4) RETURNING id ", comment.UserID, comment.PurchaseID, comment.Date, comment.Text)
@@ -35,7 +35,7 @@ func (c CommentRepo) Create(comment model.Comment) (int, error) {
 	return creatID, rows.Err()
 }
 
-// Update updates comments and returns id.
+// Update updates comment and returns id.
 func (c CommentRepo) Update(id int, comment model.Comment) (int, error) {
 	var updatedID int
 	rows, err := c.db.Query("UPDATE comment SET userID=$1, purchaseID=$2, date=$3,text=$4 WHERE id = $5 RETURNING id", comment.UserID, comment.PurchaseID, comment.Date, comment.Text, id)
@@ -53,7 +53,7 @@ func (c CommentRepo) Update(id int, comment model.Comment) (int, error) {
 
 }
 
-// Delete deletes comments and returns id.
+// Delete deletes comment and returns id.
 func (c CommentRepo) Delete(id int) (int, error) {
 	var delID int
 	rows, err := c.db.Query("DELETE FROM comment WHERE id=$1 RETURNING id ", id)
@@ -71,7 +71,7 @@ func (c CommentRepo) Delete(id int) (int, error) {
 	return delID, rows.Err()
 }
 
-// FindByID finds comments by id.
+// FindByID finds comment by id.
 func (c CommentRepo) FindByID(id int) (*model.Comment, error) {
 	var comment model.Comment
 	rows, err := c.db.Query("SELECT * FROM comment WHERE id=$1", id)
@@ -152,7 +152,7 @@ func (c CommentRepo) FindByUserIDAndPurchaseID(userID, purchaseID int) ([]model.
 	return comments, rows.Err()
 }
 
-// FindAll finds all comments.
+// FindAll finds comments.
 func (c CommentRepo) FindAll() ([]model.Comment, error) {
 	var comments []model.Comment
 	var comment model.Comment
