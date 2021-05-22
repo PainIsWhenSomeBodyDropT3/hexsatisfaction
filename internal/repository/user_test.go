@@ -11,7 +11,7 @@ import (
 )
 
 func TestUser_FindByCredentials(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -47,18 +47,18 @@ func TestUser_FindByCredentials(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var id int
 			_, err := db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			if tc.isOk {
 				id, err = repos.User.Create(tc.user)
-				assert.Nil(err)
+				assert.Nil(t, err)
 			}
 			user, err := repos.User.FindByCredentials(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 			tc.expUser.ID = id
-			assert.Equal(tc.expUser, user)
+			assert.Equal(t, tc.expUser, user)
 			if tc.isOk {
 				_, err := db.Exec("DELETE FROM users")
-				assert.Nil(err)
+				assert.Nil(t, err)
 			}
 		})
 	}
@@ -67,7 +67,7 @@ func TestUser_FindByCredentials(t *testing.T) {
 }
 
 func TestUser_IsExist(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	user := model.User{
@@ -94,17 +94,17 @@ func TestUser_IsExist(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			if tc.isOk {
 				_, err := repos.User.Create(user)
-				assert.Nil(err)
+				assert.Nil(t, err)
 			}
 			exist, err := repos.User.IsExist(tc.login)
-			assert.Nil(err)
-			assert.Equal(tc.expRes, exist)
+			assert.Nil(t, err)
+			assert.Equal(t, tc.expRes, exist)
 			if tc.isOk {
 				_, err := db.Exec("DELETE FROM users")
-				assert.Nil(err)
+				assert.Nil(t, err)
 			}
 		})
 	}
@@ -113,7 +113,7 @@ func TestUser_IsExist(t *testing.T) {
 }
 
 func TestUser_FindByLogin(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -143,18 +143,18 @@ func TestUser_FindByLogin(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var id int
 			_, err := db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			if tc.isOk {
 				id, err = repos.User.Create(*tc.user)
-				assert.Nil(err)
+				assert.Nil(t, err)
 			}
 			user, err := repos.User.FindByLogin(tc.login)
-			assert.Nil(err)
+			assert.Nil(t, err)
 			tc.user.ID = id
-			assert.Equal(tc.user, user)
+			assert.Equal(t, tc.user, user)
 			if tc.isOk {
 				_, err := db.Exec("DELETE FROM users")
-				assert.Nil(err)
+				assert.Nil(t, err)
 			}
 		})
 	}
@@ -163,7 +163,7 @@ func TestUser_FindByLogin(t *testing.T) {
 }
 
 func TestUserRepo_Create(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -183,12 +183,12 @@ func TestUserRepo_Create(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			id, err := repos.User.Create(tc.user)
-			assert.Nil(err)
-			assert.NotZero(id)
+			assert.Nil(t, err)
+			assert.NotZero(t, id)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()

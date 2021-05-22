@@ -11,7 +11,7 @@ import (
 )
 
 func TestCommentRepo_Create(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -41,31 +41,31 @@ func TestCommentRepo_Create(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.comment.UserID = userID
 			tc.comment.PurchaseID = purchaseID
 			id, err := repos.Comment.Create(tc.comment)
-			assert.Nil(err)
-			assert.NotZero(id)
+			assert.Nil(t, err)
+			assert.NotZero(t, id)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
@@ -73,7 +73,7 @@ func TestCommentRepo_Create(t *testing.T) {
 }
 
 func TestCommentRepo_Delete(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -103,34 +103,34 @@ func TestCommentRepo_Delete(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.comment.UserID = userID
 			tc.comment.PurchaseID = purchaseID
 			commentID, err := repos.Comment.Create(tc.comment)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			id, err := repos.Comment.Delete(commentID)
-			assert.Nil(err)
-			assert.NotZero(id)
+			assert.Nil(t, err)
+			assert.NotZero(t, id)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
@@ -138,7 +138,7 @@ func TestCommentRepo_Delete(t *testing.T) {
 }
 
 func TestCommentRepo_Update(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -173,36 +173,36 @@ func TestCommentRepo_Update(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.comment.UserID = userID
 			tc.comment.PurchaseID = purchaseID
 			commentID, err := repos.Comment.Create(tc.comment)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.update.UserID = userID
 			tc.update.PurchaseID = purchaseID
 			id, err := repos.Comment.Update(commentID, tc.update)
-			assert.Nil(err)
-			assert.NotZero(id)
+			assert.Nil(t, err)
+			assert.NotZero(t, id)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
@@ -210,7 +210,7 @@ func TestCommentRepo_Update(t *testing.T) {
 }
 
 func TestCommentRepo_FindById(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -261,39 +261,39 @@ func TestCommentRepo_FindById(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var id int
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			if tc.isOk {
 				tc.comment.UserID = userID
 				tc.comment.PurchaseID = purchaseID
 				id, err = repos.Comment.Create(tc.comment)
-				assert.Nil(err)
+				assert.Nil(t, err)
 				tc.exp.UserID = userID
 				tc.exp.PurchaseID = purchaseID
 			}
 			p, err := repos.Comment.FindByID(id)
-			assert.Nil(err)
+			assert.Nil(t, err)
 			tc.exp.Date = p.Date
 			tc.exp.ID = p.ID
-			assert.Equal(tc.exp, p)
+			assert.Equal(t, tc.exp, p)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
@@ -301,7 +301,7 @@ func TestCommentRepo_FindById(t *testing.T) {
 }
 
 func TestCommentRepo_FindAllByUserID(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -362,25 +362,25 @@ func TestCommentRepo_FindAllByUserID(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					assert.Nil(err)
+					assert.Nil(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -389,20 +389,20 @@ func TestCommentRepo_FindAllByUserID(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindAllByUserID(userID)
-			assert.Nil(err)
+			assert.Nil(t, err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			assert.Equal(tc.exp, c)
+			assert.Equal(t, tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
@@ -410,7 +410,7 @@ func TestCommentRepo_FindAllByUserID(t *testing.T) {
 }
 
 func TestCommentRepo_FindByPurchaseID(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -471,25 +471,25 @@ func TestCommentRepo_FindByPurchaseID(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					assert.Nil(err)
+					assert.Nil(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -498,20 +498,20 @@ func TestCommentRepo_FindByPurchaseID(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindByPurchaseID(purchaseID)
-			assert.Nil(err)
+			assert.Nil(t, err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			assert.Equal(tc.exp, c)
+			assert.Equal(t, tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
@@ -519,7 +519,7 @@ func TestCommentRepo_FindByPurchaseID(t *testing.T) {
 }
 
 func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -580,25 +580,25 @@ func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					assert.Nil(err)
+					assert.Nil(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -607,20 +607,20 @@ func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindByUserIDAndPurchaseID(userID, purchaseID)
-			assert.Nil(err)
+			assert.Nil(t, err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			assert.Equal(tc.exp, c)
+			assert.Equal(t, tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
@@ -628,7 +628,7 @@ func TestCommentRepo_FindByUserIDAndPurchaseID(t *testing.T) {
 }
 
 func TestCommentRepo_FindAll(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -689,25 +689,25 @@ func TestCommentRepo_FindAll(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					assert.Nil(err)
+					assert.Nil(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -716,20 +716,20 @@ func TestCommentRepo_FindAll(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindAll()
-			assert.Nil(err)
+			assert.Nil(t, err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			assert.Equal(tc.exp, c)
+			assert.Equal(t, tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
@@ -737,7 +737,7 @@ func TestCommentRepo_FindAll(t *testing.T) {
 }
 
 func TestCommentRepo_FindByText(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -796,25 +796,25 @@ func TestCommentRepo_FindByText(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					assert.Nil(err)
+					assert.Nil(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -823,20 +823,20 @@ func TestCommentRepo_FindByText(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindByText(tc.text)
-			assert.Nil(err)
+			assert.Nil(t, err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			assert.Equal(tc.exp, c)
+			assert.Equal(t, tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
@@ -844,7 +844,7 @@ func TestCommentRepo_FindByText(t *testing.T) {
 }
 
 func TestCommentRepo_FindByPeriod(t *testing.T) {
-	assert := assert.New(t)
+
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -907,25 +907,25 @@ func TestCommentRepo_FindByPeriod(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			userID, err := repos.User.Create(tc.user)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			tc.purchase.UserID = userID
 			purchaseID, err := repos.Purchase.Create(tc.purchase)
-			assert.Nil(err)
+			assert.Nil(t, err)
 
 			if tc.isOk {
 				for i := range tc.comments {
 					tc.comments[i].UserID = userID
 					tc.comments[i].PurchaseID = purchaseID
 					_, err = repos.Comment.Create(tc.comments[i])
-					assert.Nil(err)
+					assert.Nil(t, err)
 				}
 				for i := range tc.exp {
 					tc.exp[i].UserID = userID
@@ -934,20 +934,20 @@ func TestCommentRepo_FindByPeriod(t *testing.T) {
 
 			}
 			c, err := repos.Comment.FindByPeriod(tc.start, tc.end)
-			assert.Nil(err)
+			assert.Nil(t, err)
 			for i := range c {
 				tc.exp[i].Date = c[i].Date
 				tc.exp[i].ID = c[i].ID
 			}
 
-			assert.Equal(tc.exp, c)
+			assert.Equal(t, tc.exp, c)
 
 			_, err = db.Exec("DELETE FROM comment")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM purchase")
-			assert.Nil(err)
+			assert.Nil(t, err)
 			_, err = db.Exec("DELETE FROM users")
-			assert.Nil(err)
+			assert.Nil(t, err)
 		})
 	}
 	err = db.Close()
