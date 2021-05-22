@@ -39,11 +39,26 @@ type Purchase interface {
 	FindByFileName(name string) ([]model.Purchase, error)
 }
 
+// Comment is an interface for comment repository methods.
+type Comment interface {
+	Create(comment model.Comment) (int, error)
+	Update(id int, comment model.Comment) (int, error)
+	Delete(id int) (int, error)
+	FindByID(id int) (*model.Comment, error)
+	FindAllByUserID(id int) ([]model.Comment, error)
+	FindByPurchaseID(id int) ([]model.Comment, error)
+	FindByUserIDAndPurchaseID(userID, purchaseID int) ([]model.Comment, error)
+	FindAll() ([]model.Comment, error)
+	FindByText(text string) ([]model.Comment, error)
+	FindByPeriod(start, end time.Time) ([]model.Comment, error)
+}
+
 // Repositories collects all repository interfaces.
 type Repositories struct {
 	User     User
 	UserRole UserRole
 	Purchase Purchase
+	Comment  Comment
 }
 
 // NewRepositories is a Repositories constructor.
@@ -52,5 +67,6 @@ func NewRepositories(db *sql.DB) *Repositories {
 		User:     NewUserRepo(db),
 		UserRole: NewUserRoleRepo(db),
 		Purchase: NewPurchaseRepo(db),
+		Comment:  NewCommentRepo(db),
 	}
 }

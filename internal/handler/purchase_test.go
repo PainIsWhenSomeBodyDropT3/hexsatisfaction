@@ -13,6 +13,7 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	"github.com/JesusG2000/hexsatisfaction/internal/service"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -27,6 +28,7 @@ const (
 )
 
 func TestPurchase_Create(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -103,25 +105,26 @@ func TestPurchase_Create(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			err = json.NewDecoder(res.Body).Decode(&r)
-			require.NoError(t, err)
-			require.Equal(t, tc.expBody, r)
+			assert.Nil(err)
+			assert.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestPurchase_Delete(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -208,24 +211,25 @@ func TestPurchase_Delete(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			if tc.isOkRes {
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
+				assert.Nil(err)
 			}
-			require.Equal(t, tc.expBody, r)
+			assert.Equal(tc.expBody, r)
 		})
 	}
 }
 
 func TestPurchase_FindById(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -320,31 +324,32 @@ func TestPurchase_FindById(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindLastByUserId(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -439,31 +444,32 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindAllByUserId(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -566,31 +572,32 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -702,34 +709,35 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), body)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -837,34 +845,35 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), body)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -972,34 +981,35 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), body)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1107,31 +1117,32 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 
 			fullPath := tc.path + strconv.Itoa(tc.req.ID) + slash + file + slash + tc.req.FileName
 			req, err := http.NewRequest(tc.method, fullPath, nil)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindLast(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1204,31 +1215,32 @@ func TestPurchase_FindLast(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path, nil)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindAll(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1306,31 +1318,32 @@ func TestPurchase_FindAll(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path, nil)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindByPeriod(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1437,34 +1450,35 @@ func TestPurchase_FindByPeriod(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindAfterDate(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1568,34 +1582,35 @@ func TestPurchase_FindAfterDate(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindBeforeDate(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1699,34 +1714,35 @@ func TestPurchase_FindBeforeDate(t *testing.T) {
 
 			body := new(bytes.Buffer)
 			err := json.NewEncoder(body).Encode(&tc.req)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}
 }
 
 func TestPurchase_FindByFileName(t *testing.T) {
+	assert := assert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1815,25 +1831,25 @@ func TestPurchase_FindByFileName(t *testing.T) {
 			}
 
 			req, err := http.NewRequest(tc.method, tc.path+tc.req.FileName, nil)
-			require.NoError(t, err)
+			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
-			require.Equal(t, tc.expCode, res.Code)
+			assert.Equal(tc.expCode, res.Code)
 
 			switch {
 			case tc.isOkMessage:
 				err = json.NewDecoder(res.Body).Decode(&r)
-				require.NoError(t, err)
-				require.Equal(t, tc.message, r)
+				assert.Nil(err)
+				assert.Equal(tc.message, r)
 			case tc.isOkRes:
 				err = json.NewDecoder(res.Body).Decode(&p)
-				require.NoError(t, err)
-				require.Equal(t, tc.expRes, p)
+				assert.Nil(err)
+				assert.Equal(tc.expRes, p)
 			default:
-				require.Equal(t, tc.message, r)
+				assert.Equal(tc.message, r)
 			}
 		})
 	}

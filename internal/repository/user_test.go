@@ -6,10 +6,12 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	"github.com/JesusG2000/hexsatisfaction/internal/model/dto"
 	_ "github.com/lib/pq"
+	testAssert "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestUser_FindByCredentials(t *testing.T) {
+	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -45,24 +47,27 @@ func TestUser_FindByCredentials(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var id int
 			_, err := db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			assert.Nil(err)
 			if tc.isOk {
 				id, err = repos.User.Create(tc.user)
-				require.NoError(t, err)
+				assert.Nil(err)
 			}
 			user, err := repos.User.FindByCredentials(tc.user)
-			require.NoError(t, err)
+			assert.Nil(err)
 			tc.expUser.ID = id
-			require.Equal(t, tc.expUser, user)
+			assert.Equal(tc.expUser, user)
 			if tc.isOk {
 				_, err := db.Exec("DELETE FROM users")
-				require.NoError(t, err)
+				assert.Nil(err)
 			}
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestUser_IsExist(t *testing.T) {
+	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	user := model.User{
@@ -89,23 +94,26 @@ func TestUser_IsExist(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			assert.Nil(err)
 			if tc.isOk {
 				_, err := repos.User.Create(user)
-				require.NoError(t, err)
+				assert.Nil(err)
 			}
 			exist, err := repos.User.IsExist(tc.login)
-			require.NoError(t, err)
-			require.Equal(t, tc.expRes, exist)
+			assert.Nil(err)
+			assert.Equal(tc.expRes, exist)
 			if tc.isOk {
 				_, err := db.Exec("DELETE FROM users")
-				require.NoError(t, err)
+				assert.Nil(err)
 			}
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestUser_FindByLogin(t *testing.T) {
+	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -135,24 +143,27 @@ func TestUser_FindByLogin(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var id int
 			_, err := db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			assert.Nil(err)
 			if tc.isOk {
 				id, err = repos.User.Create(*tc.user)
-				require.NoError(t, err)
+				assert.Nil(err)
 			}
 			user, err := repos.User.FindByLogin(tc.login)
-			require.NoError(t, err)
+			assert.Nil(err)
 			tc.user.ID = id
-			require.Equal(t, tc.user, user)
+			assert.Equal(tc.user, user)
 			if tc.isOk {
 				_, err := db.Exec("DELETE FROM users")
-				require.NoError(t, err)
+				assert.Nil(err)
 			}
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }
 
 func TestUserRepo_Create(t *testing.T) {
+	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()
 	require.NoError(t, err)
 	tt := []struct {
@@ -172,12 +183,14 @@ func TestUserRepo_Create(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			assert.Nil(err)
 			id, err := repos.User.Create(tc.user)
-			require.NoError(t, err)
-			require.NotZero(t, id)
+			assert.Nil(err)
+			assert.NotZero(id)
 			_, err = db.Exec("DELETE FROM users")
-			require.NoError(t, err)
+			assert.Nil(err)
 		})
 	}
+	err = db.Close()
+	require.NoError(t, err)
 }

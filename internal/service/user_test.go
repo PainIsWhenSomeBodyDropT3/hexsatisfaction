@@ -7,10 +7,12 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model/dto"
 	m "github.com/JesusG2000/hexsatisfaction/internal/service/mock"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestUser_FindByLogin(t *testing.T) {
+	assert := assert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -54,16 +56,15 @@ func TestUser_FindByLogin(t *testing.T) {
 			}
 			user, err := service.FindByLogin(tc.login)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
-			require.Equal(t, tc.expRes, user)
+			assert.Equal(tc.expRes, user)
 		})
 	}
 }
 
 func TestUser_FindByCredentials(t *testing.T) {
+	assert := assert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -117,16 +118,16 @@ func TestUser_FindByCredentials(t *testing.T) {
 			}
 			token, err := service.FindByCredentials(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
+				assert.Equal(tc.expErr.Error(), err.Error())
 			} else {
-				require.Nil(t, err)
-				require.NotEmpty(t, token)
+				assert.NotEmpty(token)
 			}
 		})
 	}
 }
 
 func TestUser_IsExist(t *testing.T) {
+	assert := assert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -165,16 +166,15 @@ func TestUser_IsExist(t *testing.T) {
 			}
 			user, err := service.IsExist(tc.login)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
-			require.Equal(t, tc.expRes, user)
+			assert.Equal(tc.expRes, user)
 		})
 	}
 }
 
 func TestUser_Create(t *testing.T) {
+	assert := assert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -225,11 +225,9 @@ func TestUser_Create(t *testing.T) {
 			}
 			id, err := service.Create(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expID, id)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expID, id)
 		})
 	}
 }

@@ -11,7 +11,7 @@ linters-settings:
 
     enabled-tags:
     - performance
-    - style
+    - diagnostic
     - experimental
 
     disabled-checks:

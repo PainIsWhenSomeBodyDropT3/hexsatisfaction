@@ -7,10 +7,11 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	m "github.com/JesusG2000/hexsatisfaction/internal/service/mock"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPurchaseService_Create(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name   string
 		req    model.CreatePurchaseRequest
@@ -63,16 +64,15 @@ func TestPurchaseService_Create(t *testing.T) {
 			}
 			id, err := service.Create(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expID, id)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expID, id)
 		})
 	}
 }
 
 func TestPurchaseService_Delete(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name   string
 		req    model.DeletePurchaseRequest
@@ -113,16 +113,15 @@ func TestPurchaseService_Delete(t *testing.T) {
 			}
 			id, err := service.Delete(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expID, id)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expID, id)
 		})
 	}
 }
 
 func TestPurchaseService_FindById(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.IDPurchaseRequest
@@ -165,16 +164,15 @@ func TestPurchaseService_FindById(t *testing.T) {
 			}
 			p, err := service.FindByID(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindLastByUserId(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.UserIDPurchaseRequest
@@ -220,16 +218,15 @@ func TestPurchaseService_FindLastByUserId(t *testing.T) {
 			}
 			p, err := service.FindLastByUserID(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindAllByUserId(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.UserIDPurchaseRequest
@@ -283,16 +280,15 @@ func TestPurchaseService_FindAllByUserId(t *testing.T) {
 			}
 			p, err := service.FindAllByUserID(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindByUserIdAndPeriod(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.UserIDPeriodPurchaseRequest
@@ -350,16 +346,15 @@ func TestPurchaseService_FindByUserIdAndPeriod(t *testing.T) {
 			}
 			p, err := service.FindByUserIDAndPeriod(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindByUserIdAfterDate(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.UserIDAfterDatePurchaseRequest
@@ -415,16 +410,15 @@ func TestPurchaseService_FindByUserIdAfterDate(t *testing.T) {
 			}
 			p, err := service.FindByUserIDAfterDate(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindByUserIdBeforeDate(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.UserIDBeforeDatePurchaseRequest
@@ -480,16 +474,15 @@ func TestPurchaseService_FindByUserIdBeforeDate(t *testing.T) {
 			}
 			p, err := service.FindByUserIDBeforeDate(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindByUserIdAndFileName(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.UserIDFileNamePurchaseRequest
@@ -545,16 +538,15 @@ func TestPurchaseService_FindByUserIdAndFileName(t *testing.T) {
 			}
 			p, err := service.FindByUserIDAndFileName(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindLast(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		fn          func(purchase *m.Purchase, data test)
@@ -593,16 +585,15 @@ func TestPurchaseService_FindLast(t *testing.T) {
 			}
 			p, err := service.FindLast()
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindAll(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		fn          func(purchase *m.Purchase, data test)
@@ -649,16 +640,15 @@ func TestPurchaseService_FindAll(t *testing.T) {
 			}
 			p, err := service.FindAll()
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindByPeriod(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.PeriodPurchaseRequest
@@ -714,16 +704,15 @@ func TestPurchaseService_FindByPeriod(t *testing.T) {
 			}
 			p, err := service.FindByPeriod(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindAfterDate(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.AfterDatePurchaseRequest
@@ -777,16 +766,15 @@ func TestPurchaseService_FindAfterDate(t *testing.T) {
 			}
 			p, err := service.FindAfterDate(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindBeforeDate(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.BeforeDatePurchaseRequest
@@ -837,16 +825,15 @@ func TestPurchaseService_FindBeforeDate(t *testing.T) {
 			}
 			p, err := service.FindBeforeDate(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
 
 func TestPurchaseService_FindByFileName(t *testing.T) {
+	assert := assert.New(t)
 	type test struct {
 		name        string
 		req         model.FileNamePurchaseRequest
@@ -900,11 +887,9 @@ func TestPurchaseService_FindByFileName(t *testing.T) {
 			}
 			p, err := service.FindByFileName(tc.req)
 			if err != nil {
-				require.EqualError(t, tc.expErr, err.Error())
-				require.Equal(t, tc.expPurchase, p)
-			} else {
-				require.Nil(t, err)
+				assert.Equal(tc.expErr.Error(), err.Error())
 			}
+			assert.Equal(tc.expPurchase, p)
 		})
 	}
 }
