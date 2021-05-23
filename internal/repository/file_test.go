@@ -807,7 +807,7 @@ func TestFileRepo_FindActual(t *testing.T) {
 				Path:        "test",
 				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
 				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
-				Actual:      false,
+				Actual:      true,
 			},
 			exp: []model.File{
 				{
@@ -817,7 +817,7 @@ func TestFileRepo_FindActual(t *testing.T) {
 					Path:        "test",
 					AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
 					UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
-					Actual:      false,
+					Actual:      true,
 				},
 			},
 		},
