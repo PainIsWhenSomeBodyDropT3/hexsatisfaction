@@ -7,11 +7,11 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model/dto"
 	m "github.com/JesusG2000/hexsatisfaction/internal/service/mock"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
+	testAssert "github.com/stretchr/testify/assert"
 )
 
 func TestUserRoleService_FindAllUser(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	type test struct {
 		name   string
 		fn     func(userRole *m.UserRole, data test)
@@ -56,11 +56,11 @@ func TestUserRoleService_FindAllUser(t *testing.T) {
 			if tc.fn != nil {
 				tc.fn(userRole, tc)
 			}
-			user, err := service.FindAllUser()
+			users, err := service.FindAllUser()
 			if err != nil {
 				assert.Equal(tc.expErr.Error(), err.Error())
 			}
-			assert.Equal(tc.expRes, user)
+			assert.Equal(tc.expRes, users)
 		})
 	}
 }

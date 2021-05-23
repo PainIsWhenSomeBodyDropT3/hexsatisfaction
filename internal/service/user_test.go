@@ -7,12 +7,12 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model/dto"
 	m "github.com/JesusG2000/hexsatisfaction/internal/service/mock"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
+	testAssert "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestUser_FindByLogin(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -26,8 +26,8 @@ func TestUser_FindByLogin(t *testing.T) {
 		{
 			name:  "FindByID errors",
 			login: "test",
-			fn: func(userDB *m.User, data test) {
-				userDB.On("FindByLogin", data.login).
+			fn: func(user *m.User, data test) {
+				user.On("FindByLogin", data.login).
 					Return(data.expRes, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't find a user by login"),
@@ -35,8 +35,8 @@ func TestUser_FindByLogin(t *testing.T) {
 		{
 			name:  "All ok",
 			login: "test",
-			fn: func(userDB *m.User, data test) {
-				userDB.On("FindByLogin", data.login).
+			fn: func(user *m.User, data test) {
+				user.On("FindByLogin", data.login).
 					Return(data.expRes, nil)
 			},
 			expRes: &model.User{
@@ -49,28 +49,28 @@ func TestUser_FindByLogin(t *testing.T) {
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			userDB := new(m.User)
-			service := NewUserService(userDB, api.TokenManager)
+			user := new(m.User)
+			service := NewUserService(user, api.TokenManager)
 			if tc.fn != nil {
-				tc.fn(userDB, tc)
+				tc.fn(user, tc)
 			}
-			user, err := service.FindByLogin(tc.login)
+			u, err := service.FindByLogin(tc.login)
 			if err != nil {
 				assert.Equal(tc.expErr.Error(), err.Error())
 			}
-			assert.Equal(tc.expRes, user)
+			assert.Equal(tc.expRes, u)
 		})
 	}
 }
 
 func TestUser_FindByCredentials(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
 		name   string
 		req    model.LoginUserRequest
-		fn     func(userDB *m.User, data test)
+		fn     func(user *m.User, data test)
 		expRes *model.User
 		expErr error
 	}
@@ -81,8 +81,8 @@ func TestUser_FindByCredentials(t *testing.T) {
 				Login:    "test",
 				Password: "test",
 			},
-			fn: func(userDB *m.User, data test) {
-				userDB.On("FindByCredentials", model.User{
+			fn: func(user *m.User, data test) {
+				user.On("FindByCredentials", model.User{
 					Login:    data.req.Login,
 					Password: data.req.Password,
 				}).Return(data.expRes, errors.New(""))
@@ -95,8 +95,8 @@ func TestUser_FindByCredentials(t *testing.T) {
 				Login:    "test",
 				Password: "test",
 			},
-			fn: func(userDB *m.User, data test) {
-				userDB.On("FindByCredentials", model.User{
+			fn: func(user *m.User, data test) {
+				user.On("FindByCredentials", model.User{
 					Login:    data.req.Login,
 					Password: data.req.Password,
 				}).Return(data.expRes, nil)
@@ -111,10 +111,10 @@ func TestUser_FindByCredentials(t *testing.T) {
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			userDB := new(m.User)
-			service := NewUserService(userDB, api.TokenManager)
+			user := new(m.User)
+			service := NewUserService(user, api.TokenManager)
 			if tc.fn != nil {
-				tc.fn(userDB, tc)
+				tc.fn(user, tc)
 			}
 			token, err := service.FindByCredentials(tc.req)
 			if err != nil {
@@ -127,13 +127,13 @@ func TestUser_FindByCredentials(t *testing.T) {
 }
 
 func TestUser_IsExist(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
 		name   string
 		login  string
-		fn     func(userDB *m.User, data test)
+		fn     func(user *m.User, data test)
 		expRes bool
 		expErr error
 	}
@@ -141,8 +141,8 @@ func TestUser_IsExist(t *testing.T) {
 		{
 			name:  "IsExist errors",
 			login: "test",
-			fn: func(userDB *m.User, data test) {
-				userDB.On("IsExist", data.login).
+			fn: func(user *m.User, data test) {
+				user.On("IsExist", data.login).
 					Return(data.expRes, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't check user existence"),
@@ -150,8 +150,8 @@ func TestUser_IsExist(t *testing.T) {
 		{
 			name:  "All ok",
 			login: "test",
-			fn: func(userDB *m.User, data test) {
-				userDB.On("IsExist", data.login).
+			fn: func(user *m.User, data test) {
+				user.On("IsExist", data.login).
 					Return(data.expRes, nil)
 			},
 			expRes: true,
@@ -159,28 +159,28 @@ func TestUser_IsExist(t *testing.T) {
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			userDB := new(m.User)
-			service := NewUserService(userDB, api.TokenManager)
+			user := new(m.User)
+			service := NewUserService(user, api.TokenManager)
 			if tc.fn != nil {
-				tc.fn(userDB, tc)
+				tc.fn(user, tc)
 			}
-			user, err := service.IsExist(tc.login)
+			exist, err := service.IsExist(tc.login)
 			if err != nil {
 				assert.Equal(tc.expErr.Error(), err.Error())
 			}
-			assert.Equal(tc.expRes, user)
+			assert.Equal(tc.expRes, exist)
 		})
 	}
 }
 
 func TestUser_Create(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	api, err := InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
 		name   string
 		req    model.RegisterUserRequest
-		fn     func(userDB *m.User, data test)
+		fn     func(user *m.User, data test)
 		expID  int
 		expErr error
 	}
@@ -191,8 +191,8 @@ func TestUser_Create(t *testing.T) {
 				Login:    "test",
 				Password: "test",
 			},
-			fn: func(userDB *m.User, data test) {
-				userDB.On("Create", model.User{
+			fn: func(user *m.User, data test) {
+				user.On("Create", model.User{
 					Login:    data.req.Login,
 					Password: data.req.Password,
 				}).
@@ -206,8 +206,8 @@ func TestUser_Create(t *testing.T) {
 				Login:    "test",
 				Password: "test",
 			},
-			fn: func(userDB *m.User, data test) {
-				userDB.On("Create", model.User{
+			fn: func(user *m.User, data test) {
+				user.On("Create", model.User{
 					Login:    data.req.Login,
 					Password: data.req.Password,
 				}).
@@ -218,10 +218,10 @@ func TestUser_Create(t *testing.T) {
 	}
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			userDB := new(m.User)
-			service := NewUserService(userDB, api.TokenManager)
+			user := new(m.User)
+			service := NewUserService(user, api.TokenManager)
 			if tc.fn != nil {
-				tc.fn(userDB, tc)
+				tc.fn(user, tc)
 			}
 			id, err := service.Create(tc.req)
 			if err != nil {

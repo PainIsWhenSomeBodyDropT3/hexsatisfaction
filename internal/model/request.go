@@ -30,7 +30,7 @@ type (
 		// required: true
 		Date time.Time `json:"date"`
 		// required: true
-		FileName string `json:"fileName"`
+		FileID int `json:"fileID"`
 	}
 
 	// IDPurchaseRequest represents a request to find the purchase by id.
@@ -77,12 +77,12 @@ type (
 		End time.Time `json:"end"`
 	}
 
-	// UserIDFileNamePurchaseRequest represents a request to find all purchases by user id and file name.
-	UserIDFileNamePurchaseRequest struct {
+	// UserIDFileIDPurchaseRequest represents a request to find all purchases by user id and file name.
+	UserIDFileIDPurchaseRequest struct {
 		// required: true
-		ID int `json:"-"`
+		UserID int `json:"-"`
 		// required: true
-		FileName string `json:"fileName"`
+		FileID int `json:"fileID"`
 	}
 
 	// PeriodPurchaseRequest represents a request to find all purchases by date period.
@@ -105,10 +105,10 @@ type (
 		End time.Time `json:"end"`
 	}
 
-	// FileNamePurchaseRequest represents a request to find all purchases by file name.
-	FileNamePurchaseRequest struct {
+	// FileIDPurchaseRequest represents a request to find all purchases by file name.
+	FileIDPurchaseRequest struct {
 		// required: true
-		FileName string `json:"-"`
+		FileID int `json:"-"`
 	}
 )
 
@@ -183,5 +183,141 @@ type (
 		Start time.Time `json:"start"`
 		// required: true
 		End time.Time `json:"end"`
+	}
+)
+
+type (
+	// CreateFileRequest represents a request to create file.
+	CreateFileRequest struct {
+		// required: true
+		Name string `json:"name"`
+		// required: true
+		Description string `json:"description"`
+		// required: true
+		Size int `json:"size"`
+		// required: true
+		Path string `json:"path"`
+		// required: true
+		AddDate time.Time `json:"addDate"`
+		// required: true
+		UpdateDate time.Time `json:"updateDate"`
+		// required: true
+		Actual bool `json:"actual"`
+		// required: true
+		AuthorID int `json:"authorID"`
+	}
+
+	// UpdateFileRequest represents a request to update file.
+	UpdateFileRequest struct {
+		// required: true
+		ID int `json:"-"`
+		// required: true
+		Name string `json:"name"`
+		// required: true
+		Description string `json:"description"`
+		// required: true
+		Size int `json:"size"`
+		// required: true
+		Path string `json:"path"`
+		// required: true
+		AddDate time.Time `json:"addDate"`
+		// required: true
+		UpdateDate time.Time `json:"updateDate"`
+		// required: true
+		Actual bool `json:"actual"`
+		// required: true
+		AuthorID int `json:"authorID"`
+	}
+
+	// DeleteFileRequest represents a request to delete file.
+	DeleteFileRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// IDFileRequest represents a request to find file by id.
+	IDFileRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// NameFileRequest represents a request to find files by name.
+	NameFileRequest struct {
+		// required: true
+		Name string `json:"-"`
+	}
+
+	// AuthorIDFileRequest represents a request to find files by author id.
+	AuthorIDFileRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// AddedPeriodFileRequest represents a request to find added files by date period.
+	AddedPeriodFileRequest struct {
+		// required: true
+		Start time.Time `json:"start"`
+		// required: true
+		End time.Time `json:"end"`
+	}
+
+	// UpdatedPeriodFileRequest represents a request to find updated files by date period.
+	UpdatedPeriodFileRequest struct {
+		// required: true
+		Start time.Time `json:"start"`
+		// required: true
+		End time.Time `json:"end"`
+	}
+)
+
+type (
+	// CreateAuthorRequest represents a request to create author.
+	CreateAuthorRequest struct {
+		// required: true
+		Name string `json:"name"`
+		// required: true
+		Age int `json:"age"`
+		// required: true
+		Description string `json:"description"`
+		// required: true
+		UserID int `json:"userID"`
+	}
+
+	// UpdateAuthorRequest represents a request to update author.
+	UpdateAuthorRequest struct {
+		// required: true
+		ID int `json:"-"`
+		// required: true
+		Name string `json:"name"`
+		// required: true
+		Age int `json:"age"`
+		// required: true
+		Description string `json:"description"`
+		// required: true
+		UserID int `json:"userID"`
+	}
+
+	// DeleteAuthorRequest represents a request to delete author.
+	DeleteAuthorRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// IDAuthorRequest represents a request to find author by id.
+	IDAuthorRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// UserIDAuthorRequest represents a request to find author by user id.
+	UserIDAuthorRequest struct {
+		// required: true
+		ID int `json:"-"`
+	}
+
+	// NameAuthorRequest represents a request to find authors by name.
+	NameAuthorRequest struct {
+		// required: true
+		Name string `json:"-"`
 	}
 )

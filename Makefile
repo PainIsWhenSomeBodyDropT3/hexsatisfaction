@@ -12,6 +12,8 @@ migrate_down:
 swagger-spec:
 	swag init -g cmd/main.go
 
+gen-mocks:
+	mockery --all --keeptree
 run:
 	go run cmd/main.go
 

@@ -19,9 +19,9 @@ func NewPurchaseService(purchase repository.Purchase) *PurchaseService {
 // Create creates new Purchase and returns id.
 func (p PurchaseService) Create(request model.CreatePurchaseRequest) (int, error) {
 	purchase := model.Purchase{
-		UserID:   request.UserID,
-		Date:     request.Date,
-		FileName: request.FileName,
+		UserID: request.UserID,
+		Date:   request.Date,
+		FileID: request.FileID,
 	}
 	id, err := p.Purchase.Create(purchase)
 	if err != nil {
@@ -101,9 +101,9 @@ func (p PurchaseService) FindByUserIDBeforeDate(request model.UserIDBeforeDatePu
 	return purchases, nil
 }
 
-// FindByUserIDAndFileName finds all Purchase by userId and file name.
-func (p PurchaseService) FindByUserIDAndFileName(request model.UserIDFileNamePurchaseRequest) ([]model.Purchase, error) {
-	purchases, err := p.Purchase.FindByUserIDAndFileName(request.ID, request.FileName)
+// FindByUserIDAndFileID finds all Purchase by userId and file name.
+func (p PurchaseService) FindByUserIDAndFileID(request model.UserIDFileIDPurchaseRequest) ([]model.Purchase, error) {
+	purchases, err := p.Purchase.FindByUserIDAndFileID(request.UserID, request.FileID)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find purchases")
 	}
@@ -161,9 +161,9 @@ func (p PurchaseService) FindBeforeDate(request model.BeforeDatePurchaseRequest)
 	return purchases, nil
 }
 
-// FindByFileName finds all Purchase by file name.
-func (p PurchaseService) FindByFileName(request model.FileNamePurchaseRequest) ([]model.Purchase, error) {
-	purchases, err := p.Purchase.FindByFileName(request.FileName)
+// FindByFileID finds all Purchase by file name.
+func (p PurchaseService) FindByFileID(request model.FileIDPurchaseRequest) ([]model.Purchase, error) {
+	purchases, err := p.Purchase.FindByFileID(request.FileID)
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't find purchases")
 	}

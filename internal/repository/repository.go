@@ -7,7 +7,7 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 )
 
-// User is an interface for user repository methods.
+// User is an interface for UserRepo methods.
 type User interface {
 	Create(user model.User) (int, error)
 	FindByLogin(login string) (*model.User, error)
@@ -15,12 +15,12 @@ type User interface {
 	IsExist(login string) (bool, error)
 }
 
-// UserRole is an interface for user role repository methods.
+// UserRole is an interface for UserRoleRepo methods.
 type UserRole interface {
 	FindAllUser() ([]model.User, error)
 }
 
-// Purchase is an interface for purchase repository methods.
+// Purchase is an interface for PurchaseRepo methods.
 type Purchase interface {
 	Create(purchase model.Purchase) (int, error)
 	Delete(id int) (int, error)
@@ -39,7 +39,7 @@ type Purchase interface {
 	FindByFileID(id int) ([]model.Purchase, error)
 }
 
-// Comment is an interface for comment repository methods.
+// Comment is an interface for CommentRepo methods.
 type Comment interface {
 	Create(comment model.Comment) (int, error)
 	Update(id int, comment model.Comment) (int, error)
@@ -53,7 +53,7 @@ type Comment interface {
 	FindByPeriod(start, end time.Time) ([]model.Comment, error)
 }
 
-// File is an interface for file repository methods.
+// File is an interface for FileRepo methods.
 type File interface {
 	Create(file model.File) (int, error)
 	Update(id int, file model.File) (int, error)
@@ -68,7 +68,7 @@ type File interface {
 	FindUpdatedByPeriod(start, end time.Time) ([]model.File, error)
 }
 
-// Author is an interface for author repository methods.
+// Author is an interface for AuthorRepo methods.
 type Author interface {
 	Create(author model.Author) (int, error)
 	Update(id int, author model.Author) (int, error)
