@@ -712,7 +712,7 @@ func (req *userIDFileIDPurchaseRequest) Validate() error {
 // @Accept  json
 // @Produce  json
 // @Param userID path int true "User id"
-// @Param fileID path string true "File id"
+// @Param fileID path int true "File id"
 // @Success 200 {array} model.Purchase
 // @Failure 400 {object} middleware.SwagError
 // @Failure 404 {object} middleware.SwagEmptyError "No purchases"
@@ -1024,7 +1024,7 @@ func (req *fileIDPurchaseRequest) Validate() error {
 // @Description Find purchases by file id
 // @Accept  json
 // @Produce  json
-// @Param fileID path string true "File id"
+// @Param fileID path int true "File id"
 // @Success 200 {array} model.Purchase
 // @Failure 400 {object} middleware.SwagError
 // @Failure 404 {object} middleware.SwagEmptyError "No purchases"
