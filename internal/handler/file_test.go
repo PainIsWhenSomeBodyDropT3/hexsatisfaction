@@ -636,8 +636,6 @@ func TestFile_FindByName(t *testing.T) {
 	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
-	require.NoError(t, err)
 
 	type test struct {
 		name        string
@@ -722,8 +720,6 @@ func TestFile_FindByName(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path+tc.req.Name, nil)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -747,8 +743,6 @@ func TestFile_FindByName(t *testing.T) {
 func TestFile_FindActual(t *testing.T) {
 	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -825,8 +819,6 @@ func TestFile_FindActual(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path, nil)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -850,8 +842,6 @@ func TestFile_FindActual(t *testing.T) {
 func TestFile_FindNotActual(t *testing.T) {
 	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -928,8 +918,6 @@ func TestFile_FindNotActual(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path, nil)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -953,8 +941,6 @@ func TestFile_FindNotActual(t *testing.T) {
 func TestFile_FindAll(t *testing.T) {
 	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1031,8 +1017,6 @@ func TestFile_FindAll(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path, nil)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -1056,8 +1040,6 @@ func TestFile_FindAll(t *testing.T) {
 func TestFile_FindAddedByPeriod(t *testing.T) {
 	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1166,8 +1148,6 @@ func TestFile_FindAddedByPeriod(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path, body)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -1191,8 +1171,6 @@ func TestFile_FindAddedByPeriod(t *testing.T) {
 func TestFile_FindUpdatedByPeriod(t *testing.T) {
 	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1300,8 +1278,6 @@ func TestFile_FindUpdatedByPeriod(t *testing.T) {
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
 			assert.Nil(err)
-
-			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)

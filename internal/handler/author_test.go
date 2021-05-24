@@ -330,11 +330,7 @@ func TestAuthor_Delete(t *testing.T) {
 				tc.fn(author, tc)
 			}
 
-			body := new(bytes.Buffer)
-			err := json.NewEncoder(body).Encode(&tc.req)
-			assert.Nil(err)
-
-			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), body)
+			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
 			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)
@@ -598,8 +594,6 @@ func TestAuthor_FindByName(t *testing.T) {
 	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
-	require.NoError(t, err)
 
 	type test struct {
 		name        string
@@ -680,8 +674,6 @@ func TestAuthor_FindByName(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path+tc.req.Name, nil)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -705,8 +697,6 @@ func TestAuthor_FindByName(t *testing.T) {
 func TestAuthor_FindAll(t *testing.T) {
 	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -777,8 +767,6 @@ func TestAuthor_FindAll(t *testing.T) {
 
 			req, err := http.NewRequest(tc.method, tc.path, nil)
 			assert.Nil(err)
-
-			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
