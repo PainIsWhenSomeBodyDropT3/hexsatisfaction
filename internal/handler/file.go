@@ -23,7 +23,7 @@ type fileRouter struct {
 }
 
 func newFile(services *service.Services, tokenManager auth.TokenManager) fileRouter {
-	router := mux.NewRouter().PathPrefix(authorPath).Subrouter()
+	router := mux.NewRouter().PathPrefix(filePath).Subrouter()
 	handler := fileRouter{
 		router,
 		services,
@@ -34,11 +34,11 @@ func newFile(services *service.Services, tokenManager auth.TokenManager) fileRou
 		Methods(http.MethodGet).
 		HandlerFunc(handler.findByNameFile)
 
-	router.Path("/actual").
+	router.Path("/actual/").
 		Methods(http.MethodGet).
 		HandlerFunc(handler.findActualFile)
 
-	router.Path("/expired").
+	router.Path("/expired/").
 		Methods(http.MethodGet).
 		HandlerFunc(handler.findNotActualFile)
 
@@ -177,7 +177,7 @@ func (req *updateFileRequest) Build(r *http.Request) error {
 func (req *updateFileRequest) Validate() error {
 	switch {
 	case req.ID < 1:
-		return fmt.Errorf("not correct file id")
+		return fmt.Errorf("not correct id")
 	case req.Name == "":
 		return fmt.Errorf("name is required")
 	case req.Description == "":
@@ -244,7 +244,7 @@ func (req *deleteFileRequest) Build(r *http.Request) error {
 func (req *deleteFileRequest) Validate() error {
 	switch {
 	case req.ID < 1:
-		return fmt.Errorf("not correct file id")
+		return fmt.Errorf("not correct id")
 	default:
 		return nil
 	}
@@ -297,7 +297,7 @@ func (req *idFileRequest) Build(r *http.Request) error {
 func (req *idFileRequest) Validate() error {
 	switch {
 	case req.ID < 1:
-		return fmt.Errorf("not correct file id")
+		return fmt.Errorf("not correct id")
 	default:
 		return nil
 	}
@@ -413,7 +413,7 @@ func (req *authorIDFileRequest) Build(r *http.Request) error {
 func (req *authorIDFileRequest) Validate() error {
 	switch {
 	case req.ID < 1:
-		return fmt.Errorf("not correct author id")
+		return fmt.Errorf("not correct id")
 	default:
 		return nil
 	}

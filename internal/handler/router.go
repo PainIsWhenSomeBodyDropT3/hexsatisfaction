@@ -6,11 +6,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const userPath = "/user"
-const purchasePath = "/purchase"
-const commentPath = "/comment"
-const filePath = "/file"
-const authorPath = "/author"
+const (
+	userPath     = "/user"
+	purchasePath = "/purchase"
+	commentPath  = "/comment"
+	filePath     = "/file"
+	authorPath   = "/author"
+)
 
 // API represents a structure with APIs.
 type API struct {
