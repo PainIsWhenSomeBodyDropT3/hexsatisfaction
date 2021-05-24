@@ -24,6 +24,379 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/author/": {
+            "get": {
+                "description": "Find authors",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "author"
+                ],
+                "summary": "FindAll",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Author"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No authors",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/author/api/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create author",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "author"
+                ],
+                "summary": "Create",
+                "parameters": [
+                    {
+                        "description": "Author",
+                        "name": "comment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateAuthorRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/author/api/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find author by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "author"
+                ],
+                "summary": "FindByUserID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Author"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No author",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/author/api/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find author by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "author"
+                ],
+                "summary": "FindByID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Author id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Author"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No author",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update author",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "author"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Author id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Author",
+                        "name": "comment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateAuthorRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No author",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete author",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "author"
+                ],
+                "summary": "Delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Author id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No author",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/author/{name}": {
+            "get": {
+                "description": "Find authors by name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "author"
+                ],
+                "summary": "FindByName",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Author name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Author"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No authors",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
         "/comment/api/": {
             "get": {
                 "security": [
@@ -555,6 +928,527 @@ var doc = `{
                     },
                     "404": {
                         "description": "No comments",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/": {
+            "get": {
+                "description": "Find files",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "FindAll",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.File"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No files",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/actual/": {
+            "get": {
+                "description": "Find actual files",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "FindActual",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.File"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No files",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/added": {
+            "post": {
+                "description": "Find added files by date period",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "FindAddedByPeriod",
+                "parameters": [
+                    {
+                        "description": "Period",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddedPeriodFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.File"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No files",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/api/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create file",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Create",
+                "parameters": [
+                    {
+                        "description": "File",
+                        "name": "file",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/api/author/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find files by author id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "FindByAuthorID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Author id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.File"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No files",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/api/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find file by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "FindByID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "File id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.File"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No file",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update file",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Update",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "File id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "File",
+                        "name": "file",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No file",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/expired/": {
+            "get": {
+                "description": "Find expired files",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "FindNotActual",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.File"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No files",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/updated": {
+            "post": {
+                "description": "Find updated files by date period",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "FindUpdatedByPeriod",
+                "parameters": [
+                    {
+                        "description": "Period",
+                        "name": "period",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdatedPeriodFileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.File"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No files",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagEmptyError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/{name}": {
+            "get": {
+                "description": "Find files by name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "FindByName",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "File name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.File"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.SwagError"
+                        }
+                    },
+                    "404": {
+                        "description": "No files",
                         "schema": {
                             "$ref": "#/definitions/middleware.SwagEmptyError"
                         }
@@ -1542,12 +2436,45 @@ var doc = `{
                 }
             }
         },
+        "model.AddedPeriodFileRequest": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "start": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
         "model.AfterDatePurchaseRequest": {
             "type": "object",
             "properties": {
                 "start": {
                     "description": "required: true",
                     "type": "string"
+                }
+            }
+        },
+        "model.Author": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
                 }
             }
         },
@@ -1580,6 +2507,27 @@ var doc = `{
                 }
             }
         },
+        "model.CreateAuthorRequest": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "description": "required: true",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "userID": {
+                    "description": "required: true",
+                    "type": "integer"
+                }
+            }
+        },
         "model.CreateCommentRequest": {
             "type": "object",
             "properties": {
@@ -1601,6 +2549,43 @@ var doc = `{
                 }
             }
         },
+        "model.CreateFileRequest": {
+            "type": "object",
+            "properties": {
+                "actual": {
+                    "description": "required: true",
+                    "type": "boolean"
+                },
+                "addDate": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "authorID": {
+                    "description": "required: true",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "path": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "size": {
+                    "description": "required: true",
+                    "type": "integer"
+                },
+                "updateDate": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
         "model.CreatePurchaseRequest": {
             "type": "object",
             "properties": {
@@ -1615,6 +2600,38 @@ var doc = `{
                 "userID": {
                     "description": "required: true",
                     "type": "integer"
+                }
+            }
+        },
+        "model.File": {
+            "type": "object",
+            "properties": {
+                "actual": {
+                    "type": "boolean"
+                },
+                "addDate": {
+                    "type": "string"
+                },
+                "authorID": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "updateDate": {
+                    "type": "string"
                 }
             }
         },
@@ -1696,6 +2713,27 @@ var doc = `{
                 }
             }
         },
+        "model.UpdateAuthorRequest": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "description": "required: true",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "userID": {
+                    "description": "required: true",
+                    "type": "integer"
+                }
+            }
+        },
         "model.UpdateCommentRequest": {
             "type": "object",
             "properties": {
@@ -1714,6 +2752,56 @@ var doc = `{
                 "userID": {
                     "description": "required: true",
                     "type": "integer"
+                }
+            }
+        },
+        "model.UpdateFileRequest": {
+            "type": "object",
+            "properties": {
+                "actual": {
+                    "description": "required: true",
+                    "type": "boolean"
+                },
+                "addDate": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "authorID": {
+                    "description": "required: true",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "path": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "size": {
+                    "description": "required: true",
+                    "type": "integer"
+                },
+                "updateDate": {
+                    "description": "required: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdatedPeriodFileRequest": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "start": {
+                    "description": "required: true",
+                    "type": "string"
                 }
             }
         },

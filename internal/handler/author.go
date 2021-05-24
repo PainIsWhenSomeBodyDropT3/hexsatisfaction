@@ -100,6 +100,17 @@ func (req *createAuthorRequest) Validate() error {
 	}
 }
 
+// @Summary Create
+// @Security ApiKeyAuth
+// @Tags author
+// @Description Create author
+// @Accept  json
+// @Produce  json
+// @Param comment body model.CreateAuthorRequest true "Author"
+// @Success 200 {string} string id
+// @Failure 400 {object} middleware.SwagError
+// @Failure 500 {object} middleware.SwagError
+// @Router /author/api/ [post]
 func (a *authorRouter) createAuthor(w http.ResponseWriter, r *http.Request) {
 	var req createAuthorRequest
 	err := middleware.ParseRequest(r, &req)
@@ -168,6 +179,19 @@ func (req *updateAuthorRequest) Validate() error {
 	}
 }
 
+// @Summary Update
+// @Security ApiKeyAuth
+// @Tags author
+// @Description Update author
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Author id"
+// @Param comment body model.UpdateAuthorRequest true "Author"
+// @Success 200 {string} string id
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No author"
+// @Failure 500 {object} middleware.SwagError
+// @Router /author/api/{id} [put]
 func (a *authorRouter) updateAuthor(w http.ResponseWriter, r *http.Request) {
 	var req updateAuthorRequest
 	err := middleware.ParseRequest(r, &req)
@@ -221,6 +245,18 @@ func (req *deleteAuthorRequest) Validate() error {
 	}
 }
 
+// @Summary Delete
+// @Security ApiKeyAuth
+// @Tags author
+// @Description Delete author
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Author id"
+// @Success 200 {string} string id
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No author"
+// @Failure 500 {object} middleware.SwagError
+// @Router /author/api/{id} [delete]
 func (a *authorRouter) deleteAuthor(w http.ResponseWriter, r *http.Request) {
 	var req deleteAuthorRequest
 	err := middleware.ParseRequest(r, &req)
@@ -274,6 +310,18 @@ func (req *idAuthorRequest) Validate() error {
 	}
 }
 
+// @Summary FindByID
+// @Security ApiKeyAuth
+// @Tags author
+// @Description Find author by id
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Author id"
+// @Success 200 {object} model.Author
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No author"
+// @Failure 500 {object} middleware.SwagError
+// @Router /author/api/{id} [get]
 func (a *authorRouter) findByIDAuthor(w http.ResponseWriter, r *http.Request) {
 	var req idAuthorRequest
 	err := middleware.ParseRequest(r, &req)
@@ -327,6 +375,18 @@ func (req *userIDAuthorRequest) Validate() error {
 	}
 }
 
+// @Summary FindByUserID
+// @Security ApiKeyAuth
+// @Tags author
+// @Description Find author by user id
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User id"
+// @Success 200 {object} model.Author
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No author"
+// @Failure 500 {object} middleware.SwagError
+// @Router /author/api/user/{id} [get]
 func (a *authorRouter) findByUserIDAuthor(w http.ResponseWriter, r *http.Request) {
 	var req userIDAuthorRequest
 	err := middleware.ParseRequest(r, &req)
@@ -375,6 +435,17 @@ func (req *nameAuthorRequest) Validate() error {
 	}
 }
 
+// @Summary FindByName
+// @Tags author
+// @Description Find authors by name
+// @Accept  json
+// @Produce  json
+// @Param name path string true "Author name"
+// @Success 200 {array} model.Author
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No authors"
+// @Failure 500 {object} middleware.SwagError
+// @Router /author/{name} [get]
 func (a *authorRouter) findByNameAuthor(w http.ResponseWriter, r *http.Request) {
 	var req nameAuthorRequest
 	err := middleware.ParseRequest(r, &req)
@@ -397,6 +468,16 @@ func (a *authorRouter) findByNameAuthor(w http.ResponseWriter, r *http.Request) 
 	middleware.JSONReturn(w, http.StatusOK, authors)
 }
 
+// @Summary FindAll
+// @Tags author
+// @Description Find authors
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.Author
+// @Failure 400 {object} middleware.SwagError
+// @Failure 404 {object} middleware.SwagEmptyError "No authors"
+// @Failure 500 {object} middleware.SwagError
+// @Router /author/ [get]
 func (a *authorRouter) findAllAuthor(w http.ResponseWriter, r *http.Request) {
 	authors, err := a.services.Author.FindAll()
 	if err != nil {
