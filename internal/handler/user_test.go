@@ -13,7 +13,7 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model/dto"
 	"github.com/JesusG2000/hexsatisfaction/internal/service"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
+	testAssert "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -29,7 +29,7 @@ const (
 const authorizationHeader = "Authorization"
 
 func TestUser_Login(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 
@@ -137,7 +137,7 @@ func TestUser_Login(t *testing.T) {
 }
 
 func TestUser_Registration(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	type test struct {
@@ -258,7 +258,7 @@ func TestUser_Registration(t *testing.T) {
 }
 
 func TestUserRole_FindAll(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 

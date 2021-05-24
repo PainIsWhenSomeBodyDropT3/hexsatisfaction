@@ -919,7 +919,7 @@
                 "summary": "FindByFileID",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "File id",
                         "name": "fileID",
                         "in": "path",
@@ -1264,7 +1264,7 @@
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "File id",
                         "name": "fileID",
                         "in": "path",

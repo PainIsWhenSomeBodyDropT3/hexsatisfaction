@@ -934,7 +934,7 @@ var doc = `{
                 "summary": "FindByFileID",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "File id",
                         "name": "fileID",
                         "in": "path",
@@ -1279,7 +1279,7 @@ var doc = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "File id",
                         "name": "fileID",
                         "in": "path",

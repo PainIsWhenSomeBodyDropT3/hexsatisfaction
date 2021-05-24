@@ -807,7 +807,7 @@ paths:
         in: path
         name: fileID
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -1027,7 +1027,7 @@ paths:
         in: path
         name: fileID
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
