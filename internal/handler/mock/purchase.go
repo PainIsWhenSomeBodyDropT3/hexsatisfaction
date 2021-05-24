@@ -34,18 +34,18 @@ func (_m *Purchase) Create(request model.CreatePurchaseRequest) (int, error) {
 }
 
 // Delete provides a mock function with given fields: request
-func (_m *Purchase) Delete(request struct{ ID int }) (int, error) {
+func (_m *Purchase) Delete(request model.DeletePurchaseRequest) (int, error) {
 	ret := _m.Called(request)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(struct{ ID int }) int); ok {
+	if rf, ok := ret.Get(0).(func(model.DeletePurchaseRequest) int); ok {
 		r0 = rf(request)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(struct{ ID int }) error); ok {
+	if rf, ok := ret.Get(1).(func(model.DeletePurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -101,11 +101,11 @@ func (_m *Purchase) FindAll() ([]model.Purchase, error) {
 }
 
 // FindAllByUserID provides a mock function with given fields: request
-func (_m *Purchase) FindAllByUserID(request struct{ ID int }) ([]model.Purchase, error) {
+func (_m *Purchase) FindAllByUserID(request model.UserIDPurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(struct{ ID int }) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.UserIDPurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -114,7 +114,7 @@ func (_m *Purchase) FindAllByUserID(request struct{ ID int }) ([]model.Purchase,
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(struct{ ID int }) error); ok {
+	if rf, ok := ret.Get(1).(func(model.UserIDPurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -331,11 +331,11 @@ func (_m *Purchase) FindLast() (*model.Purchase, error) {
 }
 
 // FindLastByUserID provides a mock function with given fields: request
-func (_m *Purchase) FindLastByUserID(request struct{ ID int }) (*model.Purchase, error) {
+func (_m *Purchase) FindLastByUserID(request model.UserIDPurchaseRequest) (*model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 *model.Purchase
-	if rf, ok := ret.Get(0).(func(struct{ ID int }) *model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.UserIDPurchaseRequest) *model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -344,7 +344,7 @@ func (_m *Purchase) FindLastByUserID(request struct{ ID int }) (*model.Purchase,
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(struct{ ID int }) error); ok {
+	if rf, ok := ret.Get(1).(func(model.UserIDPurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)

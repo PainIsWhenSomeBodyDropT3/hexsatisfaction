@@ -52,9 +52,9 @@ definitions:
       date:
         description: 'required: true'
         type: string
-      fileName:
+      fileID:
         description: 'required: true'
-        type: string
+        type: integer
       userID:
         description: 'required: true'
         type: integer
@@ -90,8 +90,8 @@ definitions:
     properties:
       date:
         type: string
-      fileName:
-        type: string
+      fileID:
+        type: integer
       id:
         type: integer
       userID:
@@ -797,15 +797,15 @@ paths:
       summary: FindByUserIDBeforeDate
       tags:
       - purchase
-  /purchase/api/file/{file}:
+  /purchase/api/file/{fileID}:
     get:
       consumes:
       - application/json
-      description: Find purchases by file name
+      description: Find purchases by file id
       parameters:
-      - description: File name
+      - description: File id
         in: path
-        name: file
+        name: fileID
         required: true
         type: string
       produces:
@@ -831,7 +831,7 @@ paths:
             $ref: '#/definitions/middleware.SwagError'
       security:
       - ApiKeyAuth: []
-      summary: FindByFileName
+      summary: FindByFileID
       tags:
       - purchase
   /purchase/api/last/:
@@ -1012,20 +1012,20 @@ paths:
       summary: FindAllByUserID
       tags:
       - purchase
-  /purchase/api/user/{id}/file/{file}:
+  /purchase/api/user/{userID}/file/{fileID}:
     get:
       consumes:
       - application/json
-      description: Find purchases by user id and file name
+      description: Find purchases by user id and file id
       parameters:
       - description: User id
         in: path
-        name: id
+        name: userID
         required: true
         type: integer
-      - description: File name
+      - description: File id
         in: path
-        name: file
+        name: fileID
         required: true
         type: string
       produces:
@@ -1051,7 +1051,7 @@ paths:
             $ref: '#/definitions/middleware.SwagError'
       security:
       - ApiKeyAuth: []
-      summary: FindByUserIDAndFileName
+      summary: FindByUserIDAndFileID
       tags:
       - purchase
   /user/login:

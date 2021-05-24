@@ -52,13 +52,13 @@ func newPurchase(services *service.Services, tokenManager auth.TokenManager) pur
 		Methods(http.MethodGet).
 		HandlerFunc(handler.findAll)
 
-	secure.Path("/user/{id}/file/{file}").
+	secure.Path("/user/{userID}/file/{fileID}").
 		Methods(http.MethodGet).
-		HandlerFunc(handler.findByUserIDAndFileNamePurchase)
+		HandlerFunc(handler.findByUserIDAndFileIDPurchase)
 
-	secure.Path("/file/{file}").
+	secure.Path("/file/{fileID}").
 		Methods(http.MethodGet).
-		HandlerFunc(handler.findByFileNamePurchase)
+		HandlerFunc(handler.findByFileIDPurchase)
 
 	secure.Path("/").
 		Methods(http.MethodPost).
@@ -123,8 +123,8 @@ func (req *createPurchaseRequest) Validate() error {
 		return fmt.Errorf("not correct user id")
 	case req.Date == time.Time{}:
 		return fmt.Errorf("date is required")
-	case req.FileName == "":
-		return fmt.Errorf("file name is required")
+	case req.FileID < 1:
+		return fmt.Errorf("file id is required")
 	default:
 		return nil
 	}
@@ -660,67 +660,73 @@ func (p *purchaseRouter) findByUserIDBeforeDatePurchase(w http.ResponseWriter, r
 	middleware.JSONReturn(w, http.StatusOK, purchases)
 }
 
-type userIDFileNamePurchaseRequest struct {
-	model.UserIDFileNamePurchaseRequest
+type userIDFileIDPurchaseRequest struct {
+	model.UserIDFileIDPurchaseRequest
 }
 
 // Build builds request to find all purchases by user id and file name.
-func (req *userIDFileNamePurchaseRequest) Build(r *http.Request) error {
+func (req *userIDFileIDPurchaseRequest) Build(r *http.Request) error {
 	vars := mux.Vars(r)
-	vID, ok := vars["id"]
+	vUserID, ok := vars["userID"]
 	if !ok {
-		return fmt.Errorf("no id")
+		return fmt.Errorf("no user id")
 	}
 
-	id, err := strconv.Atoi(vID)
+	userID, err := strconv.Atoi(vUserID)
 	if err != nil {
 		return err
 	}
-	name, ok := vars["file"]
+
+	vFileID, ok := vars["fileID"]
 	if !ok {
-		return fmt.Errorf("no file name")
+		return fmt.Errorf("no file id")
 	}
 
-	req.ID = id
-	req.FileName = name
+	fileID, err := strconv.Atoi(vFileID)
+	if err != nil {
+		return err
+	}
+
+	req.UserID = userID
+	req.FileID = fileID
 
 	return nil
 }
 
 // Validate validates request to find all purchases by user id and file name.
-func (req *userIDFileNamePurchaseRequest) Validate() error {
+func (req *userIDFileIDPurchaseRequest) Validate() error {
 	switch {
-	case req.ID < 1:
-		return fmt.Errorf("not correct id")
-	case req.FileName == "":
-		return fmt.Errorf("file name is required")
+	case req.UserID < 1:
+		return fmt.Errorf("not correct user id")
+	case req.FileID < 1:
+		return fmt.Errorf("not correct file id")
 	default:
 		return nil
 	}
 }
 
-// @Summary FindByUserIDAndFileName
+// @Summary FindByUserIDAndFileID
 // @Security ApiKeyAuth
 // @Tags purchase
-// @Description Find purchases by user id and file name
+// @Description Find purchases by user id and file id
 // @Accept  json
 // @Produce  json
-// @Param id path int true "User id"
-// @Param file path string true "File name"
+// @Param userID path int true "User id"
+// @Param fileID path string true "File id"
 // @Success 200 {array} model.Purchase
 // @Failure 400 {object} middleware.SwagError
 // @Failure 404 {object} middleware.SwagEmptyError "No purchases"
 // @Failure 500 {object} middleware.SwagError
-// @Router /purchase/api/user/{id}/file/{file} [get]
-func (p *purchaseRouter) findByUserIDAndFileNamePurchase(w http.ResponseWriter, r *http.Request) {
-	var req userIDFileNamePurchaseRequest
+// @Router /purchase/api/user/{userID}/file/{fileID} [get]
+func (p *purchaseRouter) findByUserIDAndFileIDPurchase(w http.ResponseWriter, r *http.Request) {
+	var req userIDFileIDPurchaseRequest
 	err := middleware.ParseRequest(r, &req)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	purchases, err := p.services.Purchase.FindByUserIDAndFileName(req.UserIDFileNamePurchaseRequest)
+	purchases, err := p.services.Purchase.FindByUserIDAndFileID(req.UserIDFileIDPurchaseRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return
@@ -981,53 +987,58 @@ func (p *purchaseRouter) findBeforeDatePurchase(w http.ResponseWriter, r *http.R
 	middleware.JSONReturn(w, http.StatusOK, purchases)
 }
 
-type fileNamePurchaseRequest struct {
-	model.FileNamePurchaseRequest
+type fileIDPurchaseRequest struct {
+	model.FileIDPurchaseRequest
 }
 
 // Build builds request to find all purchases by file name.
-func (req *fileNamePurchaseRequest) Build(r *http.Request) error {
-	name, ok := mux.Vars(r)["file"]
+func (req *fileIDPurchaseRequest) Build(r *http.Request) error {
+	vID, ok := mux.Vars(r)["fileID"]
 	if !ok {
-		return fmt.Errorf("no file name")
+		return fmt.Errorf("no file id")
 	}
 
-	req.FileName = name
+	id, err := strconv.Atoi(vID)
+	if err != nil {
+		return err
+	}
+
+	req.FileID = id
 
 	return nil
 }
 
 // Validate validates request to find all purchases by file name.
-func (req *fileNamePurchaseRequest) Validate() error {
+func (req *fileIDPurchaseRequest) Validate() error {
 	switch {
-	case req.FileName == "":
-		return fmt.Errorf("file name is required")
+	case req.FileID < 1:
+		return fmt.Errorf("not correct file id")
 	default:
 		return nil
 	}
 }
 
-// @Summary FindByFileName
+// @Summary FindByFileID
 // @Security ApiKeyAuth
 // @Tags purchase
-// @Description Find purchases by file name
+// @Description Find purchases by file id
 // @Accept  json
 // @Produce  json
-// @Param file path string true "File name"
+// @Param fileID path string true "File id"
 // @Success 200 {array} model.Purchase
 // @Failure 400 {object} middleware.SwagError
 // @Failure 404 {object} middleware.SwagEmptyError "No purchases"
 // @Failure 500 {object} middleware.SwagError
-// @Router /purchase/api/file/{file} [get]
-func (p *purchaseRouter) findByFileNamePurchase(w http.ResponseWriter, r *http.Request) {
-	var req fileNamePurchaseRequest
+// @Router /purchase/api/file/{fileID} [get]
+func (p *purchaseRouter) findByFileIDPurchase(w http.ResponseWriter, r *http.Request) {
+	var req fileIDPurchaseRequest
 	err := middleware.ParseRequest(r, &req)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	purchases, err := p.services.Purchase.FindByFileName(req.FileNamePurchaseRequest)
+	purchases, err := p.services.Purchase.FindByFileID(req.FileIDPurchaseRequest)
 	if err != nil {
 		middleware.JSONError(w, err, http.StatusInternalServerError)
 		return

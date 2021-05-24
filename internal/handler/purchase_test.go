@@ -13,7 +13,7 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	"github.com/JesusG2000/hexsatisfaction/internal/service"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
+	testAssert "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +28,7 @@ const (
 )
 
 func TestPurchase_Create(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -50,9 +50,9 @@ func TestPurchase_Create(t *testing.T) {
 			path:   slash + purchase + slash + api + slash,
 			method: http.MethodPost,
 			req: model.CreatePurchaseRequest{
-				UserID:   0,
-				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-				FileName: "some name",
+				UserID: 0,
+				Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
 				purchaseService.On("Create", data.req).
@@ -66,9 +66,9 @@ func TestPurchase_Create(t *testing.T) {
 			path:   slash + purchase + slash + api + slash,
 			method: http.MethodPost,
 			req: model.CreatePurchaseRequest{
-				UserID:   23,
-				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-				FileName: "some name",
+				UserID: 23,
+				Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
 				purchaseService.On("Create", data.req).
@@ -81,9 +81,9 @@ func TestPurchase_Create(t *testing.T) {
 			path:   slash + purchase + slash + api + slash,
 			method: http.MethodPost,
 			req: model.CreatePurchaseRequest{
-				UserID:   23,
-				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-				FileName: "some name",
+				UserID: 23,
+				Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
 				purchaseService.On("Create", data.req).
@@ -124,7 +124,7 @@ func TestPurchase_Create(t *testing.T) {
 }
 
 func TestPurchase_Delete(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -229,7 +229,7 @@ func TestPurchase_Delete(t *testing.T) {
 }
 
 func TestPurchase_FindById(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -305,10 +305,10 @@ func TestPurchase_FindById(t *testing.T) {
 			},
 			expCode: http.StatusOK,
 			expRes: model.Purchase{
-				ID:       15,
-				UserID:   15,
-				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-				FileName: "test",
+				ID:     15,
+				UserID: 15,
+				Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+				FileID: 1,
 			},
 		},
 	}
@@ -349,7 +349,7 @@ func TestPurchase_FindById(t *testing.T) {
 }
 
 func TestPurchase_FindLastByUserId(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -425,10 +425,10 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 			},
 			expCode: http.StatusOK,
 			expRes: model.Purchase{
-				ID:       15,
-				UserID:   15,
-				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-				FileName: "test",
+				ID:     15,
+				UserID: 15,
+				Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+				FileID: 1,
 			},
 		},
 	}
@@ -469,7 +469,7 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 }
 
 func TestPurchase_FindAllByUserId(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -546,16 +546,16 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -597,7 +597,7 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 }
 
 func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -682,16 +682,16 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -737,7 +737,7 @@ func TestPurchase_FindByUserIdAndPeriod(t *testing.T) {
 }
 
 func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -818,16 +818,16 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -873,7 +873,7 @@ func TestPurchase_FindByUserIdAfterDate(t *testing.T) {
 }
 
 func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -954,16 +954,16 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -1008,8 +1008,8 @@ func TestPurchase_FindByUserIdBeforeDate(t *testing.T) {
 	}
 }
 
-func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
-	assert := assert.New(t)
+func TestPurchase_FindByUserIdAndFileID(t *testing.T) {
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1021,7 +1021,7 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 		method      string
 		isOkMessage bool
 		isOkRes     bool
-		req         model.UserIDFileNamePurchaseRequest
+		req         model.UserIDFileIDPurchaseRequest
 		fn          func(purchaseService *m.Purchase, data test)
 		expCode     int
 		expRes      []model.Purchase
@@ -1034,28 +1034,28 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 			path:        slash + purchase + slash + api + slash + user + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.UserIDFileNamePurchaseRequest{
-				ID:       0,
-				FileName: "test",
+			req: model.UserIDFileIDPurchaseRequest{
+				UserID: 0,
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIDAndFileName", data.req).
+				purchaseService.On("FindByUserIDAndFileID", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusBadRequest,
-			message: "not correct id",
+			message: "not correct user id",
 		},
 		{
 			name:        "find err",
 			path:        slash + purchase + slash + api + slash + user + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.UserIDFileNamePurchaseRequest{
-				ID:       15,
-				FileName: "test",
+			req: model.UserIDFileIDPurchaseRequest{
+				UserID: 15,
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIDAndFileName", data.req).
+				purchaseService.On("FindByUserIDAndFileID", data.req).
 					Return(data.expRes, errors.New(""))
 			},
 			expCode: http.StatusInternalServerError,
@@ -1064,12 +1064,12 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 			name:   "not found",
 			path:   slash + purchase + slash + api + slash + user + slash,
 			method: http.MethodGet,
-			req: model.UserIDFileNamePurchaseRequest{
-				ID:       15,
-				FileName: "test",
+			req: model.UserIDFileIDPurchaseRequest{
+				UserID: 15,
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIDAndFileName", data.req).
+				purchaseService.On("FindByUserIDAndFileID", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusNotFound,
@@ -1079,27 +1079,27 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + user + slash,
 			method:  http.MethodGet,
 			isOkRes: true,
-			req: model.UserIDFileNamePurchaseRequest{
-				ID:       15,
-				FileName: "test",
+			req: model.UserIDFileIDPurchaseRequest{
+				UserID: 15,
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByUserIDAndFileName", data.req).
+				purchaseService.On("FindByUserIDAndFileID", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -1115,7 +1115,7 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 				tc.fn(purchaseService, tc)
 			}
 
-			fullPath := tc.path + strconv.Itoa(tc.req.ID) + slash + file + slash + tc.req.FileName
+			fullPath := tc.path + strconv.Itoa(tc.req.UserID) + slash + file + slash + strconv.Itoa(tc.req.FileID)
 			req, err := http.NewRequest(tc.method, fullPath, nil)
 			assert.Nil(err)
 
@@ -1142,7 +1142,7 @@ func TestPurchase_FindByUserIdAndFileName(t *testing.T) {
 }
 
 func TestPurchase_FindLast(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1196,10 +1196,10 @@ func TestPurchase_FindLast(t *testing.T) {
 			},
 			expCode: http.StatusOK,
 			expRes: model.Purchase{
-				ID:       15,
-				UserID:   15,
-				Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-				FileName: "test",
+				ID:     15,
+				UserID: 15,
+				Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+				FileID: 1,
 			},
 		},
 	}
@@ -1240,7 +1240,7 @@ func TestPurchase_FindLast(t *testing.T) {
 }
 
 func TestPurchase_FindAll(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1292,16 +1292,16 @@ func TestPurchase_FindAll(t *testing.T) {
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -1343,7 +1343,7 @@ func TestPurchase_FindAll(t *testing.T) {
 }
 
 func TestPurchase_FindByPeriod(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1423,16 +1423,16 @@ func TestPurchase_FindByPeriod(t *testing.T) {
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -1478,7 +1478,7 @@ func TestPurchase_FindByPeriod(t *testing.T) {
 }
 
 func TestPurchase_FindAfterDate(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1555,16 +1555,16 @@ func TestPurchase_FindAfterDate(t *testing.T) {
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -1610,7 +1610,7 @@ func TestPurchase_FindAfterDate(t *testing.T) {
 }
 
 func TestPurchase_FindBeforeDate(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1687,16 +1687,16 @@ func TestPurchase_FindBeforeDate(t *testing.T) {
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -1741,8 +1741,8 @@ func TestPurchase_FindBeforeDate(t *testing.T) {
 	}
 }
 
-func TestPurchase_FindByFileName(t *testing.T) {
-	assert := assert.New(t)
+func TestPurchase_FindByFileID(t *testing.T) {
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -1754,7 +1754,7 @@ func TestPurchase_FindByFileName(t *testing.T) {
 		method      string
 		isOkMessage bool
 		isOkRes     bool
-		req         model.FileNamePurchaseRequest
+		req         model.FileIDPurchaseRequest
 		fn          func(purchaseService *m.Purchase, data test)
 		expCode     int
 		expRes      []model.Purchase
@@ -1762,17 +1762,31 @@ func TestPurchase_FindByFileName(t *testing.T) {
 	}
 
 	tt := []test{
-
+		{
+			name:        "invalid  id",
+			path:        slash + purchase + slash + api + slash + file + slash,
+			method:      http.MethodGet,
+			isOkMessage: true,
+			req: model.FileIDPurchaseRequest{
+				FileID: 0,
+			},
+			fn: func(purchaseService *m.Purchase, data test) {
+				purchaseService.On("FindByFileID", data.req).
+					Return(data.expRes, nil)
+			},
+			expCode: http.StatusBadRequest,
+			message: "not correct file id",
+		},
 		{
 			name:        "find err",
 			path:        slash + purchase + slash + api + slash + file + slash,
 			method:      http.MethodGet,
 			isOkMessage: true,
-			req: model.FileNamePurchaseRequest{
-				FileName: "test",
+			req: model.FileIDPurchaseRequest{
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByFileName", data.req).
+				purchaseService.On("FindByFileID", data.req).
 					Return(data.expRes, errors.New(""))
 			},
 			expCode: http.StatusInternalServerError,
@@ -1781,11 +1795,11 @@ func TestPurchase_FindByFileName(t *testing.T) {
 			name:   "not found",
 			path:   slash + purchase + slash + api + slash + file + slash,
 			method: http.MethodGet,
-			req: model.FileNamePurchaseRequest{
-				FileName: "test",
+			req: model.FileIDPurchaseRequest{
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByFileName", data.req).
+				purchaseService.On("FindByFileID", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusNotFound,
@@ -1795,26 +1809,26 @@ func TestPurchase_FindByFileName(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + file + slash,
 			method:  http.MethodGet,
 			isOkRes: true,
-			req: model.FileNamePurchaseRequest{
-				FileName: "test",
+			req: model.FileIDPurchaseRequest{
+				FileID: 1,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
-				purchaseService.On("FindByFileName", data.req).
+				purchaseService.On("FindByFileID", data.req).
 					Return(data.expRes, nil)
 			},
 			expCode: http.StatusOK,
 			expRes: []model.Purchase{
 				{
-					ID:       15,
-					UserID:   15,
-					Date:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     15,
+					UserID: 15,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 				{
-					ID:       16,
-					UserID:   15,
-					Date:     time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
-					FileName: "test",
+					ID:     16,
+					UserID: 15,
+					Date:   time.Date(2009, time.December, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
 				},
 			},
 		},
@@ -1830,7 +1844,7 @@ func TestPurchase_FindByFileName(t *testing.T) {
 				tc.fn(purchaseService, tc)
 			}
 
-			req, err := http.NewRequest(tc.method, tc.path+tc.req.FileName, nil)
+			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.FileID), nil)
 			assert.Nil(err)
 
 			req.Header.Set(authorizationHeader, "Bearer "+token)

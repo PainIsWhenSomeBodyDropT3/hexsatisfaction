@@ -9,6 +9,8 @@ import (
 const userPath = "/user"
 const purchasePath = "/purchase"
 const commentPath = "/comment"
+const filePath = "/file"
+const authorPath = "/author"
 
 // API represents a structure with APIs.
 type API struct {
@@ -23,6 +25,8 @@ func NewHandler(services *service.Services, tokenManager auth.TokenManager) *API
 	api.PathPrefix(userPath).Handler(newUser(services, tokenManager))
 	api.PathPrefix(purchasePath).Handler(newPurchase(services, tokenManager))
 	api.PathPrefix(commentPath).Handler(newComment(services, tokenManager))
+	api.PathPrefix(filePath).Handler(newFile(services, tokenManager))
+	api.PathPrefix(authorPath).Handler(newAuthor(services, tokenManager))
 
 	return &api
 }

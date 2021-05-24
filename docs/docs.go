@@ -914,14 +914,14 @@ var doc = `{
                 }
             }
         },
-        "/purchase/api/file/{file}": {
+        "/purchase/api/file/{fileID}": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Find purchases by file name",
+                "description": "Find purchases by file id",
                 "consumes": [
                     "application/json"
                 ],
@@ -931,12 +931,12 @@ var doc = `{
                 "tags": [
                     "purchase"
                 ],
-                "summary": "FindByFileName",
+                "summary": "FindByFileID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "File name",
-                        "name": "file",
+                        "description": "File id",
+                        "name": "fileID",
                         "in": "path",
                         "required": true
                     }
@@ -1252,14 +1252,14 @@ var doc = `{
                 }
             }
         },
-        "/purchase/api/user/{id}/file/{file}": {
+        "/purchase/api/user/{userID}/file/{fileID}": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Find purchases by user id and file name",
+                "description": "Find purchases by user id and file id",
                 "consumes": [
                     "application/json"
                 ],
@@ -1269,19 +1269,19 @@ var doc = `{
                 "tags": [
                     "purchase"
                 ],
-                "summary": "FindByUserIDAndFileName",
+                "summary": "FindByUserIDAndFileID",
                 "parameters": [
                     {
                         "type": "integer",
                         "description": "User id",
-                        "name": "id",
+                        "name": "userID",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "File name",
-                        "name": "file",
+                        "description": "File id",
+                        "name": "fileID",
                         "in": "path",
                         "required": true
                     }
@@ -1608,9 +1608,9 @@ var doc = `{
                     "description": "required: true",
                     "type": "string"
                 },
-                "fileName": {
+                "fileID": {
                     "description": "required: true",
-                    "type": "string"
+                    "type": "integer"
                 },
                 "userID": {
                     "description": "required: true",
@@ -1663,8 +1663,8 @@ var doc = `{
                 "date": {
                     "type": "string"
                 },
-                "fileName": {
-                    "type": "string"
+                "fileID": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"

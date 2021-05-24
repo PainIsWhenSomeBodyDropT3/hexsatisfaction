@@ -16,7 +16,7 @@ func NewPurchaseService(purchase repository.Purchase) *PurchaseService {
 	return &PurchaseService{purchase}
 }
 
-// Create creates new Purchase and returns id.
+// Create creates new purchase and returns id.
 func (p PurchaseService) Create(request model.CreatePurchaseRequest) (int, error) {
 	purchase := model.Purchase{
 		UserID: request.UserID,
@@ -31,7 +31,7 @@ func (p PurchaseService) Create(request model.CreatePurchaseRequest) (int, error
 	return id, nil
 }
 
-// Delete deletes Purchase and returns deleted id.
+// Delete deletes purchase and returns deleted id.
 func (p PurchaseService) Delete(request model.DeletePurchaseRequest) (int, error) {
 	id, err := p.Purchase.Delete(request.ID)
 	if err != nil {
@@ -41,7 +41,7 @@ func (p PurchaseService) Delete(request model.DeletePurchaseRequest) (int, error
 	return id, nil
 }
 
-// FindByID finds Purchase by id.
+// FindByID finds purchase by id.
 func (p PurchaseService) FindByID(request model.IDPurchaseRequest) (*model.Purchase, error) {
 	purchase, err := p.Purchase.FindByID(request.ID)
 	if err != nil {
@@ -51,7 +51,7 @@ func (p PurchaseService) FindByID(request model.IDPurchaseRequest) (*model.Purch
 	return purchase, nil
 }
 
-// FindLastByUserID finds last Purchase by userId.
+// FindLastByUserID finds last purchase by user id.
 func (p PurchaseService) FindLastByUserID(request model.UserIDPurchaseRequest) (*model.Purchase, error) {
 	purchase, err := p.Purchase.FindLastByUserID(request.ID)
 	if err != nil {
@@ -61,7 +61,7 @@ func (p PurchaseService) FindLastByUserID(request model.UserIDPurchaseRequest) (
 	return purchase, nil
 }
 
-// FindAllByUserID finds all Purchase by userId.
+// FindAllByUserID finds purchases by user id.
 func (p PurchaseService) FindAllByUserID(request model.UserIDPurchaseRequest) ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindAllByUserID(request.ID)
 	if err != nil {
@@ -71,7 +71,7 @@ func (p PurchaseService) FindAllByUserID(request model.UserIDPurchaseRequest) ([
 	return purchases, nil
 }
 
-// FindByUserIDAndPeriod finds all Purchase by userId and date period.
+// FindByUserIDAndPeriod finds purchases by user id and date period.
 func (p PurchaseService) FindByUserIDAndPeriod(request model.UserIDPeriodPurchaseRequest) ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindByUserIDAndPeriod(request.ID, request.Start, request.End)
 	if err != nil {
@@ -81,7 +81,7 @@ func (p PurchaseService) FindByUserIDAndPeriod(request model.UserIDPeriodPurchas
 	return purchases, nil
 }
 
-// FindByUserIDAfterDate finds all Purchase by userId and after date.
+// FindByUserIDAfterDate finds purchases by user id and after date.
 func (p PurchaseService) FindByUserIDAfterDate(request model.UserIDAfterDatePurchaseRequest) ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindByUserIDAfterDate(request.ID, request.Start)
 	if err != nil {
@@ -91,7 +91,7 @@ func (p PurchaseService) FindByUserIDAfterDate(request model.UserIDAfterDatePurc
 	return purchases, nil
 }
 
-// FindByUserIDBeforeDate finds all Purchase by userId and before date.
+// FindByUserIDBeforeDate finds purchases by user id and before date.
 func (p PurchaseService) FindByUserIDBeforeDate(request model.UserIDBeforeDatePurchaseRequest) ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindByUserIDBeforeDate(request.ID, request.End)
 	if err != nil {
@@ -101,7 +101,7 @@ func (p PurchaseService) FindByUserIDBeforeDate(request model.UserIDBeforeDatePu
 	return purchases, nil
 }
 
-// FindByUserIDAndFileID finds all Purchase by userId and file name.
+// FindByUserIDAndFileID finds purchases by user id and file id.
 func (p PurchaseService) FindByUserIDAndFileID(request model.UserIDFileIDPurchaseRequest) ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindByUserIDAndFileID(request.UserID, request.FileID)
 	if err != nil {
@@ -111,7 +111,7 @@ func (p PurchaseService) FindByUserIDAndFileID(request model.UserIDFileIDPurchas
 	return purchases, nil
 }
 
-// FindLast finds last Purchase.
+// FindLast finds last purchase.
 func (p PurchaseService) FindLast() (*model.Purchase, error) {
 	purchase, err := p.Purchase.FindLast()
 	if err != nil {
@@ -121,7 +121,7 @@ func (p PurchaseService) FindLast() (*model.Purchase, error) {
 	return purchase, nil
 }
 
-// FindAll finds all Purchase.
+// FindAll finds purchases.
 func (p PurchaseService) FindAll() ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindAll()
 	if err != nil {
@@ -131,7 +131,7 @@ func (p PurchaseService) FindAll() ([]model.Purchase, error) {
 	return purchases, nil
 }
 
-// FindByPeriod finds all Purchase by date period.
+// FindByPeriod finds purchases by date period.
 func (p PurchaseService) FindByPeriod(request model.PeriodPurchaseRequest) ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindByPeriod(request.Start, request.End)
 	if err != nil {
@@ -141,7 +141,7 @@ func (p PurchaseService) FindByPeriod(request model.PeriodPurchaseRequest) ([]mo
 	return purchases, nil
 }
 
-// FindAfterDate finds all Purchase after date.
+// FindAfterDate finds purchases after date.
 func (p PurchaseService) FindAfterDate(request model.AfterDatePurchaseRequest) ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindAfterDate(request.Start)
 	if err != nil {
@@ -151,7 +151,7 @@ func (p PurchaseService) FindAfterDate(request model.AfterDatePurchaseRequest) (
 	return purchases, nil
 }
 
-// FindBeforeDate finds all Purchase before date.
+// FindBeforeDate finds purchases before date.
 func (p PurchaseService) FindBeforeDate(request model.BeforeDatePurchaseRequest) ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindBeforeDate(request.End)
 	if err != nil {
@@ -161,7 +161,7 @@ func (p PurchaseService) FindBeforeDate(request model.BeforeDatePurchaseRequest)
 	return purchases, nil
 }
 
-// FindByFileID finds all Purchase by file name.
+// FindByFileID finds purchases by file id.
 func (p PurchaseService) FindByFileID(request model.FileIDPurchaseRequest) ([]model.Purchase, error) {
 	purchases, err := p.Purchase.FindByFileID(request.FileID)
 	if err != nil {
