@@ -99,7 +99,7 @@ func NewServices(deps Deps) *Services {
 	return &Services{
 		User:     NewUserService(deps.Repos.User, deps.TokenManager),
 		UserRole: NewUserRoleService(deps.Repos.UserRole),
-		Purchase: NewPurchaseService(deps.Repos.Purchase),
+		Purchase: NewPurchaseService(deps.Repos.Purchase, deps.Repos.Comment),
 		Comment:  NewCommentService(deps.Repos.Comment),
 		File:     NewFileService(deps.Repos.File),
 		Author:   NewAuthorService(deps.Repos.Author),

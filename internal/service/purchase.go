@@ -9,11 +9,12 @@ import (
 // PurchaseService is a purchase service.
 type PurchaseService struct {
 	repository.Purchase
+	repository.Comment
 }
 
 // NewPurchaseService is a PurchaseService service constructor.
-func NewPurchaseService(purchase repository.Purchase) *PurchaseService {
-	return &PurchaseService{purchase}
+func NewPurchaseService(purchase repository.Purchase, comment repository.Comment) *PurchaseService {
+	return &PurchaseService{purchase, comment}
 }
 
 // Create creates new purchase and returns id.
@@ -33,7 +34,12 @@ func (p PurchaseService) Create(request model.CreatePurchaseRequest) (int, error
 
 // Delete deletes purchase and returns deleted id.
 func (p PurchaseService) Delete(request model.DeletePurchaseRequest) (int, error) {
-	id, err := p.Purchase.Delete(request.ID)
+	purchaseID, err := p.Comment.DeleteByPurchaseID(request.ID)
+	if err != nil {
+		return 0, errors.Wrap(err, "couldn't delete comment")
+	}
+
+	id, err := p.Purchase.Delete(purchaseID)
 	if err != nil {
 		return 0, errors.Wrap(err, "couldn't delete purchase")
 	}

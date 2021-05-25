@@ -44,6 +44,7 @@ type Comment interface {
 	Create(comment model.Comment) (int, error)
 	Update(id int, comment model.Comment) (int, error)
 	Delete(id int) (int, error)
+	DeleteByPurchaseID(id int) (int, error)
 	FindByID(id int) (*model.Comment, error)
 	FindAllByUserID(id int) ([]model.Comment, error)
 	FindByPurchaseID(id int) ([]model.Comment, error)
