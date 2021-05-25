@@ -78,7 +78,9 @@ func TestFileService_Create(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}
@@ -161,7 +163,9 @@ func TestFileService_Update(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}
@@ -177,31 +181,131 @@ func TestFileService_Update(t *testing.T) {
 func TestFileService_Delete(t *testing.T) {
 	assert := testAssert.New(t)
 	type test struct {
-		name   string
-		req    model.DeleteFileRequest
-		fn     func(file *m.File, data test)
-		expID  int
-		expErr error
+		name        string
+		req         model.DeleteFileRequest
+		fn          func(file *m.File, purchase *m.Purchase, comment *m.Comment, data test)
+		expPurchase []model.Purchase
+		expID       int
+		expErr      error
 	}
 	tt := []test{
 		{
-			name: "Delete errors",
+			name: "Find purchase errors",
+			expPurchase: []model.Purchase{
+				{
+					ID:     1,
+					UserID: 1,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
+				},
+			},
 			req: model.DeleteFileRequest{
 				ID: 1,
 			},
-			fn: func(file *m.File, data test) {
-				file.On("Delete", data.req.ID).
+			fn: func(file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				purchase.On("FindByFileID", data.req.ID).
+					Return(data.expPurchase, errors.New(""))
+			},
+			expErr: errors.Wrap(errors.New(""), "couldn't get purchases"),
+		},
+		{
+			name: "Delete comments errors",
+			expPurchase: []model.Purchase{
+				{
+					ID:     1,
+					UserID: 1,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
+				},
+			},
+			req: model.DeleteFileRequest{
+				ID: 1,
+			},
+			fn: func(file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				purchase.On("FindByFileID", data.req.ID).
+					Return(data.expPurchase, nil)
+				for _, p := range data.expPurchase {
+					comment.On("DeleteByPurchaseID", p.ID).
+						Return(0, errors.New(""))
+				}
+			},
+			expErr: errors.Wrap(errors.New(""), "couldn't delete comment"),
+		},
+		{
+			name: "Delete purchases errors",
+			expPurchase: []model.Purchase{
+				{
+					ID:     1,
+					UserID: 1,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
+				},
+			},
+			req: model.DeleteFileRequest{
+				ID: 1,
+			},
+			fn: func(file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				purchase.On("FindByFileID", data.req.ID).
+					Return(data.expPurchase, nil)
+				for _, p := range data.expPurchase {
+					comment.On("DeleteByPurchaseID", p.ID).
+						Return(p.ID, nil)
+				}
+				purchase.On("DeleteByFileID", data.req.ID).
+					Return(data.expID, errors.New(""))
+			},
+			expErr: errors.Wrap(errors.New(""), "couldn't delete purchases"),
+		},
+		{
+			name: "Delete file errors",
+			expPurchase: []model.Purchase{
+				{
+					ID:     1,
+					UserID: 1,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
+				},
+			},
+			req: model.DeleteFileRequest{
+				ID: 1,
+			},
+			fn: func(file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				purchase.On("FindByFileID", data.req.ID).
+					Return(data.expPurchase, nil)
+				for _, p := range data.expPurchase {
+					comment.On("DeleteByPurchaseID", p.ID).
+						Return(p.ID, nil)
+				}
+				purchase.On("DeleteByFileID", data.req.ID).
+					Return(data.expID, nil)
+				file.On("Delete", data.expID).
 					Return(data.expID, errors.New(""))
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't delete file"),
 		},
 		{
 			name: "All ok",
+			expPurchase: []model.Purchase{
+				{
+					ID:     1,
+					UserID: 1,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
+					FileID: 1,
+				},
+			},
 			req: model.DeleteFileRequest{
 				ID: 1,
 			},
-			fn: func(file *m.File, data test) {
-				file.On("Delete", data.req.ID).
+			fn: func(file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				purchase.On("FindByFileID", data.req.ID).
+					Return(data.expPurchase, nil)
+				for _, p := range data.expPurchase {
+					comment.On("DeleteByPurchaseID", p.ID).
+						Return(p.ID, nil)
+				}
+				purchase.On("DeleteByFileID", data.req.ID).
+					Return(data.expID, nil)
+				file.On("Delete", data.expID).
 					Return(data.expID, nil)
 			},
 			expID: 1,
@@ -210,9 +314,11 @@ func TestFileService_Delete(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
-				tc.fn(file, tc)
+				tc.fn(file, purchase, comment, tc)
 			}
 			id, err := service.Delete(tc.req)
 			if err != nil {
@@ -269,7 +375,9 @@ func TestFileService_FindByID(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}
@@ -330,7 +438,9 @@ func TestFileService_FindByName(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}
@@ -386,7 +496,9 @@ func TestFileService_FindAll(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}
@@ -447,7 +559,9 @@ func TestFileService_FindByAuthorID(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}
@@ -503,7 +617,9 @@ func TestFileService_FindNotActual(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}
@@ -559,7 +675,9 @@ func TestFileService_FindActual(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}
@@ -622,7 +740,9 @@ func TestFileService_FindAddedByPeriod(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}
@@ -685,7 +805,9 @@ func TestFileService_FindUpdatedByPeriod(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			file := new(m.File)
-			service := NewFileService(file)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewFileService(file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(file, tc)
 			}

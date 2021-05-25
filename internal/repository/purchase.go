@@ -53,6 +53,24 @@ func (p PurchaseRepo) Delete(id int) (int, error) {
 	return delID, rows.Err()
 }
 
+// DeleteByFileID deletes purchase by file id and returns file id.
+func (p PurchaseRepo) DeleteByFileID(id int) (int, error) {
+	var delID int
+	rows, err := p.db.Query("DELETE FROM purchase WHERE fileID=$1 RETURNING fileID ", id)
+	if err != nil {
+		return 0, err
+	}
+
+	if rows.Next() {
+		err = rows.Scan(&delID)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return delID, rows.Err()
+}
+
 // FindByID finds purchase by id.
 func (p PurchaseRepo) FindByID(id int) (*model.Purchase, error) {
 	var purchase model.Purchase

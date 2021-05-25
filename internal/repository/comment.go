@@ -71,7 +71,7 @@ func (c CommentRepo) Delete(id int) (int, error) {
 	return delID, rows.Err()
 }
 
-// Delete deletes comment by purhcase id and returns purchase id.
+// DeleteByPurchaseID deletes comment by purchase id and returns purchase id.
 func (c CommentRepo) DeleteByPurchaseID(id int) (int, error) {
 	var delID int
 	rows, err := c.db.Query("DELETE FROM comment WHERE purchaseID=$1 RETURNING purchaseID", id)

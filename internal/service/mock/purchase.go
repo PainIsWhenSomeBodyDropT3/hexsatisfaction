@@ -56,6 +56,27 @@ func (_m *Purchase) Delete(id int) (int, error) {
 	return r0, r1
 }
 
+// DeleteByFileID provides a mock function with given fields: id
+func (_m *Purchase) DeleteByFileID(id int) (int, error) {
+	ret := _m.Called(id)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(int) int); ok {
+		r0 = rf(id)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindAfterDate provides a mock function with given fields: start
 func (_m *Purchase) FindAfterDate(start time.Time) ([]model.Purchase, error) {
 	ret := _m.Called(start)

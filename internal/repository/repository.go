@@ -24,6 +24,7 @@ type UserRole interface {
 type Purchase interface {
 	Create(purchase model.Purchase) (int, error)
 	Delete(id int) (int, error)
+	DeleteByFileID(id int) (int, error)
 	FindByID(id int) (*model.Purchase, error)
 	FindLastByUserID(id int) (*model.Purchase, error)
 	FindAllByUserID(id int) ([]model.Purchase, error)

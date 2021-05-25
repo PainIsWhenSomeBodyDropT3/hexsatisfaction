@@ -181,6 +181,101 @@ func TestPurchaseRepo_Delete(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestPurchaseRepo_DeleteByFileID(t *testing.T) {
+	assert := testAssert.New(t)
+	db, repos, err := Connect2Repositories()
+	require.NoError(t, err)
+	tt := []struct {
+		name     string
+		isOk     bool
+		user     model.User
+		author   model.Author
+		file     model.File
+		purchase model.Purchase
+	}{
+		{
+			name: "not found",
+			user: model.User{
+				Login:    "test",
+				Password: "test",
+				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
+		},
+		{
+			name: "all ok",
+			user: model.User{
+				Login:    "test",
+				Password: "test",
+				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
+			purchase: model.Purchase{
+				Date: time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC),
+			},
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			var fileID int
+			deletePurchaseData(assert, db)
+
+			userID, err := repos.User.Create(tc.user)
+			assert.Nil(err)
+
+			tc.author.UserID = userID
+			authorID, err := repos.Author.Create(tc.author)
+			assert.Nil(err)
+
+			if tc.isOk {
+				tc.file.AuthorID = authorID
+				fileID, err = repos.File.Create(tc.file)
+				assert.Nil(err)
+
+				tc.purchase.UserID = userID
+				tc.purchase.FileID = fileID
+				_, err = repos.Purchase.Create(tc.purchase)
+				assert.Nil(err)
+			}
+
+			delID, err := repos.Purchase.DeleteByFileID(fileID)
+			assert.Nil(err)
+			assert.Equal(fileID, delID)
+
+			deletePurchaseData(assert, db)
+		})
+	}
+	err = db.Close()
+	require.NoError(t, err)
+}
+
 func TestPurchaseRepo_FindById(t *testing.T) {
 	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()

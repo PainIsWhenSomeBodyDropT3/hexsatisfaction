@@ -9,11 +9,13 @@ import (
 // FileService is a file service.
 type FileService struct {
 	repository.File
+	repository.Purchase
+	repository.Comment
 }
 
 // NewFileService is a FileService service constructor.
-func NewFileService(file repository.File) *FileService {
-	return &FileService{file}
+func NewFileService(file repository.File, purchase repository.Purchase, comment repository.Comment) *FileService {
+	return &FileService{file, purchase, comment}
 }
 
 // Create creates new file and returns id.
@@ -58,12 +60,41 @@ func (f FileService) Update(request model.UpdateFileRequest) (int, error) {
 
 // Delete deletes file and returns deleted id.
 func (f FileService) Delete(request model.DeleteFileRequest) (int, error) {
-	id, err := f.File.Delete(request.ID)
+
+	purchases, err := f.Purchase.FindByFileID(request.ID)
+	if err != nil {
+		return 0, errors.Wrap(err, "couldn't get purchases")
+	}
+
+	for _, p := range purchases {
+		_, err := f.Comment.DeleteByPurchaseID(p.ID)
+		if err != nil {
+			return 0, errors.Wrap(err, "couldn't delete comment")
+		}
+	}
+
+	fileID, err := f.Purchase.DeleteByFileID(request.ID)
+	if err != nil {
+		return 0, errors.Wrap(err, "couldn't delete purchases")
+	}
+
+	id, err := f.File.Delete(fileID)
 	if err != nil {
 		return 0, errors.Wrap(err, "couldn't delete file")
 	}
 
 	return id, nil
+}
+
+func (f FileService) removeComments(purchases []model.Purchase) error {
+	for _, p := range purchases {
+		_, err := f.Comment.DeleteByPurchaseID(p.ID)
+		if err != nil {
+			return errors.Wrap(err, "couldn't delete comment")
+		}
+	}
+
+	return nil
 }
 
 // FindByID finds file by id.
