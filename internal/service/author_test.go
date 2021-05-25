@@ -2,6 +2,7 @@ package service
 
 import (
 	"testing"
+	"time"
 
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	m "github.com/JesusG2000/hexsatisfaction/internal/service/mock"
@@ -61,7 +62,10 @@ func TestAuthorService_Create(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			author := new(m.Author)
-			service := NewAuthorService(author)
+			file := new(m.File)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewAuthorService(author, file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(author, tc)
 			}
@@ -128,7 +132,10 @@ func TestAuthorService_Update(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			author := new(m.Author)
-			service := NewAuthorService(author)
+			file := new(m.File)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewAuthorService(author, file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(author, tc)
 			}
@@ -144,21 +151,177 @@ func TestAuthorService_Update(t *testing.T) {
 func TestAuthorService_Delete(t *testing.T) {
 	assert := testAssert.New(t)
 	type test struct {
-		name   string
-		req    model.DeleteAuthorRequest
-		fn     func(author *m.Author, data test)
-		expID  int
-		expErr error
+		name        string
+		req         model.DeleteAuthorRequest
+		fn          func(author *m.Author, file *m.File, purchase *m.Purchase, comment *m.Comment, data test)
+		expFile     []model.File
+		expPurchase []model.Purchase
+		expID       int
+		expErr      error
 	}
 	tt := []test{
 		{
-			name: "Delete errors",
+			name: "Find files errors",
 			req: model.DeleteAuthorRequest{
 				ID: 1,
 			},
-			fn: func(author *m.Author, data test) {
-				author.On("Delete", data.req.ID).
+			fn: func(author *m.Author, file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				file.On("FindByAuthorID", data.req.ID).
+					Return(data.expFile, errors.New(""))
+			},
+			expErr: errors.Wrap(errors.New(""), "couldn't get files"),
+		},
+		{
+			name: "Find purchases errors",
+			req: model.DeleteAuthorRequest{
+				ID: 1,
+			},
+			expFile: []model.File{
+				{
+					ID:          1,
+					Name:        "some",
+					Description: "some",
+					Size:        1,
+					Path:        "some",
+					AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					Actual:      true,
+					AuthorID:    1,
+				},
+			},
+			fn: func(author *m.Author, file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				file.On("FindByAuthorID", data.req.ID).
+					Return(data.expFile, nil)
+				for _, f := range data.expFile {
+					purchase.On("FindByFileID", f.ID).
+						Return(data.expPurchase, errors.New(""))
+				}
+			},
+			expErr: errors.Wrap(errors.New(""), "couldn't get purchases"),
+		},
+		{
+			name: "Delete comments errors",
+			req: model.DeleteAuthorRequest{
+				ID: 1,
+			},
+			expFile: []model.File{
+				{
+					ID:          1,
+					Name:        "some",
+					Description: "some",
+					Size:        1,
+					Path:        "some",
+					AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					Actual:      true,
+					AuthorID:    1,
+				},
+			},
+			expPurchase: []model.Purchase{
+				{
+					ID:     1,
+					UserID: 1,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					FileID: 1,
+				},
+			},
+			fn: func(author *m.Author, file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				file.On("FindByAuthorID", data.req.ID).
+					Return(data.expFile, nil)
+				for _, f := range data.expFile {
+					purchase.On("FindByFileID", f.ID).
+						Return(data.expPurchase, nil)
+					for _, p := range data.expPurchase {
+						comment.On("DeleteByPurchaseID", p.ID).
+							Return(0, errors.New(""))
+					}
+				}
+			},
+			expErr: errors.Wrap(errors.New(""), "couldn't delete comments"),
+		},
+		{
+			name: "Delete files errors",
+			req: model.DeleteAuthorRequest{
+				ID: 1,
+			},
+			expFile: []model.File{
+				{
+					ID:          1,
+					Name:        "some",
+					Description: "some",
+					Size:        1,
+					Path:        "some",
+					AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					Actual:      true,
+					AuthorID:    1,
+				},
+			},
+			expPurchase: []model.Purchase{
+				{
+					ID:     1,
+					UserID: 1,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					FileID: 1,
+				},
+			},
+			fn: func(author *m.Author, file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				file.On("FindByAuthorID", data.req.ID).
+					Return(data.expFile, nil)
+				for _, f := range data.expFile {
+					purchase.On("FindByFileID", f.ID).
+						Return(data.expPurchase, nil)
+					for _, p := range data.expPurchase {
+						comment.On("DeleteByPurchaseID", p.ID).
+							Return(0, nil)
+					}
+				}
+				file.On("DeleteByAuthorID", data.req.ID).
 					Return(data.expID, errors.New(""))
+			},
+			expErr: errors.Wrap(errors.New(""), "couldn't delete files"),
+		},
+		{
+			name: "Delete author errors",
+			req: model.DeleteAuthorRequest{
+				ID: 1,
+			},
+			expFile: []model.File{
+				{
+					ID:          1,
+					Name:        "some",
+					Description: "some",
+					Size:        1,
+					Path:        "some",
+					AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					Actual:      true,
+					AuthorID:    1,
+				},
+			},
+			expPurchase: []model.Purchase{
+				{
+					ID:     1,
+					UserID: 1,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					FileID: 1,
+				},
+			},
+			fn: func(author *m.Author, file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				file.On("FindByAuthorID", data.req.ID).
+					Return(data.expFile, nil)
+				for _, f := range data.expFile {
+					purchase.On("FindByFileID", f.ID).
+						Return(data.expPurchase, nil)
+					for _, p := range data.expPurchase {
+						comment.On("DeleteByPurchaseID", p.ID).
+							Return(0, nil)
+					}
+				}
+				file.On("DeleteByAuthorID", data.req.ID).
+					Return(data.expID, nil)
+				author.On("Delete", data.expID).
+					Return(data.expID, nil)
 			},
 			expErr: errors.Wrap(errors.New(""), "couldn't delete author"),
 		},
@@ -167,8 +330,41 @@ func TestAuthorService_Delete(t *testing.T) {
 			req: model.DeleteAuthorRequest{
 				ID: 1,
 			},
-			fn: func(author *m.Author, data test) {
-				author.On("Delete", data.req.ID).
+			expFile: []model.File{
+				{
+					ID:          1,
+					Name:        "some",
+					Description: "some",
+					Size:        1,
+					Path:        "some",
+					AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					Actual:      true,
+					AuthorID:    1,
+				},
+			},
+			expPurchase: []model.Purchase{
+				{
+					ID:     1,
+					UserID: 1,
+					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+					FileID: 1,
+				},
+			},
+			fn: func(author *m.Author, file *m.File, purchase *m.Purchase, comment *m.Comment, data test) {
+				file.On("FindByAuthorID", data.req.ID).
+					Return(data.expFile, nil)
+				for _, f := range data.expFile {
+					purchase.On("FindByFileID", f.ID).
+						Return(data.expPurchase, nil)
+					for _, p := range data.expPurchase {
+						comment.On("DeleteByPurchaseID", p.ID).
+							Return(0, nil)
+					}
+				}
+				file.On("DeleteByAuthorID", data.req.ID).
+					Return(data.expID, nil)
+				author.On("Delete", data.expID).
 					Return(data.expID, nil)
 			},
 			expID: 1,
@@ -177,9 +373,12 @@ func TestAuthorService_Delete(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			author := new(m.Author)
-			service := NewAuthorService(author)
+			file := new(m.File)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewAuthorService(author, file, purchase, comment)
 			if tc.fn != nil {
-				tc.fn(author, tc)
+				tc.fn(author, file, purchase, comment, tc)
 			}
 			id, err := service.Delete(tc.req)
 			if err != nil {
@@ -232,7 +431,10 @@ func TestAuthorService_FindByID(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			author := new(m.Author)
-			service := NewAuthorService(author)
+			file := new(m.File)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewAuthorService(author, file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(author, tc)
 			}
@@ -287,7 +489,10 @@ func TestAuthorService_FindByUserID(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			author := new(m.Author)
-			service := NewAuthorService(author)
+			file := new(m.File)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewAuthorService(author, file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(author, tc)
 			}
@@ -344,7 +549,10 @@ func TestAuthorService_FindByName(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			author := new(m.Author)
-			service := NewAuthorService(author)
+			file := new(m.File)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewAuthorService(author, file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(author, tc)
 			}
@@ -394,7 +602,10 @@ func TestAuthorService_FindAll(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			author := new(m.Author)
-			service := NewAuthorService(author)
+			file := new(m.File)
+			purchase := new(m.Purchase)
+			comment := new(m.Comment)
+			service := NewAuthorService(author, file, purchase, comment)
 			if tc.fn != nil {
 				tc.fn(author, tc)
 			}

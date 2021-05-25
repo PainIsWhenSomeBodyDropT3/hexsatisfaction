@@ -191,14 +191,6 @@ func TestFileService_Delete(t *testing.T) {
 	tt := []test{
 		{
 			name: "Find purchase errors",
-			expPurchase: []model.Purchase{
-				{
-					ID:     1,
-					UserID: 1,
-					Date:   time.Date(2009, time.November, 10, 23, 0, 0, 0, time.Local),
-					FileID: 1,
-				},
-			},
 			req: model.DeleteFileRequest{
 				ID: 1,
 			},
@@ -229,7 +221,7 @@ func TestFileService_Delete(t *testing.T) {
 						Return(0, errors.New(""))
 				}
 			},
-			expErr: errors.Wrap(errors.New(""), "couldn't delete comment"),
+			expErr: errors.Wrap(errors.New(""), "couldn't delete comments"),
 		},
 		{
 			name: "Delete purchases errors",

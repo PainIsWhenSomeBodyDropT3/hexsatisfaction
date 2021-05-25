@@ -9,11 +9,14 @@ import (
 // AuthorService is a author service.
 type AuthorService struct {
 	repository.Author
+	repository.File
+	repository.Purchase
+	repository.Comment
 }
 
 // NewAuthorService is a AuthorService service constructor.
-func NewAuthorService(author repository.Author) *AuthorService {
-	return &AuthorService{author}
+func NewAuthorService(author repository.Author, file repository.File, purchase repository.Purchase, comment repository.Comment) *AuthorService {
+	return &AuthorService{author, file, purchase, comment}
 }
 
 // Create creates author and returns id.
@@ -50,7 +53,33 @@ func (a AuthorService) Update(request model.UpdateAuthorRequest) (int, error) {
 
 // Delete deletes author and returns deleted id.
 func (a AuthorService) Delete(request model.DeleteAuthorRequest) (int, error) {
-	id, err := a.Author.Delete(request.ID)
+	files, err := a.File.FindByAuthorID(request.ID)
+	if err != nil {
+		return 0, errors.Wrap(err, "couldn't get files")
+	}
+
+	// Deleting purchases by file id
+	for _, f := range files {
+		purchases, err := a.Purchase.FindByFileID(f.ID)
+		if err != nil {
+			return 0, errors.Wrap(err, "couldn't get purchases")
+		}
+
+		// Deleting comments by purchase id
+		for _, p := range purchases {
+			_, err := a.Comment.DeleteByPurchaseID(p.ID)
+			if err != nil {
+				return 0, errors.Wrap(err, "couldn't delete comments")
+			}
+		}
+	}
+
+	authorID, err := a.File.DeleteByAuthorID(request.ID)
+	if err != nil {
+		return 0, errors.Wrap(err, "couldn't delete files")
+	}
+
+	id, err := a.Author.Delete(authorID)
 	if err != nil {
 		return 0, errors.Wrap(err, "couldn't delete author")
 	}

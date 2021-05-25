@@ -65,11 +65,11 @@ func (f FileService) Delete(request model.DeleteFileRequest) (int, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "couldn't get purchases")
 	}
-
+	// Deleting comments by purchase id
 	for _, p := range purchases {
 		_, err := f.Comment.DeleteByPurchaseID(p.ID)
 		if err != nil {
-			return 0, errors.Wrap(err, "couldn't delete comment")
+			return 0, errors.Wrap(err, "couldn't delete comments")
 		}
 	}
 

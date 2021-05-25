@@ -245,6 +245,82 @@ func TestFileRepo_Delete(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestFileRepo_DeleteByAuthorID(t *testing.T) {
+	assert := testAssert.New(t)
+	db, repos, err := Connect2Repositories()
+	require.NoError(t, err)
+	tt := []struct {
+		name   string
+		isOk   bool
+		user   model.User
+		author model.Author
+		file   model.File
+	}{
+		{
+			name: "not found",
+			user: model.User{
+				Login:    "test",
+				Password: "test",
+				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+		},
+		{
+			name: "all ok",
+			user: model.User{
+				Login:    "test",
+				Password: "test",
+				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			file: model.File{
+				Name:        "test",
+				Description: "test",
+				Size:        1,
+				Path:        "test",
+				AddDate:     time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				UpdateDate:  time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC),
+				Actual:      false,
+			},
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			var authorID int
+			deleteFileData(assert, db)
+
+			userID, err := repos.User.Create(tc.user)
+			assert.Nil(err)
+			if tc.isOk {
+				tc.author.UserID = userID
+				authorID, err = repos.Author.Create(tc.author)
+				assert.Nil(err)
+
+				tc.file.AuthorID = authorID
+				_, err = repos.File.Create(tc.file)
+				assert.Nil(err)
+			}
+
+			id, err := repos.File.DeleteByAuthorID(authorID)
+			assert.Nil(err)
+			assert.Equal(authorID, id)
+
+			deleteFileData(assert, db)
+		})
+	}
+	err = db.Close()
+	require.NoError(t, err)
+}
+
 func TestFileRepo_FindByID(t *testing.T) {
 	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()

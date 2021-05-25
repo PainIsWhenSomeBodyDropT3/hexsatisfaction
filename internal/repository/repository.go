@@ -60,6 +60,7 @@ type File interface {
 	Create(file model.File) (int, error)
 	Update(id int, file model.File) (int, error)
 	Delete(id int) (int, error)
+	DeleteByAuthorID(id int) (int, error)
 	FindByID(id int) (*model.File, error)
 	FindByName(name string) ([]model.File, error)
 	FindAll() ([]model.File, error)

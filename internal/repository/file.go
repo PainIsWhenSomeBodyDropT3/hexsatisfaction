@@ -72,6 +72,24 @@ func (f FileRepo) Delete(id int) (int, error) {
 	return delID, rows.Err()
 }
 
+// DeleteByAuthorID deletes file by authorID and returns authorID.
+func (f FileRepo) DeleteByAuthorID(id int) (int, error) {
+	var delID int
+	rows, err := f.db.Query("DELETE FROM file WHERE authorID=$1 RETURNING authorID ", id)
+	if err != nil {
+		return 0, err
+	}
+
+	if rows.Next() {
+		err = rows.Scan(&delID)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return delID, rows.Err()
+}
+
 // FindByID finds file by id.
 func (f FileRepo) FindByID(id int) (*model.File, error) {
 	var file model.File

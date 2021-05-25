@@ -102,6 +102,6 @@ func NewServices(deps Deps) *Services {
 		Purchase: NewPurchaseService(deps.Repos.Purchase, deps.Repos.Comment),
 		Comment:  NewCommentService(deps.Repos.Comment),
 		File:     NewFileService(deps.Repos.File, deps.Repos.Purchase, deps.Repos.Comment),
-		Author:   NewAuthorService(deps.Repos.Author),
+		Author:   NewAuthorService(deps.Repos.Author, deps.Repos.File, deps.Repos.Purchase, deps.Repos.Comment),
 	}
 }
