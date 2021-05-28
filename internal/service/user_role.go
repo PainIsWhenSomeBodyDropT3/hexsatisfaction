@@ -16,7 +16,7 @@ func NewUserRoleService(userRoleRepo repository.UserRole) *UserRoleService {
 	return &UserRoleService{userRoleRepo}
 }
 
-// FindAllUser finds all User.
+// FindAllUser finds users.
 func (u UserRoleService) FindAllUser() ([]model.User, error) {
 	users, err := u.UserRole.FindAllUser()
 	if err != nil {

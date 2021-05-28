@@ -146,12 +146,12 @@ func (_m *Purchase) FindBeforeDate(request model.BeforeDatePurchaseRequest) ([]m
 	return r0, r1
 }
 
-// FindByFileName provides a mock function with given fields: request
-func (_m *Purchase) FindByFileName(request model.FileNamePurchaseRequest) ([]model.Purchase, error) {
+// FindByFileID provides a mock function with given fields: request
+func (_m *Purchase) FindByFileID(request model.FileIDPurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.FileNamePurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.FileIDPurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -160,7 +160,7 @@ func (_m *Purchase) FindByFileName(request model.FileNamePurchaseRequest) ([]mod
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.FileNamePurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.FileIDPurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)
@@ -238,12 +238,12 @@ func (_m *Purchase) FindByUserIDAfterDate(request model.UserIDAfterDatePurchaseR
 	return r0, r1
 }
 
-// FindByUserIDAndFileName provides a mock function with given fields: request
-func (_m *Purchase) FindByUserIDAndFileName(request model.UserIDFileNamePurchaseRequest) ([]model.Purchase, error) {
+// FindByUserIDAndFileID provides a mock function with given fields: request
+func (_m *Purchase) FindByUserIDAndFileID(request model.UserIDFileIDPurchaseRequest) ([]model.Purchase, error) {
 	ret := _m.Called(request)
 
 	var r0 []model.Purchase
-	if rf, ok := ret.Get(0).(func(model.UserIDFileNamePurchaseRequest) []model.Purchase); ok {
+	if rf, ok := ret.Get(0).(func(model.UserIDFileIDPurchaseRequest) []model.Purchase); ok {
 		r0 = rf(request)
 	} else {
 		if ret.Get(0) != nil {
@@ -252,7 +252,7 @@ func (_m *Purchase) FindByUserIDAndFileName(request model.UserIDFileNamePurchase
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(model.UserIDFileNamePurchaseRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(model.UserIDFileIDPurchaseRequest) error); ok {
 		r1 = rf(request)
 	} else {
 		r1 = ret.Error(1)

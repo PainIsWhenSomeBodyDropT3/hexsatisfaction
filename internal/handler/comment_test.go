@@ -13,7 +13,7 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 	"github.com/JesusG2000/hexsatisfaction/internal/service"
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
+	testAssert "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -24,7 +24,7 @@ const (
 )
 
 func TestComment_Create(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -122,7 +122,7 @@ func TestComment_Create(t *testing.T) {
 }
 
 func TestComment_Update(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -244,7 +244,7 @@ func TestComment_Update(t *testing.T) {
 }
 
 func TestComment_Delete(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -349,7 +349,7 @@ func TestComment_Delete(t *testing.T) {
 }
 
 func TestComment_FindByID(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -470,7 +470,7 @@ func TestComment_FindByID(t *testing.T) {
 }
 
 func TestComment_FindAll(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
 	require.NoError(t, err)
 	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
@@ -568,10 +568,8 @@ func TestComment_FindAll(t *testing.T) {
 }
 
 func TestComment_FindAllByUserID(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -668,8 +666,6 @@ func TestComment_FindAllByUserID(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -691,10 +687,8 @@ func TestComment_FindAllByUserID(t *testing.T) {
 }
 
 func TestComment_FindByPurchaseID(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -791,8 +785,6 @@ func TestComment_FindByPurchaseID(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path+strconv.Itoa(tc.req.ID), nil)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -814,10 +806,8 @@ func TestComment_FindByPurchaseID(t *testing.T) {
 }
 
 func TestComment_FindByUserIDAndPurchaseID(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -917,8 +907,6 @@ func TestComment_FindByUserIDAndPurchaseID(t *testing.T) {
 			req, err := http.NewRequest(tc.method, fullPath, nil)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -940,10 +928,8 @@ func TestComment_FindByUserIDAndPurchaseID(t *testing.T) {
 }
 
 func TestComment_FindByText(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1044,8 +1030,6 @@ func TestComment_FindByText(t *testing.T) {
 			req, err := http.NewRequest(tc.method, tc.path, body)
 			assert.Nil(err)
 
-			req.Header.Set(authorizationHeader, "Bearer "+token)
-
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)
 			assert.Equal(tc.expCode, res.Code)
@@ -1067,10 +1051,8 @@ func TestComment_FindByText(t *testing.T) {
 }
 
 func TestComment_FindByPeriod(t *testing.T) {
-	assert := assert.New(t)
+	assert := testAssert.New(t)
 	testAPI, err := service.InitTest4Mock()
-	require.NoError(t, err)
-	token, err := testAPI.TokenManager.NewJWT(mock.Anything)
 	require.NoError(t, err)
 
 	type test struct {
@@ -1173,8 +1155,6 @@ func TestComment_FindByPeriod(t *testing.T) {
 
 			req, err := http.NewRequest(tc.method, tc.path, body)
 			assert.Nil(err)
-
-			req.Header.Set(authorizationHeader, "Bearer "+token)
 
 			res := httptest.NewRecorder()
 			router.ServeHTTP(res, req)

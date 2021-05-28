@@ -7,11 +7,33 @@ definitions:
       message:
         type: string
     type: object
+  model.AddedPeriodFileRequest:
+    properties:
+      end:
+        description: 'required: true'
+        type: string
+      start:
+        description: 'required: true'
+        type: string
+    type: object
   model.AfterDatePurchaseRequest:
     properties:
       start:
         description: 'required: true'
         type: string
+    type: object
+  model.Author:
+    properties:
+      age:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      userID:
+        type: integer
     type: object
   model.BeforeDatePurchaseRequest:
     properties:
@@ -32,6 +54,21 @@ definitions:
       userID:
         type: integer
     type: object
+  model.CreateAuthorRequest:
+    properties:
+      age:
+        description: 'required: true'
+        type: integer
+      description:
+        description: 'required: true'
+        type: string
+      name:
+        description: 'required: true'
+        type: string
+      userID:
+        description: 'required: true'
+        type: integer
+    type: object
   model.CreateCommentRequest:
     properties:
       Date:
@@ -47,17 +84,65 @@ definitions:
         description: 'required: true'
         type: integer
     type: object
+  model.CreateFileRequest:
+    properties:
+      actual:
+        description: 'required: true'
+        type: boolean
+      addDate:
+        description: 'required: true'
+        type: string
+      authorID:
+        description: 'required: true'
+        type: integer
+      description:
+        description: 'required: true'
+        type: string
+      name:
+        description: 'required: true'
+        type: string
+      path:
+        description: 'required: true'
+        type: string
+      size:
+        description: 'required: true'
+        type: integer
+      updateDate:
+        description: 'required: true'
+        type: string
+    type: object
   model.CreatePurchaseRequest:
     properties:
       date:
         description: 'required: true'
         type: string
-      fileName:
+      fileID:
         description: 'required: true'
-        type: string
+        type: integer
       userID:
         description: 'required: true'
         type: integer
+    type: object
+  model.File:
+    properties:
+      actual:
+        type: boolean
+      addDate:
+        type: string
+      authorID:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      path:
+        type: string
+      size:
+        type: integer
+      updateDate:
+        type: string
     type: object
   model.LoginUserRequest:
     properties:
@@ -90,8 +175,8 @@ definitions:
     properties:
       date:
         type: string
-      fileName:
-        type: string
+      fileID:
+        type: integer
       id:
         type: integer
       userID:
@@ -112,6 +197,21 @@ definitions:
         description: 'required: true'
         type: string
     type: object
+  model.UpdateAuthorRequest:
+    properties:
+      age:
+        description: 'required: true'
+        type: integer
+      description:
+        description: 'required: true'
+        type: string
+      name:
+        description: 'required: true'
+        type: string
+      userID:
+        description: 'required: true'
+        type: integer
+    type: object
   model.UpdateCommentRequest:
     properties:
       date:
@@ -126,6 +226,42 @@ definitions:
       userID:
         description: 'required: true'
         type: integer
+    type: object
+  model.UpdateFileRequest:
+    properties:
+      actual:
+        description: 'required: true'
+        type: boolean
+      addDate:
+        description: 'required: true'
+        type: string
+      authorID:
+        description: 'required: true'
+        type: integer
+      description:
+        description: 'required: true'
+        type: string
+      name:
+        description: 'required: true'
+        type: string
+      path:
+        description: 'required: true'
+        type: string
+      size:
+        description: 'required: true'
+        type: integer
+      updateDate:
+        description: 'required: true'
+        type: string
+    type: object
+  model.UpdatedPeriodFileRequest:
+    properties:
+      end:
+        description: 'required: true'
+        type: string
+      start:
+        description: 'required: true'
+        type: string
     type: object
   model.UserIDAfterDatePurchaseRequest:
     properties:
@@ -155,6 +291,246 @@ info:
   title: Hexsatisfaction API
   version: "1.0"
 paths:
+  /author/:
+    get:
+      consumes:
+      - application/json
+      description: Find authors
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Author'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No authors
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindAll
+      tags:
+      - author
+  /author/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Find authors by name
+      parameters:
+      - description: Author name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Author'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No authors
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindByName
+      tags:
+      - author
+  /author/api/:
+    post:
+      consumes:
+      - application/json
+      description: Create author
+      parameters:
+      - description: Author
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateAuthorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create
+      tags:
+      - author
+  /author/api/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete author
+      parameters:
+      - description: Author id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No author
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete
+      tags:
+      - author
+    get:
+      consumes:
+      - application/json
+      description: Find author by id
+      parameters:
+      - description: Author id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Author'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No author
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByID
+      tags:
+      - author
+    put:
+      consumes:
+      - application/json
+      description: Update author
+      parameters:
+      - description: Author id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Author
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateAuthorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No author
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update
+      tags:
+      - author
+  /author/api/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Find author by user id
+      parameters:
+      - description: User id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Author'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No author
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByUserID
+      tags:
+      - author
   /comment/api/:
     get:
       consumes:
@@ -508,6 +884,344 @@ paths:
       summary: FindByUserIDAndPurchaseID
       tags:
       - comment
+  /file/:
+    get:
+      consumes:
+      - application/json
+      description: Find files
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.File'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No files
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindAll
+      tags:
+      - file
+  /file/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Find files by name
+      parameters:
+      - description: File name
+        in: path
+        name: name
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.File'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No files
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindByName
+      tags:
+      - file
+  /file/actual/:
+    get:
+      consumes:
+      - application/json
+      description: Find actual files
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.File'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No files
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindActual
+      tags:
+      - file
+  /file/added:
+    post:
+      consumes:
+      - application/json
+      description: Find added files by date period
+      parameters:
+      - description: Period
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddedPeriodFileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.File'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No files
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindAddedByPeriod
+      tags:
+      - file
+  /file/api/:
+    post:
+      consumes:
+      - application/json
+      description: Create file
+      parameters:
+      - description: File
+        in: body
+        name: file
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateFileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create
+      tags:
+      - file
+  /file/api/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Find file by id
+      parameters:
+      - description: File id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.File'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No file
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByID
+      tags:
+      - file
+    put:
+      consumes:
+      - application/json
+      description: Update file
+      parameters:
+      - description: File id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: File
+        in: body
+        name: file
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateFileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No file
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update
+      tags:
+      - file
+  /file/api/author/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Find files by author id
+      parameters:
+      - description: Author id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.File'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No files
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      security:
+      - ApiKeyAuth: []
+      summary: FindByAuthorID
+      tags:
+      - file
+  /file/expired/:
+    get:
+      consumes:
+      - application/json
+      description: Find expired files
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.File'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No files
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindNotActual
+      tags:
+      - file
+  /file/updated:
+    post:
+      consumes:
+      - application/json
+      description: Find updated files by date period
+      parameters:
+      - description: Period
+        in: body
+        name: period
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdatedPeriodFileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.File'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+        "404":
+          description: No files
+          schema:
+            $ref: '#/definitions/middleware.SwagEmptyError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.SwagError'
+      summary: FindUpdatedByPeriod
+      tags:
+      - file
   /purchase/api/:
     get:
       consumes:
@@ -797,17 +1511,17 @@ paths:
       summary: FindByUserIDBeforeDate
       tags:
       - purchase
-  /purchase/api/file/{file}:
+  /purchase/api/file/{fileID}:
     get:
       consumes:
       - application/json
-      description: Find purchases by file name
+      description: Find purchases by file id
       parameters:
-      - description: File name
+      - description: File id
         in: path
-        name: file
+        name: fileID
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -831,7 +1545,7 @@ paths:
             $ref: '#/definitions/middleware.SwagError'
       security:
       - ApiKeyAuth: []
-      summary: FindByFileName
+      summary: FindByFileID
       tags:
       - purchase
   /purchase/api/last/:
@@ -1012,22 +1726,22 @@ paths:
       summary: FindAllByUserID
       tags:
       - purchase
-  /purchase/api/user/{id}/file/{file}:
+  /purchase/api/user/{userID}/file/{fileID}:
     get:
       consumes:
       - application/json
-      description: Find purchases by user id and file name
+      description: Find purchases by user id and file id
       parameters:
       - description: User id
         in: path
-        name: id
+        name: userID
         required: true
         type: integer
-      - description: File name
+      - description: File id
         in: path
-        name: file
+        name: fileID
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -1051,7 +1765,7 @@ paths:
             $ref: '#/definitions/middleware.SwagError'
       security:
       - ApiKeyAuth: []
-      summary: FindByUserIDAndFileName
+      summary: FindByUserIDAndFileID
       tags:
       - purchase
   /user/login:

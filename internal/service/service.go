@@ -29,13 +29,13 @@ type Purchase interface {
 	FindByUserIDAndPeriod(request model.UserIDPeriodPurchaseRequest) ([]model.Purchase, error)
 	FindByUserIDAfterDate(request model.UserIDAfterDatePurchaseRequest) ([]model.Purchase, error)
 	FindByUserIDBeforeDate(request model.UserIDBeforeDatePurchaseRequest) ([]model.Purchase, error)
-	FindByUserIDAndFileName(request model.UserIDFileNamePurchaseRequest) ([]model.Purchase, error)
+	FindByUserIDAndFileID(request model.UserIDFileIDPurchaseRequest) ([]model.Purchase, error)
 	FindLast() (*model.Purchase, error)
 	FindAll() ([]model.Purchase, error)
 	FindByPeriod(request model.PeriodPurchaseRequest) ([]model.Purchase, error)
 	FindAfterDate(request model.AfterDatePurchaseRequest) ([]model.Purchase, error)
 	FindBeforeDate(request model.BeforeDatePurchaseRequest) ([]model.Purchase, error)
-	FindByFileName(request model.FileNamePurchaseRequest) ([]model.Purchase, error)
+	FindByFileID(request model.FileIDPurchaseRequest) ([]model.Purchase, error)
 }
 
 // Comment is an interface for CommentService repository methods.
@@ -52,12 +52,40 @@ type Comment interface {
 	FindByPeriod(request model.PeriodCommentRequest) ([]model.Comment, error)
 }
 
+// File is an interface for FileService repository methods.
+type File interface {
+	Create(request model.CreateFileRequest) (int, error)
+	Update(request model.UpdateFileRequest) (int, error)
+	Delete(request model.DeleteFileRequest) (int, error)
+	FindByID(request model.IDFileRequest) (*model.File, error)
+	FindByName(request model.NameFileRequest) ([]model.File, error)
+	FindAll() ([]model.File, error)
+	FindByAuthorID(request model.AuthorIDFileRequest) ([]model.File, error)
+	FindNotActual() ([]model.File, error)
+	FindActual() ([]model.File, error)
+	FindAddedByPeriod(request model.AddedPeriodFileRequest) ([]model.File, error)
+	FindUpdatedByPeriod(request model.UpdatedPeriodFileRequest) ([]model.File, error)
+}
+
+// Author is an interface for AuthorService repository methods.
+type Author interface {
+	Create(request model.CreateAuthorRequest) (int, error)
+	Update(request model.UpdateAuthorRequest) (int, error)
+	Delete(request model.DeleteAuthorRequest) (int, error)
+	FindByID(request model.IDAuthorRequest) (*model.Author, error)
+	FindByUserID(request model.UserIDAuthorRequest) (*model.Author, error)
+	FindByName(request model.NameAuthorRequest) ([]model.Author, error)
+	FindAll() ([]model.Author, error)
+}
+
 // Services collects all service interfaces.
 type Services struct {
 	User     User
 	UserRole UserRole
 	Purchase Purchase
 	Comment  Comment
+	File     File
+	Author   Author
 }
 
 // Deps represents dependencies for services.
@@ -71,7 +99,9 @@ func NewServices(deps Deps) *Services {
 	return &Services{
 		User:     NewUserService(deps.Repos.User, deps.TokenManager),
 		UserRole: NewUserRoleService(deps.Repos.UserRole),
-		Purchase: NewPurchaseService(deps.Repos.Purchase),
+		Purchase: NewPurchaseService(deps.Repos.Purchase, deps.Repos.Comment),
 		Comment:  NewCommentService(deps.Repos.Comment),
+		File:     NewFileService(deps.Repos.File, deps.Repos.Purchase, deps.Repos.Comment),
+		Author:   NewAuthorService(deps.Repos.Author, deps.Repos.File, deps.Repos.Purchase, deps.Repos.Comment),
 	}
 }
