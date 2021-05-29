@@ -17,4 +17,9 @@ gen-mocks:
 run:
 	go run cmd/main.go
 
+test-coverage:
+	go test ./... -coverprofile coverage.out
+	go tool cover -func coverage.out
+	go tool cover -html=coverage.out -o coverage.html
+
 start : lint  swagger  run

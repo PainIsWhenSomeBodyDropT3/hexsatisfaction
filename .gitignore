@@ -15,5 +15,6 @@ rs.cor.authentication-ms
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+*.html
 
 /vendor
