@@ -416,7 +416,7 @@ func TestPurchase_FindLastByUserId(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + last + slash + user + slash,
 			method:  http.MethodGet,
 			isOkRes: true,
-			req: model.IDPurchaseRequest{
+			req: model.UserIDPurchaseRequest{
 				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {
@@ -536,7 +536,7 @@ func TestPurchase_FindAllByUserId(t *testing.T) {
 			path:    slash + purchase + slash + api + slash + user + slash,
 			method:  http.MethodGet,
 			isOkRes: true,
-			req: model.IDPurchaseRequest{
+			req: model.UserIDPurchaseRequest{
 				ID: 15,
 			},
 			fn: func(purchaseService *m.Purchase, data test) {

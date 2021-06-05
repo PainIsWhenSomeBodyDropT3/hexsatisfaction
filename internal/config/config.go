@@ -1,12 +1,12 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
@@ -45,16 +45,16 @@ type (
 func Init(path string) (*Config, error) {
 
 	if err := parseConfigFile(path); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "couldn't parse config file")
 	}
 
 	if err := parseEnv(); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "couldn't parse env file")
 	}
 
 	var cfg Config
 	if err := unmarshal(&cfg); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "couldn't unmarshal config file")
 	}
 
 	setFromEnv(&cfg)
@@ -73,81 +73,98 @@ func setFromEnv(cfg *Config) {
 
 func unmarshal(cfg *Config) error {
 	if err := viper.UnmarshalKey("http.port", &cfg.HTTP.Port); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't unmarshal http.port")
 	}
 
 	if err := viper.UnmarshalKey("http.maxHeaderBytes", &cfg.HTTP.MaxHeaderBytes); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't unmarshal http.maxHeaderBytes")
 	}
 
 	if err := viper.UnmarshalKey("http.readTimeout", &cfg.HTTP.ReadTimeout); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't unmarshal http.readTimeout")
 	}
 
 	if err := viper.UnmarshalKey("http.writeTimeout", &cfg.HTTP.WriteTimeout); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't unmarshal http.writeTimeout")
 	}
 
 	if err := viper.UnmarshalKey("pg.databaseName", &cfg.Pg.Name); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't unmarshal pg.databaseName")
 	}
 
 	if err := viper.UnmarshalKey("pg.databaseSllMode", &cfg.Pg.SslMode); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't unmarshal pg.databaseSllMode")
 	}
 
-	return viper.UnmarshalKey("pg.databaseDialect", &cfg.Pg.Dialect)
+	if err := viper.UnmarshalKey("pg.databaseDialect", &cfg.Pg.SslMode); err != nil {
+		return errors.Wrap(err, "couldn't unmarshal pg.databaseDialect")
+	}
+
+	return nil
 }
 
 func parseConfigFile(filepath string) error {
-
-	env := ".env"
 	envPath, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 	envPath = strings.SplitAfter(envPath, "hexsatisfaction")[0]
-	if err := godotenv.Load(envPath + "/" + env); err != nil {
-		log.Fatal("Error loading .env file: ", err)
+	if err := godotenv.Load(envPath + "/" + ".env"); err != nil {
+		return errors.Wrap(err, "couldn't load env file")
 	}
 
 	configPath := strings.Split(filepath, "/")
 
 	viper.AddConfigPath(envPath + "/" + configPath[0])
 	viper.SetConfigName(configPath[1])
+	if err := viper.ReadInConfig(); err != nil {
+		return errors.Wrap(err, "couldn't load config file")
+	}
 
-	return viper.ReadInConfig()
+	return nil
 }
 
 func parseEnv() error {
 
 	if err := parsePg(); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't parse pg")
 	}
 
-	return parseJWT()
+	if err := parseJWT(); err != nil {
+		return errors.Wrap(err, "couldn't parse jwt")
+	}
+
+	return nil
 }
 
 func parseJWT() error {
 	viper.SetEnvPrefix("jwt")
 
-	return viper.BindEnv("signing_key")
+	if err := viper.BindEnv("signing_key"); err != nil {
+		return errors.Wrap(err, "couldn't bind signing_key")
+	}
+
+	return nil
 }
 
 func parsePg() error {
 	viper.SetEnvPrefix("pg")
 
 	if err := viper.BindEnv("password"); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't bind password")
 	}
 
 	if err := viper.BindEnv("user"); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't bind user")
 	}
 
 	if err := viper.BindEnv("host"); err != nil {
-		return err
+		return errors.Wrap(err, "couldn't bind host")
 	}
 
-	return viper.BindEnv("port")
+	if err := viper.BindEnv("port"); err != nil {
+		return errors.Wrap(err, "couldn't bind port")
+	}
+
+	return nil
 }

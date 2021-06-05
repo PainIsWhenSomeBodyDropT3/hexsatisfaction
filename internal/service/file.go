@@ -86,17 +86,6 @@ func (f FileService) Delete(request model.DeleteFileRequest) (int, error) {
 	return id, nil
 }
 
-func (f FileService) removeComments(purchases []model.Purchase) error {
-	for _, p := range purchases {
-		_, err := f.Comment.DeleteByPurchaseID(p.ID)
-		if err != nil {
-			return errors.Wrap(err, "couldn't delete comment")
-		}
-	}
-
-	return nil
-}
-
 // FindByID finds file by id.
 func (f FileService) FindByID(request model.IDFileRequest) (*model.File, error) {
 	file, err := f.File.FindByID(request.ID)

@@ -40,13 +40,13 @@ type (
 	}
 
 	// DeletePurchaseRequest represents a request to delete purchase.
-	DeletePurchaseRequest = struct {
+	DeletePurchaseRequest struct {
 		// required: true
 		ID int `json:"-"`
 	}
 
 	// UserIDPurchaseRequest represents a request to find last added purchase by user id.
-	UserIDPurchaseRequest = struct {
+	UserIDPurchaseRequest struct {
 		// required: true
 		ID int `json:"-"`
 	}
