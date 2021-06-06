@@ -27,6 +27,7 @@ type Author interface {
 	Update(id int, author model.Author) (int, error)
 	Delete(id int) (int, error)
 	FindByID(id int) (*model.Author, error)
+	IsExistByID(id int) (bool, error)
 	FindByUserID(id int) (*model.Author, error)
 	FindByName(name string) ([]model.Author, error)
 	FindAll() ([]model.Author, error)
