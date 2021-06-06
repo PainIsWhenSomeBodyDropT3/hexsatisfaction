@@ -96,7 +96,7 @@ func unmarshal(cfg *Config) error {
 		return errors.Wrap(err, "couldn't unmarshal pg.databaseSllMode")
 	}
 
-	if err := viper.UnmarshalKey("pg.databaseDialect", &cfg.Pg.SslMode); err != nil {
+	if err := viper.UnmarshalKey("pg.databaseDialect", &cfg.Pg.Dialect); err != nil {
 		return errors.Wrap(err, "couldn't unmarshal pg.databaseDialect")
 	}
 
