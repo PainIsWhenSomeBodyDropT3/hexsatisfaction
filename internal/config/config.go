@@ -40,7 +40,7 @@ type (
 		ReadTimeout    time.Duration
 		WriteTimeout   time.Duration
 	}
-
+	// GRPCConfig represents a structure with configs for grpc.
 	GRPCConfig struct {
 		Host string
 		Port string

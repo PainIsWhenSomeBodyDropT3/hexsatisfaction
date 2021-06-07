@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -53,15 +54,17 @@ func Run(configPath string) {
 	routeSwagger(router)
 
 	srv := server.NewServer(cfg, router)
-	_, errChan := api.NewGrpcServer(":8080", grpcExistanceChecker)
+	go startService(ctx, srv)
+
+	addr := net.JoinHostPort(cfg.GRPC.Host, cfg.GRPC.Port)
+	_, errChan := api.NewGrpcServer(addr, grpcExistanceChecker)
+
 	log.Printf("server started")
 
 	err = <-errChan
 	if err != nil {
 		log.Panic(err)
 	}
-
-	go startService(ctx, srv)
 
 	<-stop
 
