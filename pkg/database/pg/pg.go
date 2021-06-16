@@ -12,10 +12,10 @@ import (
 
 // NewPg creates new connection to pg database.
 func NewPg(pgConfig config.PgConfig) (*sql.DB, error) {
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%d", pgConfig.Host, pgConfig.User, pgConfig.Name, pgConfig.Password, pgConfig.Port)
+	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%d", pgConfig.Host, pgConfig.User, pgConfig.DatabaseName, pgConfig.Password, pgConfig.Port)
 	log.Println(dbURI)
 
-	db, err := sql.Open(pgConfig.Dialect, dbURI)
+	db, err := sql.Open(pgConfig.DatabaseDialect, dbURI)
 	if err != nil {
 		return nil, err
 	}
