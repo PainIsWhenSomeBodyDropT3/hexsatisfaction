@@ -9,9 +9,11 @@ import (
 // User is an interface for UserRepo methods.
 type User interface {
 	Create(user model.User) (int, error)
+	FindByID(id int) (*model.User, error)
 	FindByLogin(login string) (*model.User, error)
 	FindByCredentials(user model.User) (*model.User, error)
 	IsExist(login string) (bool, error)
+	IsExistByID(id int) (bool, error)
 }
 
 // UserRole is an interface for UserRoleRepo methods.
@@ -25,6 +27,7 @@ type Author interface {
 	Update(id int, author model.Author) (int, error)
 	Delete(id int) (int, error)
 	FindByID(id int) (*model.Author, error)
+	IsExistByID(id int) (bool, error)
 	FindByUserID(id int) (*model.Author, error)
 	FindByName(name string) ([]model.Author, error)
 	FindAll() ([]model.Author, error)

@@ -56,6 +56,29 @@ func (_m *User) FindByCredentials(user model.User) (*model.User, error) {
 	return r0, r1
 }
 
+// FindByID provides a mock function with given fields: id
+func (_m *User) FindByID(id int) (*model.User, error) {
+	ret := _m.Called(id)
+
+	var r0 *model.User
+	if rf, ok := ret.Get(0).(func(int) *model.User); ok {
+		r0 = rf(id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.User)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindByLogin provides a mock function with given fields: login
 func (_m *User) FindByLogin(login string) (*model.User, error) {
 	ret := _m.Called(login)
@@ -93,6 +116,27 @@ func (_m *User) IsExist(login string) (bool, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func(string) error); ok {
 		r1 = rf(login)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// IsExistByID provides a mock function with given fields: id
+func (_m *User) IsExistByID(id int) (bool, error) {
+	ret := _m.Called(id)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(int) bool); ok {
+		r0 = rf(id)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(id)
 	} else {
 		r1 = ret.Error(1)
 	}
