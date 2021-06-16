@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// NewGrpcServer launches new grpc server on a specified address
+// NewGrpcServer launches new grpc server on a specified address.
 func NewGrpcServer(address string, service ExistanceServer) (server *grpc.Server, errChan <-chan error) {
 	errBuf := make(chan error)
 	listener, err := net.Listen("tcp", address)
