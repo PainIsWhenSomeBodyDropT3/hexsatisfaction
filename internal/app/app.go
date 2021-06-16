@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -15,6 +16,7 @@ import (
 	"github.com/JesusG2000/hexsatisfaction/internal/service"
 	"github.com/JesusG2000/hexsatisfaction/pkg/auth"
 	"github.com/JesusG2000/hexsatisfaction/pkg/database/pg"
+	"github.com/JesusG2000/hexsatisfaction/pkg/grpc/api"
 	"github.com/go-openapi/runtime/middleware"
 )
 
@@ -41,6 +43,7 @@ func Run(configPath string) {
 	}
 
 	repos := repository.NewRepositories(db)
+	grpcExistanceChecker := api.NewExistChecker(*repos)
 	services := service.NewServices(service.Deps{
 		Repos:        repos,
 		TokenManager: tokenManager,
@@ -51,8 +54,17 @@ func Run(configPath string) {
 	routeSwagger(router)
 
 	srv := server.NewServer(cfg, router)
-
 	go startService(ctx, srv)
+
+	addr := net.JoinHostPort(cfg.GRPC.Host, cfg.GRPC.Port)
+	_, errChan := api.NewGrpcServer(addr, grpcExistanceChecker)
+
+	log.Printf("server started")
+
+	err = <-errChan
+	if err != nil {
+		log.Panic(err)
+	}
 
 	<-stop
 

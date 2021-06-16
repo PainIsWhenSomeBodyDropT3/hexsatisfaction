@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"strings"
 
 	"github.com/JesusG2000/hexsatisfaction/internal/model"
 )
@@ -86,6 +87,18 @@ func (a AuthorRepo) FindByID(id int) (*model.Author, error) {
 	}
 
 	return &author, rows.Err()
+}
+
+// IsExistByID checks if author exist.
+func (u AuthorRepo) IsExistByID(id int) (bool, error) {
+	existingAuthor, err := u.FindByID(id)
+	if err != nil && !strings.Contains(err.Error(), "sql: Rows are closed") {
+		return false, err
+	} else if existingAuthor.ID != 0 {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 // FindByUserID finds author by user id.
