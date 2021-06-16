@@ -331,6 +331,70 @@ func TestAuthorRepo_FindByUserID(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestAuthorRepo_IsExistByID(t *testing.T) {
+	assert := testAssert.New(t)
+	db, repos, err := Connect2Repositories()
+	require.NoError(t, err)
+	tt := []struct {
+		name   string
+		isOk   bool
+		user   model.User
+		author model.Author
+		exp    bool
+	}{
+		{
+			name: "exist err",
+			user: model.User{
+				Login:    "test",
+				Password: "test",
+				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+		},
+		{
+			name: "all ok",
+			isOk: true,
+			user: model.User{
+				Login:    "test",
+				Password: "test",
+				RoleID:   dto.USER,
+			},
+			author: model.Author{
+				Name:        "test",
+				Age:         1,
+				Description: "test",
+			},
+			exp: true,
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			var authorID int
+			deleteAuthorData(assert, db)
+
+			userID, err := repos.User.Create(tc.user)
+			assert.Nil(err)
+			if tc.isOk {
+				tc.author.UserID = userID
+				authorID, err = repos.Author.Create(tc.author)
+				assert.Nil(err)
+			}
+			author, err := repos.Author.IsExistByID(authorID)
+			assert.Nil(err)
+			assert.Equal(tc.exp, author)
+
+			deleteAuthorData(assert, db)
+		})
+	}
+	err = db.Close()
+	require.NoError(t, err)
+}
+
 func TestAuthorRepo_FindByName(t *testing.T) {
 	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()

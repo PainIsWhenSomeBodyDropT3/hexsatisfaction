@@ -52,6 +52,24 @@ func (u UserRepo) FindByLogin(login string) (*model.User, error) {
 	return &user, rows.Err()
 }
 
+// FindByLogin finds the user by id.
+func (u UserRepo) FindByID(id int) (*model.User, error) {
+	var user model.User
+	rows, err := u.db.Query("SELECT * FROM users WHERE id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+
+	if rows.Next() {
+		err = rows.Scan(&user.ID, &user.Login, &user.Password, &user.RoleID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &user, rows.Err()
+}
+
 // FindByCredentials finds the user by credentials.
 func (u UserRepo) FindByCredentials(user model.User) (*model.User, error) {
 	var newUser model.User
@@ -70,9 +88,21 @@ func (u UserRepo) FindByCredentials(user model.User) (*model.User, error) {
 	return &newUser, rows.Err()
 }
 
-// IsExist checks if user exist.
+// IsExist checks if user exist by login.
 func (u UserRepo) IsExist(login string) (bool, error) {
 	existingUser, err := u.FindByLogin(login)
+	if err != nil && !strings.Contains(err.Error(), "sql: Rows are closed") {
+		return false, err
+	} else if existingUser.ID != 0 {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+// IsExist checks if user exist.
+func (u UserRepo) IsExistByID(id int) (bool, error) {
+	existingUser, err := u.FindByID(id)
 	if err != nil && !strings.Contains(err.Error(), "sql: Rows are closed") {
 		return false, err
 	} else if existingUser.ID != 0 {
