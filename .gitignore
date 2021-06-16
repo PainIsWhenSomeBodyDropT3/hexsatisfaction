@@ -17,4 +17,5 @@ rs.cor.authentication-ms
 *.out
 *.html
 
+/docs
 /vendor

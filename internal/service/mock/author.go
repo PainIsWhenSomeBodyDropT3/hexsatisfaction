@@ -146,6 +146,27 @@ func (_m *Author) FindByUserID(id int) (*model.Author, error) {
 	return r0, r1
 }
 
+// IsExistByID provides a mock function with given fields: id
+func (_m *Author) IsExistByID(id int) (bool, error) {
+	ret := _m.Called(id)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(int) bool); ok {
+		r0 = rf(id)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Update provides a mock function with given fields: id, author
 func (_m *Author) Update(id int, author model.Author) (int, error) {
 	ret := _m.Called(id, author)
