@@ -8,12 +8,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-const configPath = "config/main"
-
 // Connect2Repositories connects to a pg database.
 func Connect2Repositories() (*sql.DB, *Repositories, error) {
 
-	cfg, err := config.Init(configPath)
+	cfg, err := config.Init()
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "couldn't init config")
 	}
