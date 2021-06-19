@@ -112,6 +112,50 @@ func TestUser_IsExist(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestUser_IsExistByID(t *testing.T) {
+	assert := testAssert.New(t)
+	db, repos, err := Connect2Repositories()
+	require.NoError(t, err)
+	user := model.User{
+		Login:    "test",
+		Password: "test",
+	}
+	tt := []struct {
+		name   string
+		isOk   bool
+		expRes bool
+	}{
+		{
+			name: "user not found errors",
+		},
+		{
+			name:   "all ok",
+			isOk:   true,
+			expRes: true,
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			var id int
+			_, err := db.Exec("DELETE FROM users")
+			assert.Nil(err)
+			if tc.isOk {
+				id, err = repos.User.Create(user)
+				assert.Nil(err)
+			}
+			exist, err := repos.User.IsExistByID(id)
+			assert.Nil(err)
+			assert.Equal(tc.expRes, exist)
+			if tc.isOk {
+				_, err := db.Exec("DELETE FROM users")
+				assert.Nil(err)
+			}
+		})
+	}
+	err = db.Close()
+	require.NoError(t, err)
+}
+
 func TestUser_FindByLogin(t *testing.T) {
 	assert := testAssert.New(t)
 	db, repos, err := Connect2Repositories()
@@ -149,6 +193,53 @@ func TestUser_FindByLogin(t *testing.T) {
 				assert.Nil(err)
 			}
 			user, err := repos.User.FindByLogin(tc.login)
+			assert.Nil(err)
+			tc.user.ID = id
+			assert.Equal(tc.user, user)
+			if tc.isOk {
+				_, err := db.Exec("DELETE FROM users")
+				assert.Nil(err)
+			}
+		})
+	}
+	err = db.Close()
+	require.NoError(t, err)
+}
+
+func TestUser_FindByID(t *testing.T) {
+	assert := testAssert.New(t)
+	db, repos, err := Connect2Repositories()
+	require.NoError(t, err)
+	tt := []struct {
+		name string
+		isOk bool
+		user *model.User
+	}{
+		{
+			name: "user not found errors",
+			user: &model.User{},
+		},
+		{
+			name: "all ok",
+			isOk: true,
+			user: &model.User{
+				Login:    "test",
+				Password: "test",
+				RoleID:   dto.USER,
+			},
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			var id int
+			_, err := db.Exec("DELETE FROM users")
+			assert.Nil(err)
+			if tc.isOk {
+				id, err = repos.User.Create(*tc.user)
+				assert.Nil(err)
+			}
+			user, err := repos.User.FindByID(id)
 			assert.Nil(err)
 			tc.user.ID = id
 			assert.Equal(tc.user, user)

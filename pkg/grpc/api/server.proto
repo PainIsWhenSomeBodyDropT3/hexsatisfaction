@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "./pkg/api";
+
+package grpc;
+
+service Existance{
+  rpc User (IsUserExistRequest) returns (IsUserExistResponse) {}
+  rpc Author (IsAuthorExistRequest) returns (IsAuthorExistResponse) {}
+}
+
+
+message IsUserExistRequest {
+  int32 id = 1;
+}
+
+message IsUserExistResponse {
+  bool exist = 1;
+}
+
+message IsAuthorExistRequest {
+  int32 id = 1;
+}
+
+message IsAuthorExistResponse {
+  bool exist = 1;
+}

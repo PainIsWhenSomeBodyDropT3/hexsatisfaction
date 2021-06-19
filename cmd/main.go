@@ -2,8 +2,6 @@ package main
 
 import "github.com/JesusG2000/hexsatisfaction/internal/app"
 
-const configPath = "config/main"
-
 // @title Hexsatisfaction API
 // @version 1.0
 // @description API Service for Hexsatisfaction
@@ -16,5 +14,5 @@ const configPath = "config/main"
 // @name Authorization
 
 func main() {
-	app.Run(configPath)
+	app.Run()
 }

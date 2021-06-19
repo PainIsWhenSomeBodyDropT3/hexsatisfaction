@@ -2,14 +2,11 @@ package service
 
 import (
 	"log"
-	"os"
-	"strings"
 
 	"github.com/JesusG2000/hexsatisfaction/internal/config"
 	"github.com/JesusG2000/hexsatisfaction/internal/repository"
 	"github.com/JesusG2000/hexsatisfaction/pkg/auth"
-	"github.com/joho/godotenv"
-	"github.com/spf13/viper"
+	"github.com/pkg/errors"
 )
 
 // TestAPI represents a struct for tests api.
@@ -18,45 +15,29 @@ type TestAPI struct {
 	auth.TokenManager
 }
 
-const configPath = "config/main"
-
 // InitTest4Mock initialize an a TestAPI for mock testing.
 func InitTest4Mock() (*TestAPI, error) {
-	env := ".env"
-	envPath, err := os.Getwd()
+	test, err := initServices4Test()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "couldn't init tests for mock")
 	}
 
-	envPath = strings.SplitAfter(envPath, "hexsatisfaction")[0]
-	if err := godotenv.Load(envPath + "/" + env); err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	configPath := strings.Split(configPath, "/")
-
-	viper.AddConfigPath(envPath + "/" + configPath[0])
-	viper.SetConfigName(configPath[1])
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal("Error read .config file")
-	}
-
-	return initServices4Test(), nil
+	return test, nil
 }
 
-func initServices4Test() *TestAPI {
-	cfg, err := config.Init(configPath)
+func initServices4Test() (*TestAPI, error) {
+	cfg, err := config.Init()
 	if err != nil {
 		log.Fatal("Init config error: ", err)
 	}
 	_, repos, err := repository.Connect2Repositories()
 	if err != nil {
-		return nil
+		return nil, errors.Wrap(err, "couldn't connect to db")
 	}
 
 	tokenManager, err := auth.NewManager(cfg.Auth.SigningKey)
 	if err != nil {
-		log.Fatal(err)
+		return nil, errors.Wrap(err, "couldn't create jwt manager")
 	}
 
 	return &TestAPI{
@@ -65,5 +46,5 @@ func initServices4Test() *TestAPI {
 			TokenManager: tokenManager,
 		}),
 		TokenManager: tokenManager,
-	}
+	}, nil
 }

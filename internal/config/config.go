@@ -1,13 +1,10 @@
 package config
 
 import (
-	"log"
-	"os"
-	"strings"
 	"time"
 
-	"github.com/joho/godotenv"
-	"github.com/spf13/viper"
+	"github.com/kelseyhightower/envconfig"
+	"github.com/pkg/errors"
 )
 
 type (
@@ -16,138 +13,63 @@ type (
 		Pg   PgConfig
 		Auth JWTConfig
 		HTTP HTTPConfig
+		GRPC GRPCConfig
 	}
 	// PgConfig represents a structure with configs for pg database.
 	PgConfig struct {
-		URI      string
-		User     string
-		Password string
-		Host     string
-		Port     int
-		Name     string
-		SslMode  string
-		Dialect  string
+		URI             string
+		User            string `required:"true"`
+		Password        string `required:"true"`
+		Host            string `required:"true"`
+		Port            int    `required:"true"`
+		DatabaseName    string `split_words:"true" required:"true"`
+		DatabaseSslMode string `split_words:"true" required:"true"`
+		DatabaseDialect string `split_words:"true" required:"true"`
 	}
 	// JWTConfig represents a structure with configs for jwt-token.
 	JWTConfig struct {
-		SigningKey string
+		SigningKey string `split_words:"true" required:"true"`
 	}
 	// HTTPConfig represents a structure with configs for http server.
 	HTTPConfig struct {
-		Port           int
-		MaxHeaderBytes int
-		ReadTimeout    time.Duration
-		WriteTimeout   time.Duration
+		Port           int           `required:"true"`
+		MaxHeaderBytes int           `split_words:"true" required:"true"`
+		ReadTimeout    time.Duration `split_words:"true" required:"true"`
+		WriteTimeout   time.Duration `split_words:"true" required:"true"`
+	}
+	// GRPCConfig represents a structure with configs for grpc.
+	GRPCConfig struct {
+		Host string `required:"true"`
+		Port string `required:"true"`
 	}
 )
 
-// Init populates Config struct with values from config file located at filepath and environment variables.
-func Init(path string) (*Config, error) {
+const (
+	PG   = "PG"
+	JWT  = "JWT"
+	HTTP = "HTTP"
+	GRPC = "GRPC"
+)
 
-	if err := parseConfigFile(path); err != nil {
-		return nil, err
-	}
-
-	if err := parseEnv(); err != nil {
-		return nil, err
-	}
-
+// Init populates Config struct with values.
+func Init() (*Config, error) {
 	var cfg Config
-	if err := unmarshal(&cfg); err != nil {
-		return nil, err
+
+	if err := envconfig.Process(PG, &cfg.Pg); err != nil {
+		return nil, errors.Wrap(err, "couldn't process pg")
 	}
 
-	setFromEnv(&cfg)
+	if err := envconfig.Process(JWT, &cfg.Auth); err != nil {
+		return nil, errors.Wrap(err, "couldn't process jwt")
+	}
+
+	if err := envconfig.Process(HTTP, &cfg.HTTP); err != nil {
+		return nil, errors.Wrap(err, "couldn't process http")
+	}
+
+	if err := envconfig.Process(GRPC, &cfg.GRPC); err != nil {
+		return nil, errors.Wrap(err, "couldn't process grpc")
+	}
 
 	return &cfg, nil
-}
-
-func setFromEnv(cfg *Config) {
-	cfg.Auth.SigningKey = viper.GetString("signing_key")
-
-	cfg.Pg.User = viper.GetString("user")
-	cfg.Pg.Password = viper.GetString("password")
-	cfg.Pg.Host = viper.GetString("host")
-	cfg.Pg.Port = viper.GetInt("port")
-}
-
-func unmarshal(cfg *Config) error {
-	if err := viper.UnmarshalKey("http.port", &cfg.HTTP.Port); err != nil {
-		return err
-	}
-
-	if err := viper.UnmarshalKey("http.maxHeaderBytes", &cfg.HTTP.MaxHeaderBytes); err != nil {
-		return err
-	}
-
-	if err := viper.UnmarshalKey("http.readTimeout", &cfg.HTTP.ReadTimeout); err != nil {
-		return err
-	}
-
-	if err := viper.UnmarshalKey("http.writeTimeout", &cfg.HTTP.WriteTimeout); err != nil {
-		return err
-	}
-
-	if err := viper.UnmarshalKey("pg.databaseName", &cfg.Pg.Name); err != nil {
-		return err
-	}
-
-	if err := viper.UnmarshalKey("pg.databaseSllMode", &cfg.Pg.SslMode); err != nil {
-		return err
-	}
-
-	return viper.UnmarshalKey("pg.databaseDialect", &cfg.Pg.Dialect)
-}
-
-func parseConfigFile(filepath string) error {
-
-	env := ".env"
-	envPath, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	envPath = strings.SplitAfter(envPath, "hexsatisfaction")[0]
-	if err := godotenv.Load(envPath + "/" + env); err != nil {
-		log.Fatal("Error loading .env file: ", err)
-	}
-
-	configPath := strings.Split(filepath, "/")
-
-	viper.AddConfigPath(envPath + "/" + configPath[0])
-	viper.SetConfigName(configPath[1])
-
-	return viper.ReadInConfig()
-}
-
-func parseEnv() error {
-
-	if err := parsePg(); err != nil {
-		return err
-	}
-
-	return parseJWT()
-}
-
-func parseJWT() error {
-	viper.SetEnvPrefix("jwt")
-
-	return viper.BindEnv("signing_key")
-}
-
-func parsePg() error {
-	viper.SetEnvPrefix("pg")
-
-	if err := viper.BindEnv("password"); err != nil {
-		return err
-	}
-
-	if err := viper.BindEnv("user"); err != nil {
-		return err
-	}
-
-	if err := viper.BindEnv("host"); err != nil {
-		return err
-	}
-
-	return viper.BindEnv("port")
 }
