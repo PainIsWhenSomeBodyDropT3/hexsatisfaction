@@ -19,3 +19,4 @@ rs.cor.authentication-ms
 
 /docs
 /vendor
+cmd/hex*
