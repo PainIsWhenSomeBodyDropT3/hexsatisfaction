@@ -1,0 +1,4 @@
+FROM pgbouncer/pgbouncer:latest
+
+# COPY cmd/pgbouncer.ini /etc/pgbouncer/pgbouncer.ini
+

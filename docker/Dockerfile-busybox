@@ -1,0 +1,6 @@
+FROM busybox
+
+# Смена на пользователя root
+USER root
+
+# Другие инструкции Dockerfile

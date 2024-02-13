@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgbouncer-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgbouncer
+  template:
+    metadata:
+      labels:
+        app: pgbouncer
+    spec:
+      containers:
+        - name: pgbouncer
+          image: pgbouncer:1.0
+          ports:
+            - containerPort: 6432
+          env:
+            - name: DATABASES
+              value: "masterdb = 
+                host=hexsatisfaction-postgres-master-service.default.svc.cluster.local 
+                port=5432 
+                user=hexsatisfaction_user 
+                password=123456
+                dbname=hexsatisfaction\n
+                slavesdb = 
+                host=hexsatisfaction-postgres-slave-service.default.svc.cluster.local 
+                port=5432 
+                user=hexsatisfaction_user 
+                password=123456
+                dbname=hexsatisfaction"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgbouncer-service
+spec:
+  selector:
+    app: pgbouncer
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 6432
+  type: ClusterIP

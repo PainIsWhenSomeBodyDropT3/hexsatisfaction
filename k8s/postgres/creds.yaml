@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hexsatisfaction-postgres-secret
+type: Opaque
+data:
+  POSTGRES_PASSWORD: MTIzNDU2
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hexsatisfaction-postgres-config
+data:
+  POSTGRES_DB: hexsatisfaction
+  POSTGRES_USER: hexsatisfaction_user
