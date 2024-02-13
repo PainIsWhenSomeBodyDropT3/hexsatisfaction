@@ -1,0 +1,32 @@
+version: '3'
+services:
+  golang-app:
+    image: hexsatisfaction:1.0  # Replace with your Go application image
+    container_name: hexsatisfaction
+    restart: always
+    # ports:
+    #   - 7070:8080
+    environment:
+      - PG_USER=hexsatisfaction_user
+      - PG_PASSWORD=hexsatisfaction_password
+      - PG_HOST=hexsatisfaction_postgres
+      - PG_PORT=5432
+      - PG_DATABASE_NAME=hexsatisfaction
+      - PG_DATABASE_SSL_MODE=disable
+      - PG_DATABASE_DIALECT=postgres
+      - JWT_SIGNING_KEY=my-key
+      - HTTP_HOST=0.0.0.0
+      - HTTP_PORT=8080
+      - HTTP_MAX_HEADER_BYTES=1000
+      - HTTP_READ_TIMEOUT=10s
+      - HTTP_WRITE_TIMEOUT=10s
+      - GRPC_HOST=0.0.0.0
+      - GRPC_PORT=9090
+
+  postgres:
+    image: hexsatisfaction_postgres:1.0
+    container_name: hexsatisfaction_postgres
+    environment:
+      - POSTGRES_DB=hexsatisfaction
+      - POSTGRES_USER=hexsatisfaction_user
+      - POSTGRES_PASSWORD=hexsatisfaction_password

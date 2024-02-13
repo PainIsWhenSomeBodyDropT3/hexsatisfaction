@@ -32,6 +32,7 @@ type (
 	}
 	// HTTPConfig represents a structure with configs for http server.
 	HTTPConfig struct {
+		Host           string        `required:"true"`
 		Port           int           `required:"true"`
 		MaxHeaderBytes int           `split_words:"true" required:"true"`
 		ReadTimeout    time.Duration `split_words:"true" required:"true"`

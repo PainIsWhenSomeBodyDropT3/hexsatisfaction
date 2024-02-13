@@ -22,7 +22,6 @@ import (
 
 // Run runs hexsatisfaction service
 func Run() {
-
 	ctx := context.Background()
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
@@ -85,6 +84,7 @@ func startService(ctx context.Context, coreService *server.Server) {
 		log.Fatal(ctx, "service shutdown: ", err.Error())
 	}
 }
+
 func routeSwagger(router *handler.API) {
 	ops := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
 	sh := middleware.Redoc(ops, nil)

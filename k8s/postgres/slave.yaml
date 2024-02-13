@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hexsatisfaction-postgres-slave
+spec:
+  persistentVolumeClaimRetentionPolicy: # by default everything is delete
+    whenDeleted: Delete
+    whenScaled: Delete
+  replicas: 3  
+  serviceName: hexsatisfaction-postgres-slave-service 
+  selector:
+    matchLabels:
+      app: hexsatisfaction-postgres
+      role: slave  
+  template:
+    metadata:
+      labels:
+        app: hexsatisfaction-postgres
+        role: slave
+    spec:
+      containers:
+        - name: hexsatisfaction-postgres
+          image: hexsatisfaction_postgres:1.0
+          envFrom:
+            - configMapRef:
+                name: hexsatisfaction-postgres-config
+            - secretRef:
+                name: hexsatisfaction-postgres-secret
+          ports:
+            - containerPort: 5432
+#psql -U hexsatisfaction_user -d hexsatisfaction -h hexsatisfaction-postgres-slave-0.hexsatisfaction-postgres-slave-service
+          # args: ['-h', 'locahost']
+          volumeMounts:
+            - name: pg-slave-data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: pg-slave-data
+      spec:
+        storageClassName: standard
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hexsatisfaction-postgres-slave-service 
+spec:
+  clusterIP: None
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: hexsatisfaction-postgres
+    role: slave
